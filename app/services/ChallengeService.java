@@ -4,22 +4,21 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.User;
 import repositories.ChallengesRepository;
+import repositories.UserRepository;
 
 public class ChallengeService {
 
     private final ChallengesRepository challengesRepository;
-    private final User user;
 
-    public ChallengeService(ChallengesRepository challengesRepository, User user) {
+    public ChallengeService(ChallengesRepository challengesRepository) {
         this.challengesRepository = challengesRepository;
-        this.user = user;
     }
 
-    public Challenge createChallenge() {
+    public Challenge createChallenge(User user) {
         return challengesRepository.createChallenge(user);
     }
 
-    public ChallengeParticipation participateInChallenge(Challenge challenge) {
+    public ChallengeParticipation participateInChallenge(Challenge challenge, User user) {
         return new ChallengeParticipation(challenge, user);
     }
 }

@@ -1,0 +1,58 @@
+div#menu-wrapper{ width: 100%; }
+
+div#wrapper{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 62px;
+    overflow: hidden;
+}
+
+div#wrapper div.ui-block{
+    width: 48%;
+    float: left;
+    min-height: 100px;
+    text-align: center;
+    display: none;
+    cursor: pointer;
+}
+
+div#wrapper .top-block{ text-align: left; }
+
+div#wrapper div.ui-block.active{ width: 90%; height: 100%!important;}
+
+div#wrapper div.ui-block span.ui-block-title{
+    display:inline-block;
+    padding-top: 30%;
+    font-size: 28px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+div#wrapper div#challenge-block{
+    width: 90%;
+    height: 100%!important;
+    display: none;
+    background-image: url('../images/challenge_background.jpg');
+    background-size: 100% 100%;
+    text-align: center;
+    padding-top: 2%;
+    padding-left: 2%;
+}
+
+div#wrapper div#challenge-block div.form-wrapper{
+    margin-right: auto;
+    margin-left: auto;
+    width: 60%;
+}
+
+div#wrapper div#challenge-block div.form-wrapper form > div{ padding: 15px; }
+
+.palette-nephritis:hover{ background-color: #2ECC71; }
+.palette-belize-hole:hover{ background-color: #3498DB; }
+.palette-pumpkin:hover{ background-color: #E67E22;}
+.palette-midnight-blue:hover{ background-color: #34495E;}

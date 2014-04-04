@@ -1,7 +1,37 @@
-@(message: String)
+@(username: String)
 
-@main("Welcome to Play") {
+@main("Welcome to Challenge Application") {
+<div id="menu-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <a class="navbar-brand" href="#">Challenger</a>
+        </div>
 
-    @play20.welcome(message, style = "Java")
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">
+                    Responses
+                    <!-- Indicator with number -->
+                    <span class="navbar-new">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    Firstname
+                    <img src="@routes.Assets.at("images/facebook.png")"/>
+                </a>
+        </ul>
+    </nav>
+</div>
+<div id="wrapper">
+    <div class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
+    <div class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
+    <div class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
+    <div class="ui-block palette-midnight-blue"><span class="ui-block-title">Share!</span></div>
+    @challenge()
+</div>
 
 }

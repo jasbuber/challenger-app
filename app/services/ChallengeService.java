@@ -4,7 +4,6 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.User;
 import repositories.ChallengesRepository;
-import repositories.UserRepository;
 
 public class ChallengeService {
 
@@ -14,11 +13,26 @@ public class ChallengeService {
         this.challengesRepository = challengesRepository;
     }
 
-    public Challenge createChallenge(User user) {
-        return challengesRepository.createChallenge(user);
+    public Challenge createChallenge(User creator, String challengeName) {
+        if(isUserCreatedChallengeWithName(challengeName, creator)) {
+            throw new IllegalStateException("Challenge with given name: " + challengeName +
+                    " has already been created by user " + creator);
+        }
+        return challengesRepository.createChallenge(creator, challengeName);
     }
 
-    public ChallengeParticipation participateInChallenge(Challenge challenge, User user) {
-        return new ChallengeParticipation(challenge, user);
+    public ChallengeParticipation participateInChallenge(Challenge challenge, User participator) {
+        if(isUserParticipatingInChallenge(challenge, participator)) {
+            throw new IllegalStateException("User " + participator + " is participating in challenge " + challenge);
+        }
+        return challengesRepository.createChallengeParticipation(challenge, participator);
+    }
+
+    public boolean isUserParticipatingInChallenge(Challenge challenge, User user) {
+        return challengesRepository.isUserParticipatingInChallenge(challenge, user);
+    }
+
+    public boolean isUserCreatedChallengeWithName(String challengeName, User creator) {
+        return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
     }
 }

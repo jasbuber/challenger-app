@@ -18,19 +18,26 @@ public class User {
     }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
-        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (!username.equals(user.username)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return username != null ? username.hashCode() : 0;
+        return username.hashCode();
     }
 }

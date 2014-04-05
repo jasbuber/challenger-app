@@ -3,9 +3,11 @@
  */
 $(document).ready(function(){
 
-    $(".ui-block").each(function(){
-        $(this).css("height", $(this).width()/1.6);
-        $(this).show();
+    $(".ui-block").css("height", $(".ui-block").width()/1.6);
+    $(".ui-block").show();
+
+    $(window).on("resize", function(){
+        $(".ui-block").css("height", $(".ui-block").width()/1.2);
     });
 
     $(".ui-block").click(function(){

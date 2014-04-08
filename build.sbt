@@ -10,4 +10,6 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "commons-net" % "commons-net" % "3.2"
 
+libraryDependencies += "com.restfb" % "restfb" % "1.6.14"
+
 play.Project.playJavaSettings

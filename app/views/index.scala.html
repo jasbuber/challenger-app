@@ -1,4 +1,4 @@
-@(username: String)
+@(firstName: java.lang.String, profilePicUrl: java.lang.String)
 
 @main("Welcome to Challenge Application") {
 <div id="menu-wrapper">
@@ -20,8 +20,12 @@
             </li>
             <li>
                 <a href="#">
-                    Firstname
-                    <img src="@routes.Assets.at("images/facebook.png")"/>
+                    @firstName
+                    @if(!profilePicUrl.isEmpty) {
+                        <img src="@profilePicUrl"/>
+                    } else {
+                        <img src="@routes.Assets.at("images/facebook.png")"/>
+                    }
                 </a>
         </ul>
     </nav>

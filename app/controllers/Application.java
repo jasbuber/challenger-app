@@ -1,9 +1,8 @@
 package controllers;
 
-import com.restfb.DefaultFacebookClient;
-import com.restfb.DefaultWebRequestor;
-import com.restfb.FacebookClient;
-import com.restfb.WebRequestor;
+import com.restfb.*;
+import com.restfb.json.JsonObject;
+import domain.FacebookUser;
 import domain.User;
 import play.*;
 import play.api.mvc.Request;
@@ -32,16 +31,26 @@ public class Application extends Controller {
             Date expires = token.getExpires();
             //String secret = Play.application().configuration().getString("secretkey");
 
+            String secret = "a8d1db17c5add29872d79dd35bf793dc";
             session("fb_user_token", accessToken);
-            //FacebookClient facebookClient = new DefaultFacebookClient(accessToken, secret);
-            //User user = facebookClient.fetchObject("me", User.class);
+            FacebookClient facebookClient = new DefaultFacebookClient(accessToken, secret);
+            FacebookUser user = facebookClient.fetchObject("me", FacebookUser.class);
 
             return redirect(routes.Application.index());
         }
     }
 
     public static Result index() {
-       return ok(index.render("Default user"));
+
+        String secret = "a8d1db17c5add29872d79dd35bf793dc";
+        FacebookClient facebookClient = new DefaultFacebookClient(session("fb_user_token"), secret);
+        FacebookUser user = facebookClient.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name"));
+
+        JsonObject photo = facebookClient.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","32"), Parameter.with("height","32"));
+
+        String photoUrl = photo.getJsonObject("data").getString("url");
+
+        return ok(index.render(user.getFirstName(), photoUrl));
     }
 
     private static FacebookClient.AccessToken getFacebookUserToken(String code, String redirectUrl) throws IOException {

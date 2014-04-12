@@ -1,4 +1,4 @@
-@(username: String)
+@(challengeForm: Form[domain.Challenge])
 
 @main("Welcome to Challenge Application") {
 <div id="menu-wrapper">
@@ -27,11 +27,12 @@
     </nav>
 </div>
 <div id="wrapper">
-    <div class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
-    <div class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
-    <div class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
-    <div class="ui-block palette-midnight-blue"><span class="ui-block-title">Share!</span></div>
-    @challenge()
+    <div id="challenge-block" class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
+    <div id="browse-block" class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
+    <div id="rank-block" class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
+    <div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">Share!</span></div>
+    @challenge(challengeForm: Form[domain.Challenge])
+    @browse()
 </div>
 
 }

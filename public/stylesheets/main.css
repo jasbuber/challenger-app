@@ -32,7 +32,7 @@ div#wrapper div.ui-block span.ui-block-title{
     cursor: pointer;
 }
 
-div#wrapper div#challenge-block{
+div#wrapper div.ui-block-body{
     width: 90%;
     height: 100%!important;
     display: none;
@@ -43,13 +43,17 @@ div#wrapper div#challenge-block{
     padding-left: 2%;
 }
 
-div#wrapper div#challenge-block div.form-wrapper{
+div#wrapper div#browse-block-body{
+    background-image: url('../images/browse_background.png');
+}
+
+div#wrapper div.ui-block-body div.form-wrapper{
     margin-right: auto;
     margin-left: auto;
     width: 60%;
 }
 
-div#wrapper div#challenge-block div.form-wrapper form > div{ padding: 15px; }
+div#wrapper div.ui-block-body div.form-wrapper form > div{ padding: 15px; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

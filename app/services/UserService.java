@@ -19,4 +19,8 @@ public class UserService {
         return userRepository.createUser(username);
     }
 
+    public static User getCurrentUser(){
+        return new User("currentUser");
+    }
+
 }

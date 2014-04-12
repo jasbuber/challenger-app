@@ -16,8 +16,8 @@ $(document).ready(function(){
         $(this).siblings().not(this).toggleClass('hide');
         $(this).fadeOut(1500, function(){
             $(this).removeClass("active");
-            $("#challenge-block").removeClass('hide');
-            $("#challenge-block").fadeIn(1000);
+            $("#" + $(this).attr("id") + "-body").removeClass('hide');
+            $("#" + $(this).attr("id") + "-body").fadeIn(1000);
 
         });
     });
@@ -25,7 +25,7 @@ $(document).ready(function(){
     $("select").selectpicker({style: 'btn-hg btn-primary', menuStyle: 'dropdown-inverse'});
 
     $(".backAction").click(function(){
-        $("#challenge-block").hide();
+        $(".ui-block-body").hide();
         $(".ui-block").removeClass('hide');
         $(".ui-block").fadeIn(1000);
     });

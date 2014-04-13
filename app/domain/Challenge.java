@@ -1,20 +1,14 @@
 package domain;
 import org.apache.commons.lang3.StringUtils;
 import play.data.validation.Constraints;
-import services.UserService;
 
 public class Challenge {
 
-    @Constraints.Required
-    @Constraints.MinLength(5)
     private String challengeName;
 
-    @Constraints.Required
     private User creator;
 
     public ChallengeCategory category;
-
-    public Challenge(){ this.creator = UserService.getCurrentUser(); }
 
     public Challenge(User creator, String challengeName) {
         assertCreatorAndName(creator, challengeName);
@@ -60,24 +54,11 @@ public class Challenge {
         return category;
     }
 
-    public void setCategory(ChallengeCategory category) {
-        this.category = category;
-    }
-
     public String getChallengeName() {
         return challengeName;
-    }
-
-    public void setChallengeName(String challengeName) {
-        this.challengeName = challengeName;
     }
 
     public User getCreator() {
         return creator;
     }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
 }

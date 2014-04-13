@@ -1,22 +1,22 @@
 package services;
 
 import domain.User;
-import repositories.UserRepository;
+import repositories.UsersRepository;
 
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
     }
 
     public User createNewOrGetExistingUser(String username) {
-        if(userRepository.isUserExist(username)) {
-            return userRepository.getUser(username);
+        if(usersRepository.isUserExist(username)) {
+            return usersRepository.getUser(username);
         }
 
-        return userRepository.createUser(username);
+        return usersRepository.createUser(username);
     }
 
     public static User getCurrentUser(){

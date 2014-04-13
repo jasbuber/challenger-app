@@ -2,7 +2,7 @@ package repositories;
 
 import domain.User;
 
-public class UserRepository {
+public class UsersRepository {
 
     public User createUser(String username) {
         return new User(username);

@@ -10,7 +10,7 @@ public class ChallengesRepository {
         return new Challenge(user, challengeName);
     }
 
-    public boolean isChallengeWithGivenNameExistsForUser(String challengeName, User creator) {
+    public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creator) {
         return false;
     }
 
@@ -18,7 +18,7 @@ public class ChallengesRepository {
         return new ChallengeParticipation(challenge, user);
     }
 
-    public boolean isUserParticipatingInChallenge(Challenge challenge, User participator) {
+    public boolean isUserParticipatingInChallenge(Challenge challenge, String participator) {
         return false;
     }
 }

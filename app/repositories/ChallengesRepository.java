@@ -2,6 +2,7 @@ package repositories;
 
 import domain.Challenge;
 import domain.ChallengeParticipation;
+import domain.ChallengeResponse;
 import domain.User;
 
 public class ChallengesRepository {
@@ -19,6 +20,18 @@ public class ChallengesRepository {
     }
 
     public boolean isUserParticipatingInChallenge(Challenge challenge, String participator) {
+        return false;
+    }
+
+    public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
+        return new ChallengeResponse(challengeParticipation);
+    }
+
+    public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
+        return new ChallengeParticipation(challenge, new User(participatorUsername));
+    }
+
+    public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
         return false;
     }
 }

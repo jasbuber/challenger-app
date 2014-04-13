@@ -13,4 +13,32 @@ public class ChallengeParticipation {
         this.challenge = challenge;
         this.user = user;
     }
+
+    public Challenge getChallenge() {
+        return challenge;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChallengeParticipation that = (ChallengeParticipation) o;
+
+        if (!challenge.equals(that.challenge)) return false;
+        if (!user.equals(that.user)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = challenge.hashCode();
+        result = 31 * result + user.hashCode();
+        return result;
+    }
 }

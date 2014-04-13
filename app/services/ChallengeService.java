@@ -2,6 +2,7 @@ package services;
 
 import domain.Challenge;
 import domain.ChallengeParticipation;
+import domain.ChallengeResponse;
 import domain.User;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
@@ -39,5 +40,24 @@ public class ChallengeService {
 
     public boolean isUserCreatedChallengeWithName(String challengeName, String creator) {
         return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
+    }
+
+    public ChallengeResponse submitChallengeResponse(ChallengeParticipation challengeParticipation) {
+        assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
+        return challengesRepository.addChallengeResponse(challengeParticipation);
+    }
+
+    private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
+        if(isNotScoredResponseExistsFor(challengeParticipation)) {
+            throw new IllegalStateException("User " + challengeParticipation.getUser() + " has already submitted response that is not scored yet for challenge " + challengeParticipation.getChallenge());
+        }
+    }
+
+    public boolean isNotScoredResponseExistsFor(ChallengeParticipation challengeParticipation) {
+        return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
+    }
+
+    public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
+        return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
     }
 }

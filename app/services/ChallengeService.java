@@ -4,9 +4,11 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
 import domain.User;
+import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChallengeService {
@@ -75,5 +77,9 @@ public class ChallengeService {
 
     public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
         return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
+    }
+
+    public List<Challenge> findChallenges(ChallengeFilter challengeFilter) {
+        return new ArrayList<Challenge>();
     }
 }

@@ -6,11 +6,10 @@ import play.mvc.*;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 import services.ChallengeService;
+import services.FacebookNotificationService;
 import views.html.*;
 
 public class Application extends Controller {
-
-    private ChallengeService challengeService;
 
     public static Result index() {
 
@@ -35,7 +34,7 @@ public class Application extends Controller {
 
     //need to exist until dependency injection framework is added
     private static ChallengeService getChallengeService() {
-        return new ChallengeService(new ChallengesRepository(), new UsersRepository());
+        return new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
     }
 
     //username to be set in session during login

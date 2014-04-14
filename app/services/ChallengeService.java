@@ -7,14 +7,18 @@ import domain.User;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
+import java.util.List;
+
 public class ChallengeService {
 
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
+    private final NotificationService notificationService;
 
-    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository) {
+    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, NotificationService notificationService) {
         this.challengesRepository = challengesRepository;
         this.usersRepository = usersRepository;
+        this.notificationService = notificationService;
     }
 
     public Challenge createChallenge(String creatorUsername, String challengeName) {
@@ -44,7 +48,19 @@ public class ChallengeService {
 
     public ChallengeResponse submitChallengeResponse(ChallengeParticipation challengeParticipation) {
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
-        return challengesRepository.addChallengeResponse(challengeParticipation);
+        ChallengeResponse challengeResponse = challengesRepository.addChallengeResponse(challengeParticipation);
+        notifyCreator(challengeParticipation.getCreator());
+        notifyOtherChallengeParticipators(challengeParticipation.getChallenge());
+        return challengeResponse;
+    }
+
+    private void notifyCreator(User creator) {
+        notificationService.notifyUser(creator);
+    }
+
+    private void notifyOtherChallengeParticipators(Challenge challenge) {
+        List<User> otherChallengeParticipators = usersRepository.getParticipatorsFor(challenge);
+        notificationService.notifyUsers(otherChallengeParticipators);
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {

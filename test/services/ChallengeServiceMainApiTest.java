@@ -9,12 +9,15 @@ import repositories.UsersRepository;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UsersRepositoryStub();
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository);
+    private final NotificationService notificationService = mock(NotificationService.class);
+
+    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
 
     @Test

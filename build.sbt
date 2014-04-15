@@ -11,4 +11,6 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "commons-net" % "commons-net" % "3.2"
 
+libraryDependencies += "com.google.code.gson" % "gson" % "2.2.2"
+
 play.Project.playJavaSettings

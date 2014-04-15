@@ -69,7 +69,7 @@ div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results{
 
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table{ width: 100%; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table th{ text-align: center; }
-div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td{ padding: 5px; }
+div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td{ padding: 5px; text-align: left; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; }
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

@@ -5,7 +5,7 @@
        <form>
            <div class="form-group">
                 <div class="input-group input-group-hg input-group-rounded">
-                    <input type="text" placeholder="Search" class="form-control input-lg"/>
+                    <input type="text" placeholder="Search" class="form-control input-lg challenge-search-phrase"/>
                     <span class="input-group-btn">
                         <button type="submit" class="btn">
                             <span class="fui-search"></span>
@@ -14,8 +14,8 @@
                 </div>
             </div>
            <span>
-               <select name="category">
-                   <option value="" selected>Choose category...</option>
+               <select name="category" class="challenge-category">
+                   <option value="@domain.ChallengeCategory.ALL" selected>Choose category...</option>
                    <option value="@domain.ChallengeCategory.FOOD">Food related</option>
                    <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
                    <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>

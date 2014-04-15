@@ -4,6 +4,7 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
 import domain.User;
+import play.db.jpa.Transactional;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
@@ -23,6 +24,7 @@ public class ChallengeService {
         this.notificationService = notificationService;
     }
 
+    @Transactional
     public Challenge createChallenge(String creatorUsername, String challengeName) {
         if(isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +

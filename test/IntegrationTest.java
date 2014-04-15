@@ -9,6 +9,7 @@ import static org.fest.assertions.Assertions.*;
 
 import static org.fluentlenium.core.filter.FilterConstructor.*;
 
+@Ignore("not needed for now")
 public class IntegrationTest {
 
     /**

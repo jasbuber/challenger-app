@@ -4,6 +4,9 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
 import domain.User;
+import play.db.DB;
+
+import java.sql.Connection;
 
 public class ChallengesRepository {
 

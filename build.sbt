@@ -4,8 +4,9 @@ version := "1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   javaJdbc,
-  javaEbean,
   cache,
+  javaJpa,
+  "org.hibernate" % "hibernate-entitymanager" % "4.3.5.Final",
   "org.mockito" % "mockito-core" % "1.9.5" % "test" withSources() withJavadoc()
 )
 

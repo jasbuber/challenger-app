@@ -2,9 +2,24 @@ package domain;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "USERS")
 public class User {
 
-    private final String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "USERNAME", unique = true)
+    @NotNull
+    private String username;
+
+    protected User() {
+        //for jpa purposes...
+    }
 
     public User(String username) {
         assertUsername(username);

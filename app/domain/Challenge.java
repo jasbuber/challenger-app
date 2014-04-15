@@ -2,12 +2,27 @@ package domain;
 import org.apache.commons.lang3.StringUtils;
 import play.data.validation.Constraints;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "CHALLENGES")
 public class Challenge {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "NAME", unique = true)
+    @NotNull
     private String challengeName;
 
+    @ManyToOne
+    @JoinColumn(name = "CREATOR")
+    @NotNull
     private User creator;
 
+    @Enumerated(EnumType.STRING)
     public ChallengeCategory category;
 
     public Challenge(User creator, String challengeName) {

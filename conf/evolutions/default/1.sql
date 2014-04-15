@@ -1,0 +1,5 @@
+# --- !Ups
+CREATE TABLE TEST(A INTEGER);
+
+# --- !Downs
+DROP TABLE TEST;

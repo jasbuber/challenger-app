@@ -1,6 +1,10 @@
 package repositories;
 
+import domain.Challenge;
 import domain.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsersRepository {
 
@@ -14,5 +18,9 @@ public class UsersRepository {
 
     public User getUser(String username) {
         return new User(username);
+    }
+
+    public List<User> getParticipatorsFor(Challenge challenge) {
+        return new ArrayList<User>();
     }
 }

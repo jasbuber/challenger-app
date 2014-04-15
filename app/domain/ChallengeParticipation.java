@@ -41,4 +41,8 @@ public class ChallengeParticipation {
         result = 31 * result + user.hashCode();
         return result;
     }
+
+    public User getCreator() {
+        return challenge.getCreator();
+    }
 }

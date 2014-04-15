@@ -2,21 +2,48 @@
     <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
     <h2>Browse challenges</h2>
     <div class="form-wrapper">
-        <form action="">
-            <span>
-                <input type="text" placeholder="Enter something" class="form-control input-hg"/>
-            </span>
-            <span>
-                <select>
-                    <option value="0">Some option</option>
-                    <option value="1">Other option</option>
-                </select>
-            </span>
-            <span>
-                <button class="btn btn-lg btn-primary">
-                SEARCH
-                </button>
-            </span>
-        </form>
+       <form>
+           <div class="form-group">
+                <div class="input-group input-group-hg input-group-rounded">
+                    <input type="text" placeholder="Search" class="form-control input-lg"/>
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn">
+                            <span class="fui-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+           <span>
+               <select name="category">
+                   <option value="@domain.ChallengeCategory.FOOD">Food related</option>
+                   <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
+                   <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
+                   <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
+                   <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
+                   <option value="@domain.ChallengeCategory.OTHER">Other</option>
+               </select>
+           </span>
+       </form>
+       <div class="challenge-search-results">
+           <table>
+               <thead>
+                   <tr>
+                       <th>Started By</th>
+                       <th>Name</th>
+                       <th>Category</th>
+                       <th>Time left</th>
+                       <th>Join</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td>
+                       <td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>
+                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>
+                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>
+                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>
+                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>
+               </tbody>
+           </table>
+       </div>
     </div>
 </div>

@@ -24,6 +24,13 @@ $(document).ready(function(){
 
     $("select").selectpicker({style: 'btn-hg btn-primary', menuStyle: 'dropdown-inverse'});
 
+    // Focus state for append/prepend inputs
+    $('.input-group').on('focus', '.form-control', function () {
+        $(this).closest('.input-group, .form-group').addClass('focus');
+    }).on('blur', '.form-control', function () {
+        $(this).closest('.input-group, .form-group').removeClass('focus');
+    });
+
     $(".backAction").click(function(){
         $(".ui-block-body").hide();
         $(".ui-block").removeClass('hide');

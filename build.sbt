@@ -6,7 +6,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaJpa,
-  "org.hibernate" % "hibernate-entitymanager" % "4.3.5.Final",
+  "org.hibernate" % "hibernate-entitymanager" % "4.2.12.Final",
   "org.mockito" % "mockito-core" % "1.9.5" % "test" withSources() withJavadoc()
 )
 

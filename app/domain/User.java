@@ -11,6 +11,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    //@SequenceGenerator(name = "user_seq_gen", sequenceName = "USER_SEQ")
     private Long id;
 
     @Column(name = "USERNAME", unique = true)

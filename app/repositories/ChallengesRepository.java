@@ -37,4 +37,9 @@ public class ChallengesRepository {
     public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
         return false;
     }
+
+    /**
+     * TO_DO This method is not yet implemented
+     */
+    public Challenge getChallenge(long id){ return new Challenge(new User("testUser"), "test challenge"); }
 }

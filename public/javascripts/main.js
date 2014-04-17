@@ -56,7 +56,7 @@ $(document).ready(function(){
                 body += '<tr>' +
                     '<td><a href="#"><img src="/assets/images/facebook.png"/>' + challenges[i].creator.username + '</a></td>' +
                     '<td>' + challenges[i].challengeName + '</td><td>category1</td><td>time left</td>' +
-                    '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /></div></td></tr>';
+                    '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>';
             });
             $(".challenge-search-results table tbody").html(body);
             $(".switch").bootstrapSwitch();
@@ -64,5 +64,26 @@ $(document).ready(function(){
         })
         e.preventDefault();
     });
+
+    $(".challenge-search-results .switch input[type=checkbox]").change(function(){
+
+        var $this = $(this);
+        $(".challenge-search-results").spin();
+
+        $.ajax({
+            url: "/challenge/ajax/participate",
+            data: {
+                id: $(this).parents(".switch").find(".challenge-id").val(),
+                state: $(this).is(":checked")
+            },
+            method: "get"
+        }).done(function(response){
+            if(response === "success" && $this.is(":checked")) {
+                alertify.success("You joined the competition!");
+            }
+            else{ alertify.error("You left the competition...");}
+            $(".challenge-search-results").spin(false);
+        })
+    })
 
 });

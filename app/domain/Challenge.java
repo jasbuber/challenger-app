@@ -76,4 +76,7 @@ public class Challenge {
     public User getCreator() {
         return creator;
     }
+
+    public Long getId() { return id;}
+
 }

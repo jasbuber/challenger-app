@@ -5,6 +5,7 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.User;
 import play.data.Form;
+import play.db.jpa.Transactional;
 import play.mvc.*;
 
 import repositories.ChallengeFilter;
@@ -12,6 +13,7 @@ import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 import services.ChallengeService;
 import services.FacebookNotificationService;
+import services.UserService;
 import views.html.*;
 
 import java.util.List;
@@ -62,6 +64,17 @@ public class Application extends Controller {
         challenges.add(new Challenge(new User("fdf"), "jdfjd"));
 
         return ok(new Gson().toJson(challenges));
+    }
+
+    public static Result ajaxChangeChallengeParticipation(String id, Boolean state){
+        /*
+        try {
+            ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
+            Challenge challenge = service.getChallenge(Long.parseLong(id));
+            service.participateInChallenge(challenge, UserService.getCurrentUser().getUsername());
+        }catch (Exception e){ return ok("failure"); }
+        */
+        return ok("success");
     }
 
 }

@@ -56,4 +56,9 @@ public class User {
     public int hashCode() {
         return username.hashCode();
     }
+
+    public String getUsername() {
+        return username;
+    }
+
 }

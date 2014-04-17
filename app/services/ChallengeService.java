@@ -84,4 +84,7 @@ public class ChallengeService {
     public List<Challenge> findChallenges(ChallengeFilter challengeFilter) {
         return new ArrayList<Challenge>();
     }
+
+    public Challenge getChallenge(long id){
+        return challengesRepository.getChallenge(id); }
 }

@@ -19,6 +19,9 @@ public class UserService {
         return usersRepository.createUser(username);
     }
 
+    /**
+     * TO_DO This method has not been implemented yet.
+     */
     public static User getCurrentUser(){
         return new User("currentUser");
     }

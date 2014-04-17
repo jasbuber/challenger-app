@@ -65,7 +65,7 @@ $(document).ready(function(){
         e.preventDefault();
     });
 
-    $(".challenge-search-results .switch input[type=checkbox]").change(function(){
+    $(document).on("change", ".challenge-search-results .switch input[type=checkbox]", function(){
 
         var $this = $(this);
         $(".challenge-search-results").spin();

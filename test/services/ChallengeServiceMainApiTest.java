@@ -3,7 +3,12 @@ package services;
 import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.User;
+import integration.EmTestsBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -11,7 +16,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class ChallengeServiceMainApiTest {
+public class ChallengeServiceMainApiTest extends EmTestsBase {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UsersRepositoryStub();
@@ -19,6 +24,16 @@ public class ChallengeServiceMainApiTest {
 
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
+
+    @Before
+    public void setUp() {
+        openTransaction();
+    }
+
+    @After
+    public void tearDown() {
+        closeTransaction();
+    }
 
     @Test
     public void shouldCreateNewChallengeForUser() throws Exception {
@@ -129,19 +144,19 @@ public class ChallengeServiceMainApiTest {
         public Challenge createChallenge(User creator, String challengeName) {
             this.challengeCreator = creator;
             this.challengeName = challengeName;
-            return super.createChallenge(creator, challengeName);
+            return new Challenge(creator, challengeName);
         }
 
         @Override
-        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creator) {
-            return challengeName.equals(this.challengeName) && createUserStub(creator).equals(challengeCreator);
+        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
+            return challengeName.equals(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
         }
 
         @Override
-        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User user) {
+        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User participator) {
             this.challengeParticipatedIn = challenge;
-            this.userWhichParticipates = user;
-            return super.createChallengeParticipation(challenge, user);
+            this.userWhichParticipates = participator;
+            return new ChallengeParticipation(challenge, participator);
         }
 
         @Override

@@ -25,24 +25,24 @@ public class ChallengeParticipation {
     @ManyToOne
     @JoinColumn(name = "PARTICIPATOR")
     @NotNull
-    private User user;
+    private User participator;
 
     protected ChallengeParticipation() {
         //for jpa purposes...
     }
 
 
-    public ChallengeParticipation(Challenge challenge, User user) {
+    public ChallengeParticipation(Challenge challenge, User participator) {
         this.challenge = challenge;
-        this.user = user;
+        this.participator = participator;
     }
 
     public Challenge getChallenge() {
         return challenge;
     }
 
-    public User getUser() {
-        return user;
+    public User getParticipator() {
+        return participator;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ChallengeParticipation {
         ChallengeParticipation that = (ChallengeParticipation) o;
 
         if (!challenge.equals(that.challenge)) return false;
-        if (!user.equals(that.user)) return false;
+        if (!participator.equals(that.participator)) return false;
 
         return true;
     }
@@ -61,7 +61,7 @@ public class ChallengeParticipation {
     @Override
     public int hashCode() {
         int result = challenge.hashCode();
-        result = 31 * result + user.hashCode();
+        result = 31 * result + participator.hashCode();
         return result;
     }
 

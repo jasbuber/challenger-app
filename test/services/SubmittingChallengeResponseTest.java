@@ -4,6 +4,9 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
 import domain.User;
+import integration.EmTestsBase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
@@ -16,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SubmittingChallengeResponseTest {
+public class SubmittingChallengeResponseTest extends EmTestsBase {
 
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
@@ -31,6 +34,16 @@ public class SubmittingChallengeResponseTest {
     private Challenge challenge = new Challenge(creator, challengeName);
     private ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participator);
 
+
+    @Before
+    public void setUp() {
+        openTransaction();
+    }
+
+    @After
+    public void tearDown() {
+        closeTransaction();
+    }
 
     @Test
     public void shouldSubmitChallengeResponseForChallengeParticipation() throws Exception {
@@ -53,6 +66,7 @@ public class SubmittingChallengeResponseTest {
 
         //then throw exception
     }
+
 
     @Test
     public void shouldSubmitChallengeResponseFromTwoDifferentParticipators() throws Exception {
@@ -128,7 +142,7 @@ public class SubmittingChallengeResponseTest {
 
         @Override
         public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
-            ChallengeResponse challengeResponse = super.addChallengeResponse(challengeParticipation);
+            ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
             lastlyAddedChallengeResponse = challengeResponse;
             return challengeResponse;
         }

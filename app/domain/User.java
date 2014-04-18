@@ -14,6 +14,10 @@ public class User {
     //@SequenceGenerator(name = "user_seq_gen", sequenceName = "USER_SEQ")
     private Long id;
 
+    /**
+     * Username is case insensitive
+     */
+
     @Column(name = "USERNAME", unique = true)
     @NotNull
     private String username;
@@ -24,7 +28,7 @@ public class User {
 
     public User(String username) {
         assertUsername(username);
-        this.username = username;
+        this.username = username.toLowerCase();
     }
 
     private void assertUsername(String username) {
@@ -47,7 +51,7 @@ public class User {
 
         User user = (User) o;
 
-        if (!username.equals(user.username)) return false;
+        if (!username.equalsIgnoreCase(user.username)) return false;
 
         return true;
     }

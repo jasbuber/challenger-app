@@ -20,7 +20,10 @@ public class UsersRepository {
     }
 
     public boolean isUserExist(String username) {
-        return true;
+        Query userWithUsernameNrQuery = JPA.em().createQuery("SELECT count(u) FROM User u WHERE LOWER(u.username) = LOWER(:username)");
+        userWithUsernameNrQuery.setParameter("username", username);
+        Long userWithUserNameNr = (Long) userWithUsernameNrQuery.getSingleResult();
+        return userWithUserNameNr > 0;
     }
 
     /**
@@ -34,7 +37,6 @@ public class UsersRepository {
      *                               RuntimeException for any other exception
      */
     public User getUser(String username) {
-
         Query userByUsernameQuery = JPA.em().createQuery("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)");
         userByUsernameQuery.setParameter("username", username);
         return executeGetUserByUsernameQuery(userByUsernameQuery, username);

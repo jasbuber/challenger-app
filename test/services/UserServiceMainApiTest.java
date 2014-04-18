@@ -1,19 +1,32 @@
 package services;
 
 import domain.User;
+import integration.EmTestsBase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import repositories.UsersRepository;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class UserServiceMainApiTest {
+public class UserServiceMainApiTest extends EmTestsBase {
 
     private static final String EXISTING_USER_USERNAME = "existingUser";
     private static final User EXISTING_USER = new User(EXISTING_USER_USERNAME);
 
     private final UsersRepository usersRepository = new UserRepositoryStub();
     private final UserService userService = new UserService(usersRepository);
+
+    @Before
+    public void setUp() {
+        openTransaction();
+    }
+
+    @After
+    public void tearDown() {
+        closeTransaction();
+    }
 
     @Test
     public void shouldCreateNewUser() throws Exception {

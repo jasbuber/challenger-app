@@ -44,4 +44,13 @@ public class ChallengeEqualityTest {
 
         assertFalse(challengeOne.equals(challengeTwo));
     }
+
+    @Test
+    public void shouldChallengesBeEqualIfDifferentNameCaseSensitivityOnly() throws Exception {
+        User creator = new User("creator");
+        Challenge challengeOne = new Challenge(creator, "challenge");
+        Challenge challengeTwo = new Challenge(creator, "CHALLENGE");
+
+        assertEquals(challengeOne, challengeTwo);
+    }
 }

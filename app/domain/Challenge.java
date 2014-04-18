@@ -13,6 +13,11 @@ public class Challenge {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    /**
+     * Challenge is case insensitive
+     */
+
+
     @Column(name = "NAME", unique = true)
     @NotNull
     private String challengeName;
@@ -28,7 +33,7 @@ public class Challenge {
     public Challenge(User creator, String challengeName) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
-        this.challengeName = challengeName;
+        this.challengeName = challengeName.toLowerCase();
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -52,7 +57,7 @@ public class Challenge {
 
         Challenge challenge = (Challenge) o;
 
-        if (!challengeName.equals(challenge.challengeName)) return false;
+        if (!challengeName.equalsIgnoreCase(challenge.challengeName)) return false;
         if (!creator.equals(challenge.creator)) return false;
 
         return true;

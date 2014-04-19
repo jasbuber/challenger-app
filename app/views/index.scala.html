@@ -1,4 +1,4 @@
-@(challengeForm: Form[controllers.CreateChallengeForm])
+@(username: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm])
 
 @main("Welcome to Challenge Application") {
 <div id="menu-wrapper">
@@ -20,7 +20,7 @@
             </li>
             <li>
                 <a href="#">
-                    Firstname
+                    @username
                     <img src="@routes.Assets.at("images/facebook.png")"/>
                 </a>
         </ul>

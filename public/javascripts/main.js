@@ -37,6 +37,19 @@ $(document).ready(function(){
         $(".ui-block").fadeIn(1000);
     });
 
+    var formChallengesRows = function(challenges){
+        var $body = "";
+
+        $.each(challenges, function(i) {
+
+            $body += '<tr>' +
+                '<td><a href="#"><img src="/assets/images/facebook.png"/>' + challenges[i].creator.username + '</a></td>' +
+                '<td>' + challenges[i].challengeName + '</td><td>' + challenges[i].category + '</td><td>time left</td>' +
+                '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>';
+        });
+        return $body;
+    }
+
     $(".form-wrapper form").submit(function(e){
 
         $(".challenge-search-results").spin();
@@ -49,15 +62,25 @@ $(document).ready(function(){
             },
             method: "get"
         }).done(function(response){
-            var challenges = jQuery.parseJSON(response), body = "";
+            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
 
-            $.each(challenges, function(i) {
+            $(".challenge-search-results table tbody").html(body);
+            $(".switch").bootstrapSwitch();
+            $(".challenge-search-results").spin(false);
+        })
+        e.preventDefault();
+    });
 
-                body += '<tr>' +
-                    '<td><a href="#"><img src="/assets/images/facebook.png"/>' + challenges[i].creator.username + '</a></td>' +
-                    '<td>' + challenges[i].challengeName + '</td><td>category1</td><td>time left</td>' +
-                    '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>';
-            });
+    $("#browse-block").click(function(e){
+
+        $(".challenge-search-results").spin();
+
+        $.ajax({
+            url: "/challenge/ajax/latest",
+            method: "get"
+        }).done(function(response){
+            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+
             $(".challenge-search-results table tbody").html(body);
             $(".switch").bootstrapSwitch();
             $(".challenge-search-results").spin(false);

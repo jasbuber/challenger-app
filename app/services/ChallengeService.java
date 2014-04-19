@@ -1,9 +1,6 @@
 package services;
 
-import domain.Challenge;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
-import domain.User;
+import domain.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.libs.F;
@@ -28,22 +25,22 @@ public class ChallengeService {
         this.notificationService = notificationService;
     }
 
-    public Challenge createChallenge(final String creatorUsername, final String challengeName) {
+    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category) {
         if(isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
                     " has already been created by user " + creatorUsername);
         }
 
-        return createAndPersistChallenge(creatorUsername, challengeName);
+        return createAndPersistChallenge(creatorUsername, challengeName, category);
     }
 
-    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName) {
+    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category) {
         try {
             return JPA.withTransaction(new F.Function0<Challenge>() {
                 @Override
                 public Challenge apply() throws Throwable {
                     User creator = usersRepository.getUser(creatorUsername);
-                    return challengesRepository.createChallenge(creator, challengeName);
+                    return challengesRepository.createChallenge(creator, challengeName, category);
                 }
             });
         } catch (Throwable throwable) {
@@ -134,8 +131,18 @@ public class ChallengeService {
         }
     }
 
-    public List<Challenge> findChallenges(ChallengeFilter challengeFilter) {
-        return new ArrayList<Challenge>();
+    public List<Challenge> findChallenges(final ChallengeFilter challengeFilter) {
+
+        try {
+            return JPA.withTransaction("default", READ_ONLY, new F.Function0<List<Challenge>>() {
+                @Override
+                public List<Challenge> apply() throws Throwable {
+                    return challengesRepository.findChallenges(challengeFilter);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     public Challenge getChallenge(final long id){

@@ -1,19 +1,18 @@
 package repositories;
 
-import domain.Challenge;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
-import domain.User;
+import domain.*;
 import play.db.DB;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChallengesRepository {
 
-    public Challenge createChallenge(User user, String challengeName) {
-        Challenge challenge = new Challenge(user, challengeName);
+    public Challenge createChallenge(User user, String challengeName, ChallengeCategory category) {
+        Challenge challenge = new Challenge(user, challengeName, category);
         JPA.em().persist(challenge);
         return challenge;
     }
@@ -59,8 +58,9 @@ public class ChallengesRepository {
         return false;
     }
 
-    /**
-     * TO_DO This method is not yet implemented
-     */
-    public Challenge getChallenge(long id){ return new Challenge(new User("testUser"), "test challenge"); }
+    public Challenge getChallenge(long id){ return JPA.em().find(Challenge.class, id); }
+
+    public List<Challenge> findChallenges(ChallengeFilter challengeFilter){
+        return challengeFilter.getQuery().getResultList();
+    }
 }

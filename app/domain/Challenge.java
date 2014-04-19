@@ -4,6 +4,8 @@ import play.data.validation.Constraints;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity
 @Table(name = "CHALLENGES")
@@ -22,18 +24,35 @@ public class Challenge {
     @NotNull
     private String challengeName;
 
+    @Column(name = "CREATION_DATE" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
     @ManyToOne
     @JoinColumn(name = "CREATOR")
     @NotNull
     private User creator;
 
+    @Column(name = "CATEGORY")
     @Enumerated(EnumType.STRING)
     public ChallengeCategory category;
+
+    protected Challenge(){}
 
     public Challenge(User creator, String challengeName) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
+        this.creationDate = new Date(Calendar.getInstance().getTimeInMillis());
+    }
+
+    public Challenge(User creator, String challengeName, ChallengeCategory category) {
+        assertCreatorAndName(creator, challengeName);
+        this.creator = creator;
+        this.challengeName = challengeName.toLowerCase();
+        this.category = category;
+        this.creationDate = new Date();
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -84,4 +103,7 @@ public class Challenge {
 
     public Long getId() { return id;}
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
 }

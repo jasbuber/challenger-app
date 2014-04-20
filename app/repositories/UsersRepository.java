@@ -3,6 +3,7 @@ package repositories;
 import domain.Challenge;
 import domain.User;
 import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 
 import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;

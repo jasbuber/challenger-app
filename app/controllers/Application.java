@@ -88,14 +88,18 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
+    @play.db.jpa.Transactional
     public static Result ajaxChangeChallengeParticipation(String id, Boolean state){
-        /*
-        try {
-            ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
-            Challenge challenge = service.getChallenge(Long.parseLong(id));
-            service.participateInChallenge(challenge, UserService.getCurrentUser().getUsername());
-        }catch (Exception e){ return ok("failure"); }
-        */
+
+        ChallengeService service =  Application.getChallengeService();
+        Challenge challenge = service.getChallenge(Long.parseLong(id));
+
+        if(state == true) {
+            service.participateInChallenge(challenge, Application.getLoggedInUsername());
+        }else{
+            service.leaveChallenge(challenge, Application.getLoggedInUsername());
+        }
+
         return ok("success");
     }
 

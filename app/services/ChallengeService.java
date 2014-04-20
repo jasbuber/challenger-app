@@ -48,12 +48,40 @@ public class ChallengeService {
         }
     }
 
-    public ChallengeParticipation participateInChallenge(Challenge challenge, String participatorUsername) {
-        if(isUserParticipatingInChallenge(challenge, participatorUsername)) {
-            throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
+    public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername) {
+
+        try {
+            if(isUserParticipatingInChallenge(challenge, participatorUsername)) {
+                throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
+            }
+            return JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
+                @Override
+                public ChallengeParticipation apply() throws Throwable {
+                    User participator = usersRepository.getUser(participatorUsername);
+                    return challengesRepository.createChallengeParticipation(challenge, participator);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
         }
-        User participator = usersRepository.getUser(participatorUsername);
-        return challengesRepository.createChallengeParticipation(challenge, participator);
+    }
+
+    public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
+
+        try {
+            if(!isUserParticipatingInChallenge(challenge, participatorUsername)) {
+                throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
+            }
+            return JPA.withTransaction(new F.Function0<Boolean>() {
+                @Override
+                public Boolean apply() throws Throwable {
+                    User participator = usersRepository.getUser(participatorUsername);
+                    return challengesRepository.deleteChallengeParticipation(challenge, participator);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     public boolean isUserParticipatingInChallenge(final Challenge challenge, final String user) {

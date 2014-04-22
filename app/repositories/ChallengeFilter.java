@@ -1,14 +1,13 @@
 package repositories;
 
 import domain.Challenge;
+import domain.ChallengeParticipation;
+import domain.User;
 import play.db.jpa.JPA;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 public class ChallengeFilter {
 
@@ -52,4 +51,20 @@ public class ChallengeFilter {
     public void orderDescBy(String fieldName){
         this.criteriaQuery.orderBy(this.builder.desc(this.root.get(fieldName)));
     }
+
+    public Predicate excludeUser(User u){
+        Expression<String> creator = root.get("creator");
+        return builder.notEqual(creator, u);
+    }
+
+    public Predicate excludeChallengesThatUserParticipatesIn(User u){
+
+        Subquery<ChallengeParticipation> subquery = this.criteriaQuery.subquery(ChallengeParticipation.class);
+        Root subqueryRoot = subquery.from(ChallengeParticipation.class);
+        subquery.select(subqueryRoot.get("challenge").get("id"));
+        subquery.where(builder.equal(subqueryRoot.get("participator"), u));
+
+        return builder.not(builder.in(this.root.get("id")).value(subquery));
+    }
+
 }

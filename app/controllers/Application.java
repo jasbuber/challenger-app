@@ -49,26 +49,40 @@ public class Application extends Controller {
         return new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
     }
 
+    //need to exist until dependency injection framework is added
+    private static UserService getUsersService() {
+        return new UserService(new UsersRepository());
+    }
+
     //username to be set in session during login
     private static String getLoggedInUsername() {
         return session("username");
+    }
+
+    private static User getLoggedInUser() {
+        return Application.getUsersService().createNewOrGetExistingUser(Application.getLoggedInUsername());
     }
 
 
     @play.db.jpa.Transactional
     public static Result ajaxGetChallengesForCriteria(String phrase, String category){
 
-        ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
+        ChallengeService service =  Application.getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(20);
+        User currentUser = Application.getLoggedInUser();
+
         filter.orderDescBy("creationDate");
         Expression<String> path = filter.getRoot().get("challengeName");
         Predicate phraseCond = filter.getBuilder().like(path, "%" + phrase + "%");
-        filter.getCriteriaQuery().where(phraseCond);
+
+        Predicate phraseCondWithoutUser = filter.getBuilder().and(filter.excludeUser(currentUser), phraseCond);
+        Predicate phraseCondWithoutUserFull = filter.getBuilder().and(phraseCondWithoutUser, filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        filter.getCriteriaQuery().where(phraseCondWithoutUserFull);
 
         if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
             Expression<String> categoryPath = filter.getRoot().get("category");
             Predicate categoryCond = filter.getBuilder().equal(categoryPath, ChallengeCategory.valueOf(category));
-            Predicate bothCond = filter.getBuilder().and(phraseCond, categoryCond);
+            Predicate bothCond = filter.getBuilder().and(phraseCondWithoutUserFull, categoryCond);
             filter.getCriteriaQuery().where(bothCond);
         }
 
@@ -80,8 +94,13 @@ public class Application extends Controller {
     @play.db.jpa.Transactional
     public static Result ajaxGetLatestChallenges(){
 
-        ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
+        ChallengeService service =  Application.getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(10);
+        User currentUser = Application.getLoggedInUser();
+
+        Predicate bothCond = filter.getBuilder().and(filter.excludeUser(currentUser), filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        filter.getCriteriaQuery().where(bothCond);
+
         filter.orderDescBy("creationDate");
         List<Challenge> challenges = service.findChallenges(filter);
 

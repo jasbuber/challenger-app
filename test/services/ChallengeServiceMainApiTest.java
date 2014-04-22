@@ -1,6 +1,7 @@
 package services;
 
 import domain.Challenge;
+import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
 import integration.EmTestsBase;
@@ -22,6 +23,8 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     private final UsersRepository usersRepository = new UsersRepositoryStub();
     private final NotificationService notificationService = mock(NotificationService.class);
 
+    private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
+
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
 
@@ -38,7 +41,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     @Test
     public void shouldCreateNewChallengeForUser() throws Exception {
         //when
-        Challenge challenge = challengeService.createChallenge("username", challengeName);
+        Challenge challenge = createChallenge("username");
 
         //then
         assertTrue(challenge != null);
@@ -47,8 +50,8 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionIfUserTriesToCreateTwoChallangesWithSameName() throws Exception {
         //when
-        challengeService.createChallenge("username", challengeName);
-        challengeService.createChallenge("username", challengeName);
+        createChallenge("username");
+        createChallenge("username");
 
         //then throws exception
     }
@@ -59,7 +62,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         String creator = "username";
 
         //when
-        challengeService.createChallenge(creator, challengeName);
+        createChallenge(creator);
         boolean userCreatedChallengeWithThisName = challengeService.isUserCreatedChallengeWithName(challengeName, creator);
 
         //then
@@ -82,7 +85,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
         //given
         String user = "username";
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        Challenge challenge = createChallenge(user);
 
         //when
         ChallengeParticipation challengeParticipation =
@@ -92,11 +95,15 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         assertTrue(challengeParticipation != null);
     }
 
+    private Challenge createChallenge(String user) {
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY);
+    }
+
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
         //given
         String user = "username";
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        Challenge challenge = createChallenge(user);
 
         //when
         challengeService.participateInChallenge(challenge, user);
@@ -109,7 +116,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
         //given
         String user = "username";
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        Challenge challenge = createChallenge(user);
 
         //when
         challengeService.participateInChallenge(challenge, user);
@@ -123,7 +130,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     public void shouldUserParticipationBeFalseIfUserIsNotParticipatingInChallengeYet() throws Exception {
         //given
         String user = "username";
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        Challenge challenge = createChallenge(user);
 
         //when
         boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
@@ -141,7 +148,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         private User userWhichParticipates;
 
         @Override
-        public Challenge createChallenge(User creator, String challengeName) {
+        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category) {
             this.challengeCreator = creator;
             this.challengeName = challengeName;
             return new Challenge(creator, challengeName);

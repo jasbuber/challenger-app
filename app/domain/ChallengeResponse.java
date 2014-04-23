@@ -16,6 +16,9 @@ public class ChallengeResponse {
     @NotNull
     private ChallengeParticipation challengeParticipation;
 
+    @Column(name = "ACCEPTANCE")
+    private Character isAccepted;
+
 
     protected ChallengeResponse() {
         //for jpa purposes...
@@ -27,5 +30,25 @@ public class ChallengeResponse {
 
     public ChallengeParticipation getChallengeParticipation() {
         return challengeParticipation;
+    }
+
+    public boolean isAccepted() {
+        return isAccepted != null && isAccepted == 'Y';
+    }
+
+    public void accept() {
+        this.isAccepted = 'Y';
+    }
+
+    public void refuse() {
+        this.isAccepted = 'N';
+    }
+
+    public boolean isDecided() {
+        return this.isAccepted != null;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

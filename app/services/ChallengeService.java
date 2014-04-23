@@ -186,4 +186,46 @@ public class ChallengeService {
         }
 
     }
+
+    public ChallengeResponse acceptChallengeResponse(final ChallengeResponse challengeResponse) {
+        try {
+            return JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+
+                @Override
+                public ChallengeResponse apply() throws Throwable {
+                    assertThatResponseIsNotDecidedYet(challengeResponse);
+
+                    challengeResponse.accept();
+                    challengesRepository.updateChallengeResponse(challengeResponse);
+                    return challengeResponse;
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public ChallengeResponse refuseChallengeResponse(final ChallengeResponse challengeResponse) {
+        try {
+            return JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+
+                @Override
+                public ChallengeResponse apply() throws Throwable {
+                    assertThatResponseIsNotDecidedYet(challengeResponse);
+
+                    challengeResponse.refuse();
+                    challengesRepository.updateChallengeResponse(challengeResponse);
+                    return challengeResponse;
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    private void assertThatResponseIsNotDecidedYet(ChallengeResponse challengeResponse) {
+        if(challengeResponse.isDecided()) {
+            throw new IllegalStateException("ChallengeResponse id: " + challengeResponse.getId() + " cannot be decided more than once");
+        }
+    }
 }

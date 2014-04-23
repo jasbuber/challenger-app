@@ -77,4 +77,8 @@ public class ChallengesRepository {
     public List<Challenge> findChallenges(ChallengeFilter challengeFilter){
         return challengeFilter.getQuery().getResultList();
     }
+
+    public ChallengeResponse updateChallengeResponse(ChallengeResponse challengeResponse) {
+        return JPA.em().merge(challengeResponse);
+    }
 }

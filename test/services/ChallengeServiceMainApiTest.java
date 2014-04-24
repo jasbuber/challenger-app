@@ -99,7 +99,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         return challengeService.createChallenge(user, challengeName, SOME_CATEGORY);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
         //given
         String user = "username";

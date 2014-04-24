@@ -17,6 +17,7 @@ import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 import services.ChallengeService;
 import services.FacebookNotificationService;
+import services.FacebookService;
 import services.UserService;
 import views.html.*;
 
@@ -37,22 +38,13 @@ public class Application extends Controller {
             return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()));
         }
         else {
-            FacebookClient.AccessToken token = null;
-            try {
-                token = getFacebookUserToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
-            } catch (IOException e) {
-            }
-            String accessToken = token.getAccessToken();
-            session("fb_user_token", accessToken);
-            //Date expires = token.getExpires();
-            //String secret = Play.application().configuration().getString("secretkey");
+            String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
 
-            FacebookUser user = Application.getFacebookUser();
+            FacebookUser user = Application.getFacebookService().getFacebookUser();
             Application.getUsersService().createNewOrGetExistingUser(user.getUsername());
-            JsonObject photo = Application.getFacebookService().fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","32"), Parameter.with("height","32"));
 
             session("username", user.getUsername());
-            session("profilePictureUrl", photo.getJsonObject("data").getString("url"));
+            session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
 
             return redirect(routes.Application.index());
         }
@@ -62,7 +54,7 @@ public class Application extends Controller {
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
 
-        return ok(index.render(Application.getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
+        return ok(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
     }
 
     public static Result createChallenge(){
@@ -70,7 +62,7 @@ public class Application extends Controller {
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
 
         if(challengeForm.hasErrors()) {
-            return badRequest(index.render(Application.getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
+            return badRequest(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
         } else {
             CreateChallengeForm challenge = challengeForm.get();
             getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory());
@@ -98,19 +90,16 @@ public class Application extends Controller {
         return Application.getUsersService().createNewOrGetExistingUser(Application.getLoggedInUsername());
     }
 
-    private static FacebookUser getFacebookUser() {
-        String secret = "a8d1db17c5add29872d79dd35bf793dc";
-        FacebookClient facebookClient = new DefaultFacebookClient(session("fb_user_token"), secret);
-        return facebookClient.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, username"));
-    }
-
-    private static FacebookClient getFacebookService() {
-        String secret = "a8d1db17c5add29872d79dd35bf793dc";
-        return new DefaultFacebookClient(session("fb_user_token"), secret);
+    private static FacebookService getFacebookService() {
+        return new FacebookService();
     }
 
     private static String getProfilePictureUrl() {
         return session("profilePictureUrl");
+    }
+
+    private static String getAccessToken() {
+        return FacebookService.getToken(); 
     }
 
 
@@ -194,15 +183,4 @@ public class Application extends Controller {
         return redirect(routes.Application.index());
     }
 
-    private static FacebookClient.AccessToken getFacebookUserToken(String code, String redirectUrl) throws IOException {
-        String appId = "471463259622297";
-        String secretKey = "a8d1db17c5add29872d79dd35bf793dc";
-
-        WebRequestor wr = new DefaultWebRequestor();
-        WebRequestor.Response accessTokenResponse = wr.executeGet(
-                "https://graph.facebook.com/oauth/access_token?client_id=" + appId + "&redirect_uri=" + redirectUrl
-                        + "&client_secret=" + secretKey + "&code=" + code);
-
-        return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody());
-    }
 }

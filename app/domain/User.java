@@ -2,13 +2,33 @@ package domain;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "USERS")
 public class User {
 
-    private final String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@SequenceGenerator(name = "user_seq_gen", sequenceName = "USER_SEQ")
+    private Long id;
+
+    /**
+     * Username is case insensitive
+     */
+
+    @Column(name = "USERNAME", unique = true)
+    @NotNull
+    private String username;
+
+    protected User() {
+        //for jpa purposes...
+    }
 
     public User(String username) {
         assertUsername(username);
-        this.username = username;
+        this.username = username.toLowerCase();
     }
 
     private void assertUsername(String username) {
@@ -31,7 +51,7 @@ public class User {
 
         User user = (User) o;
 
-        if (!username.equals(user.username)) return false;
+        if (!username.equalsIgnoreCase(user.username)) return false;
 
         return true;
     }
@@ -40,4 +60,9 @@ public class User {
     public int hashCode() {
         return username.hashCode();
     }
+
+    public String getUsername() {
+        return username;
+    }
+
 }

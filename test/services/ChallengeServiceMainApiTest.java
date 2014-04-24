@@ -1,24 +1,47 @@
 package services;
 
 import domain.Challenge;
+import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
+import integration.EmTestsBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
+import repositories.UsersRepository;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-public class ChallengeServiceMainApiTest {
+public class ChallengeServiceMainApiTest extends EmTestsBase {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository);
+    private final UsersRepository usersRepository = new UsersRepositoryStub();
+    private final NotificationService notificationService = mock(NotificationService.class);
+
+    private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
+
+    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
+
+    @Before
+    public void setUp() {
+        openTransaction();
+    }
+
+    @After
+    public void tearDown() {
+        closeTransaction();
+    }
 
     @Test
     public void shouldCreateNewChallengeForUser() throws Exception {
         //when
-        Challenge challenge = challengeService.createChallenge(new User("username"), challengeName);
+        Challenge challenge = createChallenge("username");
 
         //then
         assertTrue(challenge != null);
@@ -27,8 +50,8 @@ public class ChallengeServiceMainApiTest {
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionIfUserTriesToCreateTwoChallangesWithSameName() throws Exception {
         //when
-        challengeService.createChallenge(new User("username"), challengeName);
-        challengeService.createChallenge(new User("username"), challengeName);
+        createChallenge("username");
+        createChallenge("username");
 
         //then throws exception
     }
@@ -36,10 +59,10 @@ public class ChallengeServiceMainApiTest {
     @Test
     public void shouldChallengeCreationBeTrueIfUserHasAlreadyCreatedChallengeWithSameName() throws Exception {
         //given
-        User creator = new User("username");
+        String creator = "username";
 
         //when
-        challengeService.createChallenge(creator, challengeName);
+        createChallenge(creator);
         boolean userCreatedChallengeWithThisName = challengeService.isUserCreatedChallengeWithName(challengeName, creator);
 
         //then
@@ -49,7 +72,7 @@ public class ChallengeServiceMainApiTest {
     @Test
     public void shouldChallengeCreationBeFalseIfUserCreatesChallengeWithNameForTheFirstTime() throws Exception {
         //given
-        User creator = new User("username");
+        String creator = "username";
 
         //when
         boolean userCreatedChallengeWithThisName = challengeService.isUserCreatedChallengeWithName(challengeName, creator);
@@ -61,8 +84,8 @@ public class ChallengeServiceMainApiTest {
     @Test
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
         //given
-        User user = new User("username");
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        String user = "username";
+        Challenge challenge = createChallenge(user);
 
         //when
         ChallengeParticipation challengeParticipation =
@@ -72,11 +95,15 @@ public class ChallengeServiceMainApiTest {
         assertTrue(challengeParticipation != null);
     }
 
+    private Challenge createChallenge(String user) {
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY);
+    }
+
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
         //given
-        User user = new User("username");
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        String user = "username";
+        Challenge challenge = createChallenge(user);
 
         //when
         challengeService.participateInChallenge(challenge, user);
@@ -88,8 +115,8 @@ public class ChallengeServiceMainApiTest {
     @Test
     public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
         //given
-        User user = new User("username");
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        String user = "username";
+        Challenge challenge = createChallenge(user);
 
         //when
         challengeService.participateInChallenge(challenge, user);
@@ -102,8 +129,8 @@ public class ChallengeServiceMainApiTest {
     @Test
     public void shouldUserParticipationBeFalseIfUserIsNotParticipatingInChallengeYet() throws Exception {
         //given
-        User user = new User("username");
-        Challenge challenge = challengeService.createChallenge(user, challengeName);
+        String user = "username";
+        Challenge challenge = createChallenge(user);
 
         //when
         boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
@@ -121,27 +148,39 @@ public class ChallengeServiceMainApiTest {
         private User userWhichParticipates;
 
         @Override
-        public Challenge createChallenge(User creator, String challengeName) {
+        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category) {
             this.challengeCreator = creator;
             this.challengeName = challengeName;
-            return super.createChallenge(creator, challengeName);
+            return new Challenge(creator, challengeName);
         }
 
         @Override
-        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, User creator) {
-            return challengeName.equals(this.challengeName) && creator.equals(challengeCreator);
+        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
+            return challengeName.equals(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
         }
 
         @Override
-        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User user) {
+        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User participator) {
             this.challengeParticipatedIn = challenge;
-            this.userWhichParticipates = user;
-            return super.createChallengeParticipation(challenge, user);
+            this.userWhichParticipates = participator;
+            return new ChallengeParticipation(challenge, participator);
         }
 
         @Override
-        public boolean isUserParticipatingInChallenge(Challenge challenge, User participator) {
-            return challenge.equals(challengeParticipatedIn) && participator.equals(userWhichParticipates);
+        public boolean isUserParticipatingInChallenge(Challenge challenge, String participator) {
+            return challenge.equals(challengeParticipatedIn) && createUserStub(participator).equals(userWhichParticipates);
+        }
+
+        private User createUserStub(String username) {
+            return new User(username);
+        }
+    }
+
+    private final static class UsersRepositoryStub extends UsersRepository {
+
+        @Override
+        public User getUser(String username) {
+            return new User(username);
         }
     }
 }

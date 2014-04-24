@@ -1,22 +1,26 @@
-<div id="challenge-block">
-<div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
+@(challengeForm: Form[controllers.CreateChallengeForm])
+<div id="challenge-block-body" class="ui-block-body">
+    <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
     <h2>Publish a new challenge</h2>
     <div class="form-wrapper">
-    <form>
-        <div>
-            <input type="text" placeholder="Enter something" class="form-control input-hg"/>
-        </div>
-        <div>
-            <select>
-                <option value="0">Some option</option>
-                <option value="1">Other option</option>
-            </select>
-        </div>
-        <div>
-            <button class="btn btn-hg btn-primary">
-                START!
-            </button>
-        </div>
-    </form>
+        @helper.form(action = routes.Application.createChallenge(), 'method -> "POST") {
+            <div>
+            @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Enter something", 'class -> "form-control input-hg", '_label -> "")
+            </div>
+            <div>
+                <select name="category">
+                    <option value="@domain.ChallengeCategory.FOOD">Food related</option>
+                    <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
+                    <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
+                    <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
+                    <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
+                    <option value="@domain.ChallengeCategory.OTHER">Other</option>
+                </select>
+            </div>
+            <div>
+                <input type="submit" class="btn btn-hg btn-primary" />
+            </div>
+
+        }
     </div>
 </div>

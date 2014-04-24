@@ -1,16 +1,58 @@
 package domain;
-
 import org.apache.commons.lang3.StringUtils;
+import play.data.validation.Constraints;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Calendar;
+import java.util.Date;
+
+@Entity
+@Table(name = "CHALLENGES")
 public class Challenge {
 
-    private final String challengeName;
-    private final User creator;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    /**
+     * Challenge is case insensitive
+     */
+
+
+    @Column(name = "NAME", unique = true)
+    @NotNull
+    private String challengeName;
+
+    @Column(name = "CREATION_DATE" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
+    @ManyToOne
+    @JoinColumn(name = "CREATOR")
+    @NotNull
+    private User creator;
+
+    @Column(name = "CATEGORY")
+    @Enumerated(EnumType.STRING)
+    public ChallengeCategory category;
+
+    protected Challenge(){}
 
     public Challenge(User creator, String challengeName) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
-        this.challengeName = challengeName;
+        this.challengeName = challengeName.toLowerCase();
+        this.creationDate = new Date(Calendar.getInstance().getTimeInMillis());
+    }
+
+    public Challenge(User creator, String challengeName, ChallengeCategory category) {
+        assertCreatorAndName(creator, challengeName);
+        this.creator = creator;
+        this.challengeName = challengeName.toLowerCase();
+        this.category = category;
+        this.creationDate = new Date();
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -34,7 +76,7 @@ public class Challenge {
 
         Challenge challenge = (Challenge) o;
 
-        if (!challengeName.equals(challenge.challengeName)) return false;
+        if (!challengeName.equalsIgnoreCase(challenge.challengeName)) return false;
         if (!creator.equals(challenge.creator)) return false;
 
         return true;
@@ -45,5 +87,23 @@ public class Challenge {
         int result = challengeName.hashCode();
         result = 31 * result + creator.hashCode();
         return result;
+    }
+
+    public ChallengeCategory getCategory() {
+        return category;
+    }
+
+    public String getChallengeName() {
+        return challengeName;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public Long getId() { return id;}
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 }

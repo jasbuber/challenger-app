@@ -2,6 +2,7 @@ package domain;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ChallengeCreationTest {
@@ -28,5 +29,11 @@ public class ChallengeCreationTest {
     public void shouldThrowExceptionIfChallengeNameIsEmpty() throws Exception {
         new Challenge(new User("creator"), "     ");
         //throws exception
+    }
+
+    @Test
+    public void shouldChallengeNameBeLowerCase() throws Exception {
+        Challenge challenge = new Challenge(new User("creator"), "CHALLENGENAME");
+        assertEquals("challengename", challenge.getChallengeName());
     }
 }

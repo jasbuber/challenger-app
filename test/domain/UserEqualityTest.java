@@ -23,4 +23,11 @@ public class UserEqualityTest {
         assertFalse(userOne.equals(userTwo));
     }
 
+    @Test
+    public void usersShouldBeEqualIfDifferentCaseSensitivity() throws Exception {
+        User userOne = new User("username");
+        User userTwo = new User("USERNAME");
+        assertEquals(userOne, userTwo);
+    }
+
 }

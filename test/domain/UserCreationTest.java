@@ -3,6 +3,7 @@ package domain;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class UserCreationTest {
 
@@ -22,5 +23,11 @@ public class UserCreationTest {
     public void shouldThrowExceptionIfTryingToCreateUserWithEmptyUsername() throws Exception {
         new User("    ");
         //should throw exception
+    }
+
+    @Test
+    public void shouldUsernameBeLowerCase() throws Exception {
+        User user = new User("USERNAME");
+        assertEquals("username", user.getUsername());
     }
 }

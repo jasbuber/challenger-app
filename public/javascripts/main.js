@@ -50,7 +50,7 @@ $(document).ready(function(){
         return $body;
     }
 
-    $(".form-wrapper form").submit(function(e){
+    $("#browse-block-body .form-wrapper form").submit(function(e){
 
         $(".challenge-search-results").spin();
 
@@ -107,6 +107,18 @@ $(document).ready(function(){
             else{ alertify.error("You left the competition...");}
             $(".challenge-search-results").spin(false);
         })
-    })
+    });
+
+    var wrapper = $('<div/>').css({height:0,width:0,'display':'none'});
+    var fileInput = $(':file').wrap(wrapper);
+
+    fileInput.change(function(){
+        $this = $(this);
+        //$('#video-upload-wrapper').text($this.val());
+    });
+
+    $('#video-input-wrapper').click(function(){
+        fileInput.click();
+    }).show();
 
 });

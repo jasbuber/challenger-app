@@ -25,22 +25,22 @@ public class ChallengeService {
         this.notificationService = notificationService;
     }
 
-    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category) {
+    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId) {
         if(isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
                     " has already been created by user " + creatorUsername);
         }
 
-        return createAndPersistChallenge(creatorUsername, challengeName, category);
+        return createAndPersistChallenge(creatorUsername, challengeName, category, videoId);
     }
 
-    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category) {
+    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId) {
         try {
             return JPA.withTransaction(new F.Function0<Challenge>() {
                 @Override
                 public Challenge apply() throws Throwable {
                     User creator = usersRepository.getUser(creatorUsername);
-                    return challengesRepository.createChallenge(creator, challengeName, category);
+                    return challengesRepository.createChallenge(creator, challengeName, category, videoId);
                 }
             });
         } catch (Throwable throwable) {

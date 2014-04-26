@@ -21,7 +21,7 @@ import services.FacebookService;
 import services.UserService;
 import views.html.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 
 import javax.persistence.criteria.Expression;
@@ -35,7 +35,7 @@ public class Application extends Controller {
 
         if(!error.equals("")) { return ok(error_view.render("You rejected the permissions!"));}
         else if(code.equals("")) {
-            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()));
+            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()) + "&scope=publish_stream");
         }
         else {
             String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
@@ -65,8 +65,18 @@ public class Application extends Controller {
             return badRequest(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
         } else {
             CreateChallengeForm challenge = challengeForm.get();
-            getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory());
+            String videoId = "";
+            if(request().body().asMultipartFormData().getFile("video-description") !=null) {
+                try {
+                    Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
+                    InputStream stream = new FileInputStream(resourceFile.getFile());
+                    videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+
+                } catch (FileNotFoundException e) {}
+            }
+            getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId);
             return redirect(routes.Application.index());
+
         }
 
     }
@@ -99,7 +109,7 @@ public class Application extends Controller {
     }
 
     private static String getAccessToken() {
-        return FacebookService.getToken(); 
+        return FacebookService.getToken();
     }
 
 
@@ -174,11 +184,11 @@ public class Application extends Controller {
         User otherUser  = userService.createNewOrGetExistingUser("otherUser");
         User otherUser2 = userService.createNewOrGetExistingUser("otherUser2");
 
-        service.createChallenge(testUser.getUsername(), "testchgfgfgfallenge", ChallengeCategory.FOOD);
-        service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD);
-        service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD);
-        service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD);
-        service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD);
+        service.createChallenge(testUser.getUsername(), "testchgfgfgfallenge", ChallengeCategory.FOOD, "");
+        service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "");
+        service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "");
+        service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "");
+        service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "");
 
         return redirect(routes.Application.index());
     }

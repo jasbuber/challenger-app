@@ -9,8 +9,9 @@ public class CreateChallengeForm {
     @Constraints.MinLength(5)
     private String challengeName;
 
-    @Constraints.Required
     private String creatorUsername;
+
+    private String videoDescriptionUrl;
 
     private ChallengeCategory challengeCategory;
 
@@ -40,5 +41,13 @@ public class CreateChallengeForm {
 
     public void setChallengeCategory(ChallengeCategory challengeCategory) {
         this.challengeCategory = challengeCategory;
+    }
+
+    public String getVideoDescriptionUrl() {
+        return videoDescriptionUrl;
+    }
+
+    public void setVideoDescriptionUrl(String videoDescriptionUrl) {
+        this.videoDescriptionUrl = videoDescriptionUrl;
     }
 }

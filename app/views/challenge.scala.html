@@ -3,12 +3,12 @@
     <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
     <h2>Publish a new challenge</h2>
     <div class="form-wrapper">
-        @helper.form(action = routes.Application.createChallenge(), 'method -> "POST") {
-            <div>
-            @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Enter something", 'class -> "form-control input-hg", '_label -> "")
-            </div>
-            <div>
-                <select name="category">
+        @helper.form(action = routes.Application.createChallenge(), 'method -> "POST", 'enctype ->"multipart/form-data") {
+            <span class="challenge-name-wrapper">
+            @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Name your challenge...", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
+            </span>
+            <span>
+                <select name="challengeCategory">
                     <option value="@domain.ChallengeCategory.FOOD">Food related</option>
                     <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
                     <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
@@ -16,11 +16,15 @@
                     <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
                     <option value="@domain.ChallengeCategory.OTHER">Other</option>
                 </select>
+            </span>
+            <div id="video-upload-wrapper">
+                <div id="video-input-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning">Upload a video description...</button></div>
+                <input name="video-description" type="file" accept="video/*"/>
+                <div id="video-screenshot"><img src="@routes.Assets.at("images/video_dummy.png")"/></div>
             </div>
             <div>
                 <input type="submit" class="btn btn-hg btn-primary" />
             </div>
-
         }
     </div>
 </div>

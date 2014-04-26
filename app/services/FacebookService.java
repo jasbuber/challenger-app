@@ -2,9 +2,12 @@ package services;
 
 import com.restfb.*;
 import com.restfb.json.JsonObject;
+import com.restfb.types.FacebookType;
 import domain.FacebookUser;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Eventually to be merged with FacebookNotificationService
@@ -55,5 +58,13 @@ public class FacebookService {
 
     public static String getToken() {
         return token;
+    }
+
+    public String publishAVideo(String challengeName, InputStream videoPath,String  fileName){
+            FacebookType video = this.client.publish("me/videos", FacebookType.class,
+                    BinaryAttachment.with(fileName, videoPath),
+                    Parameter.with("message", challengeName));
+
+        return video.getId();
     }
 }

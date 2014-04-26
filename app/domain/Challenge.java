@@ -38,14 +38,12 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     public ChallengeCategory category;
 
-    protected Challenge(){}
+    @Column(name = "VIDEO_DESCRIPTION_URL")
+    private String videoDescriptionUrl;
 
-    public Challenge(User creator, String challengeName) {
-        assertCreatorAndName(creator, challengeName);
-        this.creator = creator;
-        this.challengeName = challengeName.toLowerCase();
-        this.creationDate = new Date(Calendar.getInstance().getTimeInMillis());
-    }
+
+
+    protected Challenge(){}
 
     public Challenge(User creator, String challengeName, ChallengeCategory category) {
         assertCreatorAndName(creator, challengeName);
@@ -53,6 +51,15 @@ public class Challenge {
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
+    }
+
+    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoDescriptionUrl) {
+        assertCreatorAndName(creator, challengeName);
+        this.creator = creator;
+        this.challengeName = challengeName.toLowerCase();
+        this.category = category;
+        this.creationDate = new Date();
+        this.videoDescriptionUrl = videoDescriptionUrl;
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -105,5 +112,9 @@ public class Challenge {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public String getVideoDescriptionUrl() {
+        return videoDescriptionUrl;
     }
 }

@@ -50,9 +50,9 @@ div#wrapper div#browse-block-body{
 div#wrapper div.ui-block-body div.form-wrapper{
     margin-right: auto;
     margin-left: auto;
-    width: 60%;
+    width: 80%;
 }
-div#wrapper div#browse-block-body div.form-wrapper{ width: 80%; }
+
 div#wrapper div.ui-block-body div.form-wrapper form > div{ padding: 15px; }
 
 div#wrapper div#browse-block-body div.form-wrapper div.form-group{ display: inline-block; width: 50%;}
@@ -78,9 +78,18 @@ div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results 
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table th{ text-align: center; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td{ padding-top: 10px; text-align: center; overflow-x: hidden; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
-    div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
+div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; }
 
+div#wrapper div.ui-block-body div.form-wrapper span.challenge-name-wrapper{ display: inline-block; width: 50%; }
+
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper{ padding-left: 10%;}
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; height: 20%;}
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{ width: 50%; }
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ width: 38%; }
+
+div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
+div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }
 .palette-pumpkin:hover{ background-color: #E67E22;}

@@ -18,11 +18,9 @@ public class FacebookService {
 
     private final static String applicationId = "471463259622297";
 
-    private static String token;
-
     private final DefaultFacebookClient client;
 
-    public FacebookService(){
+    public FacebookService(String token){
 
         this.client = new DefaultFacebookClient(token, this.secret);
 
@@ -38,9 +36,7 @@ public class FacebookService {
             WebRequestor.Response accessTokenResponse = wr.executeGet(
                 "https://graph.facebook.com/oauth/access_token?client_id=" + FacebookService.applicationId + "&redirect_uri=" + redirectUrl
                         + "&client_secret=" + FacebookService.secret + "&code=" + code);
-
-            FacebookService.token =  DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody()).getAccessToken();
-            return FacebookService.token;
+            return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody()).getAccessToken();
         } catch (IOException e) {
         }
 
@@ -54,10 +50,6 @@ public class FacebookService {
     public String getProfilePictureUrl(){
         JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","32"), Parameter.with("height","32"));
         return photo.getJsonObject("data").getString("url");
-    }
-
-    public static String getToken() {
-        return token;
     }
 
     public String publishAVideo(String challengeName, InputStream videoPath,String  fileName){

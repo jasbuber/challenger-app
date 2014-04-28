@@ -40,6 +40,7 @@ public class Application extends Controller {
         else {
             String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
 
+            session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
             Application.getUsersService().createNewOrGetExistingUser(user.getUsername());
 
@@ -101,7 +102,7 @@ public class Application extends Controller {
     }
 
     private static FacebookService getFacebookService() {
-        return new FacebookService();
+        return new FacebookService(Application.getAccessToken());
     }
 
     private static String getProfilePictureUrl() {
@@ -109,7 +110,7 @@ public class Application extends Controller {
     }
 
     private static String getAccessToken() {
-        return FacebookService.getToken();
+        return session("fb_user_token");
     }
 
 

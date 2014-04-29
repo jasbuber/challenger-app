@@ -7,9 +7,7 @@ import domain.User;
 import integration.EmTestsBase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -27,6 +25,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
 
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
+    private final static String SOME_VIDEO_ID = "videoId";
 
     @Before
     public void setUp() {
@@ -96,10 +95,10 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     }
 
     private Challenge createChallenge(String user) {
-        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY);
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, SOME_VIDEO_ID);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
         //given
         String user = "username";
@@ -148,10 +147,10 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         private User userWhichParticipates;
 
         @Override
-        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category) {
+        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category, String videoId) {
             this.challengeCreator = creator;
             this.challengeName = challengeName;
-            return new Challenge(creator, challengeName);
+            return new Challenge(creator, challengeName, category);
         }
 
         @Override

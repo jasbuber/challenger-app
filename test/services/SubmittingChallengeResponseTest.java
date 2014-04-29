@@ -1,9 +1,6 @@
 package services;
 
-import domain.Challenge;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
-import domain.User;
+import domain.*;
 import integration.EmTestsBase;
 import org.junit.After;
 import org.junit.Before;
@@ -21,17 +18,18 @@ import static org.mockito.Mockito.verify;
 
 public class SubmittingChallengeResponseTest extends EmTestsBase {
 
+    private final static ChallengeCategory SOME_CHALLENGE_CATEGORY = ChallengeCategory.ALL;
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = mock(UsersRepository.class);
+
     private final NotificationService notificationService = mock(NotificationService.class);
 
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
-
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");
-    private Challenge challenge = new Challenge(creator, challengeName);
+    private Challenge challenge = new Challenge(creator, challengeName, SOME_CHALLENGE_CATEGORY);
     private ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participator);
 
 
@@ -89,8 +87,8 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
     @Test
     public void shouldSubmitChallengeResponseForTwoDifferentChallengesButSameParticipator() throws Exception {
         //given
-        Challenge challengeOne = new Challenge(creator, "challengeOne");
-        Challenge challengeTwo = new Challenge(creator, "challengeTwo");
+        Challenge challengeOne = new Challenge(creator, "challengeOne", SOME_CHALLENGE_CATEGORY);
+        Challenge challengeTwo = new Challenge(creator, "challengeTwo", SOME_CHALLENGE_CATEGORY);
 
         ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challengeOne, participator);
         ChallengeParticipation challengeParticipationTwo = new ChallengeParticipation(challengeTwo, participator);

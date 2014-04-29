@@ -114,7 +114,7 @@ $(document).ready(function(){
 
     fileInput.change(function(){
         $this = $(this);
-        //$('#video-upload-wrapper').text($this.val());
+        $('#video-screenshot').text($this.val().replace(/.*(\/|\\)/, ''));
     });
 
     $('#video-input-wrapper').click(function(){

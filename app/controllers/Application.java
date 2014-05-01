@@ -58,7 +58,7 @@ public class Application extends Controller {
         return ok(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
     }
 
-    public static Result createChallenge(){
+    public static Result ajaxCreateChallenge(){
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
 
@@ -76,7 +76,7 @@ public class Application extends Controller {
                 } catch (FileNotFoundException e) {}
             }
             getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId);
-            return redirect(routes.Application.index());
+            return ok("success");
 
         }
 

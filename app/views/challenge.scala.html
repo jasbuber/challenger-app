@@ -3,7 +3,7 @@
     <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
     <h2>Publish a new challenge</h2>
     <div class="form-wrapper">
-        @helper.form(action = routes.Application.createChallenge(), 'method -> "POST", 'enctype ->"multipart/form-data") {
+        @helper.form(action = routes.Application.ajaxCreateChallenge(), 'method -> "POST", 'enctype ->"multipart/form-data", 'id -> "create-challenge-form") {
             <span class="challenge-name-wrapper">
             @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Name your challenge...", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
             </span>
@@ -23,7 +23,7 @@
                 <div id="video-screenshot"></div>
             </div>
             <div>
-                <input type="submit" class="btn btn-hg btn-primary" />
+                <input type="submit" class="btn btn-hg btn-primary" value="Start!" />
             </div>
         }
     </div>

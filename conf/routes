@@ -7,15 +7,13 @@ GET         /account                           controllers.Application.index()
 
 GET         /                                  controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 
-POST        /challenge/create                  controllers.Application.createChallenge()
+POST        /challenge/create                  controllers.Application.ajaxCreateChallenge()
 
 GET         /challenge/ajax/search             controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
 GET         /challenge/ajax/participate        controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
 
 GET         /challenge/ajax/latest             controllers.Application.ajaxGetLatestChallenges()
-
-POST        /challenge/generatevideo           controllers.Application.generateVideoDescriptionUrl()
 
 #to be removed very soon
 GET         /generate                          controllers.Application.generateData()

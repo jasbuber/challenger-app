@@ -121,4 +121,20 @@ $(document).ready(function(){
         fileInput.click();
     }).show();
 
+    $('#create-challenge-form').submit(function(e) {
+
+        $("#challenge-block-body").spin();
+        $(this).ajaxSubmit({
+            success: function(){
+                $("#challenge-block-body").spin(false);
+                alertify.alert("Challenge created and ready to join ! ", function (e) {
+                    if (e) {
+                        window.location = "/";
+                    }
+                });
+            }
+        });
+        e.preventDefault();
+
+    });
 });

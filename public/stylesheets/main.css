@@ -81,15 +81,17 @@ div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results 
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; }
 
-div#wrapper div.ui-block-body div.form-wrapper span.challenge-name-wrapper{ display: inline-block; width: 50%; }
+div#wrapper div#challenge-block-body div.form-wrapper{ width: 75%; }
+div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 5px; }
+div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{ width: 80%; margin-left: auto; margin-right: auto; }
 
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper{ padding-left: 10%;}
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; height: 20%;}
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{ width: 50%; }
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ width: 38%; font-weight: bold;}
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{  }
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
 
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
+
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }
 .palette-pumpkin:hover{ background-color: #E67E22;}

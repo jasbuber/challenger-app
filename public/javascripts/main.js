@@ -22,7 +22,7 @@ $(document).ready(function(){
         });
     });
 
-    $("select").selectpicker({style: 'btn-hg btn-primary', menuStyle: 'dropdown-inverse'});
+    $("select").selectpicker({style: 'btn-hg btn-info', menuStyle: 'dropdown-inverse'});
 
     // Focus state for append/prepend inputs
     $('.input-group').on('focus', '.form-control', function () {
@@ -114,7 +114,12 @@ $(document).ready(function(){
 
     fileInput.change(function(){
         $this = $(this);
-        $('#video-screenshot').text($this.val().replace(/.*(\/|\\)/, ''));
+        if($this.val()!= '') {
+            $('#video-input-wrapper').html(' <div id="video-screenshot"><img src="/assets/images/video.png"/>' + $this.val().replace(/.*(\/|\\)/, '') + "</div>");
+        }
+        else{
+            $('#video-input-wrapper').html('<button id="upload-video-action" type="button" class="btn btn-warning btn-hg">Upload a video description...</button>');
+        }
     });
 
     $('#video-input-wrapper').click(function(){

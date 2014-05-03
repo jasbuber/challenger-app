@@ -172,4 +172,25 @@ $(document).ready(function(){
         }
     });
 
+    $(".challenge-category").change(function(e){
+
+        $(".challenge-search-results").spin();
+
+        $.ajax({
+            url: "/challenge/ajax/searchbycategory",
+            data: {
+                category: $(".challenge-category").val()
+            },
+            method: "get"
+        }).done(function(response){
+            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+
+            $(".challenge-search-results table tbody").html(body);
+            $(".switch").bootstrapSwitch();
+            $(".challenge-search-results").spin(false);
+        });
+    })
+
+
+
 });

@@ -140,7 +140,32 @@ public class Application extends Controller {
         if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
             Expression<String> categoryPath = filter.getRoot().get("category");
             Predicate categoryCond = filter.getBuilder().equal(categoryPath, ChallengeCategory.valueOf(category));
-            Predicate bothCond = filter.getBuilder().and(phraseCondWithoutUserFull, categoryCond);
+            Predicate bothCond = filter.getBuilder().and(resultCond, categoryCond);
+            filter.getCriteriaQuery().where(bothCond);
+        }
+
+        List<Challenge> challenges = service.findChallenges(filter);
+
+        return ok(new Gson().toJson(challenges));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxGetChallengesForCategory(String category){
+
+        ChallengeService service =  Application.getChallengeService();
+        ChallengeFilter filter = new ChallengeFilter(20);
+        User currentUser = Application.getLoggedInUser();
+
+        filter.orderDescBy("creationDate");
+
+        Predicate phraseCondWithoutUser = filter.getBuilder().and(filter.excludeUser(currentUser), filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        Predicate resultCond = filter.getBuilder().and(phraseCondWithoutUser, filter.excludePrivateChallenges());
+        filter.getCriteriaQuery().where(resultCond);
+
+        if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
+            Expression<String> categoryPath = filter.getRoot().get("category");
+            Predicate categoryCond = filter.getBuilder().equal(categoryPath, ChallengeCategory.valueOf(category));
+            Predicate bothCond = filter.getBuilder().and(resultCond, categoryCond);
             filter.getCriteriaQuery().where(bothCond);
         }
 

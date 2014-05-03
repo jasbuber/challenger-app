@@ -9,8 +9,8 @@ import java.util.List;
 
 public class CreateChallengeForm {
 
-    @Constraints.Required
-    @Constraints.MinLength(5)
+    @Constraints.Required(message = "You forgot to type the challenge name, you know...")
+    @Constraints.MinLength(value = 5, message = "Challenge name should be at least 5 characters long. Just because :P")
     private String challengeName;
 
     private String creatorUsername;

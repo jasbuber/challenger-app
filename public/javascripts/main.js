@@ -130,13 +130,25 @@ $(document).ready(function(){
 
         $("#challenge-block-body").spin();
         $(this).ajaxSubmit({
-            success: function(){
+            success: function(response){
+                if(response == "success") {
+                    alertify.alert("Challenge created and ready to join ! ", function (e) {
+                        if (e) {
+                            window.location = "/";
+                        }
+                    });
+                }
+                else{
+                    var fields = jQuery.parseJSON(response);
+
+                    $.each(fields, function(i) {
+                        var errors = fields[i];
+                        $.each(errors, function(j) {
+                            alertify.error(errors[j].message);
+                        });
+                    });
+                }
                 $("#challenge-block-body").spin(false);
-                alertify.alert("Challenge created and ready to join ! ", function (e) {
-                    if (e) {
-                        window.location = "/";
-                    }
-                });
             }
         });
         e.preventDefault();

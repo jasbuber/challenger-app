@@ -61,7 +61,7 @@ public class Application extends Controller {
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
 
         if(challengeForm.hasErrors()) {
-            return badRequest(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm));
+            return ok(new Gson().toJson(challengeForm.errors()));
         } else {
             CreateChallengeForm challenge = challengeForm.get();
             String videoId = "";
@@ -84,7 +84,6 @@ public class Application extends Controller {
             }
 
             return ok("success");
-
         }
 
     }

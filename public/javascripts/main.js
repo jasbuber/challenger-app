@@ -43,7 +43,7 @@ $(document).ready(function(){
         $.each(challenges, function(i) {
 
             $body += '<tr>' +
-                '<td><a href="#"><img src="/assets/images/facebook.png"/>' + challenges[i].creator.username + '</a></td>' +
+                '<td><a href="#"><img src="' + challenges[i].creator.profilePictureUrl + '"/>' + challenges[i].creator.username + '</a></td>' +
                 '<td>' + challenges[i].challengeName + '</td><td>' + challenges[i].category + '</td><td>time left</td>' +
                 '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="' + challenges[i].id + '"/></div></td></tr>';
         });
@@ -142,4 +142,34 @@ $(document).ready(function(){
         e.preventDefault();
 
     });
+
+    $("#challenge-visibility").change(function(e) {
+
+        if ($(this).val() == 0) {
+            $("#challenge-participants-wrapper").show();
+            $("#challenge-participants-wrapper").spin();
+
+            $.ajax({
+                url: "/challenge/ajax/participants",
+                method: "POST"
+            }).done(function(response){
+                var participants = jQuery.parseJSON(response), $body = "";
+                $("#challenge-participants-wrapper").spin(false);
+
+                $.each(participants, function(i) {
+
+                    var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
+                    $body +=
+                        '<li><a href="#"><img src="' + pictureUrl + '"/>' + participants[i].name +
+                        '</a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
+                });
+                $("#challenge-participants").html($body);
+                $(".switch").bootstrapSwitch();
+            })
+        }
+        else {
+            $("#challenge-participants-wrapper").hide();
+        }
+    });
+
 });

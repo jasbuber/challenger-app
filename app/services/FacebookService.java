@@ -8,6 +8,8 @@ import domain.FacebookUser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Eventually to be merged with FacebookNotificationService
@@ -58,5 +60,11 @@ public class FacebookService {
                     Parameter.with("message", challengeName));
 
         return video.getId();
+    }
+
+    public List<FacebookUser> getFacebookFriends(){
+
+        Connection<FacebookUser> facebookFriends = this.client.fetchConnection("me/friends", FacebookUser.class,  Parameter.with("fields", "id, first_name, last_name, username, picture.url, name"));
+        return facebookFriends.getData();
     }
 }

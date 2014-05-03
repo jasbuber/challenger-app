@@ -41,7 +41,8 @@ public class Challenge {
     @Column(name = "VIDEO_DESCRIPTION_URL")
     private String videoDescriptionUrl;
 
-
+    @Column(name = "VISIBILITY")
+    private Boolean visibility;
 
     protected Challenge(){}
 
@@ -53,13 +54,14 @@ public class Challenge {
         this.creationDate = new Date();
     }
 
-    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoDescriptionUrl) {
+    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoDescriptionUrl, Boolean visibility) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
         this.videoDescriptionUrl = videoDescriptionUrl;
+        this.visibility = visibility;
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -116,5 +118,9 @@ public class Challenge {
 
     public String getVideoDescriptionUrl() {
         return videoDescriptionUrl;
+    }
+
+    public Boolean getVisibility() {
+        return visibility;
     }
 }

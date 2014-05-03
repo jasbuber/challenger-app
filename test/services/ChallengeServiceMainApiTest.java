@@ -26,6 +26,8 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
     private final static String SOME_VIDEO_ID = "videoId";
+    private final Boolean VISIBILITY_PRIVATE = false;
+    private final Boolean VISIBILITY_PUBLIC = true;
 
     @Before
     public void setUp() {
@@ -95,7 +97,7 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
     }
 
     private Challenge createChallenge(String user) {
-        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, SOME_VIDEO_ID);
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, SOME_VIDEO_ID, VISIBILITY_PRIVATE);
     }
 
     @Test(expected = RuntimeException.class)
@@ -146,8 +148,10 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         private Challenge challengeParticipatedIn;
         private User userWhichParticipates;
 
+        private Boolean visibility;
+
         @Override
-        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category, String videoId) {
+        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
             this.challengeCreator = creator;
             this.challengeName = challengeName;
             return new Challenge(creator, challengeName, category);

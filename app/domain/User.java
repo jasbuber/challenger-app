@@ -22,6 +22,9 @@ public class User {
     @NotNull
     private String username;
 
+    @Column(name = "PROFILE_PICTURE_URL")
+    private String profilePictureUrl;
+
     protected User() {
         //for jpa purposes...
     }
@@ -29,6 +32,12 @@ public class User {
     public User(String username) {
         assertUsername(username);
         this.username = username.toLowerCase();
+    }
+
+    public User(String username, String profilePictureUrl) {
+        assertUsername(username);
+        this.username = username.toLowerCase();
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     private void assertUsername(String username) {
@@ -65,4 +74,7 @@ public class User {
         return username;
     }
 
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
 }

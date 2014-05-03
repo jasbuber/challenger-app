@@ -22,8 +22,6 @@ import services.UserService;
 import views.html.*;
 
 import java.io.*;
-import java.util.Date;
-
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import java.util.Date;
@@ -42,7 +40,7 @@ public class Application extends Controller {
 
             session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
-            Application.getUsersService().createNewOrGetExistingUser(user.getUsername());
+            Application.getUsersService().createNewOrGetExistingUser(user.getUsername(), Application.getFacebookService().getProfilePictureUrl());
 
             session("username", user.getUsername());
             session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
@@ -75,7 +73,16 @@ public class Application extends Controller {
 
                 } catch (FileNotFoundException e) {}
             }
-            getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId);
+
+            Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
+
+            if (!challenge.getChallengeVisibility() && challenge.getParticipants() != null){
+                for (String p : challenge.getParticipants()) {
+                    getUsersService().createNewOrGetExistingUser(p);
+                    getChallengeService().participateInChallenge(newChallenge, p);
+                }
+            }
+
             return ok("success");
 
         }
@@ -127,7 +134,8 @@ public class Application extends Controller {
 
         Predicate phraseCondWithoutUser = filter.getBuilder().and(filter.excludeUser(currentUser), phraseCond);
         Predicate phraseCondWithoutUserFull = filter.getBuilder().and(phraseCondWithoutUser, filter.excludeChallengesThatUserParticipatesIn(currentUser));
-        filter.getCriteriaQuery().where(phraseCondWithoutUserFull);
+        Predicate resultCond = filter.getBuilder().and(phraseCondWithoutUserFull, filter.excludePrivateChallenges());
+        filter.getCriteriaQuery().where(resultCond);
 
         if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
             Expression<String> categoryPath = filter.getRoot().get("category");
@@ -149,7 +157,8 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
 
         Predicate bothCond = filter.getBuilder().and(filter.excludeUser(currentUser), filter.excludeChallengesThatUserParticipatesIn(currentUser));
-        filter.getCriteriaQuery().where(bothCond);
+        Predicate resultCond = filter.getBuilder().and(bothCond, filter.excludePrivateChallenges());
+        filter.getCriteriaQuery().where(resultCond);
 
         filter.orderDescBy("creationDate");
         List<Challenge> challenges = service.findChallenges(filter);
@@ -172,6 +181,16 @@ public class Application extends Controller {
         return ok("success");
     }
 
+    @play.db.jpa.Transactional
+    public static Result ajaxGetFacebookFriends(){
+
+        FacebookService service =  Application.getFacebookService();
+
+        List<FacebookUser> facebookFriends = service.getFacebookFriends();
+
+        return ok(new Gson().toJson(facebookFriends));
+    }
+
     /**
      * Will be removed after filling data is not necessary anymore.
      */
@@ -185,11 +204,11 @@ public class Application extends Controller {
         User otherUser  = userService.createNewOrGetExistingUser("otherUser");
         User otherUser2 = userService.createNewOrGetExistingUser("otherUser2");
 
-        service.createChallenge(testUser.getUsername(), "testchgfgfgfallenge", ChallengeCategory.FOOD, "");
-        service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "");
-        service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "");
-        service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "");
-        service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "");
+        service.createChallenge(testUser.getUsername(), "testchgfgfgfallenge", ChallengeCategory.FOOD, "", true);
+        service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "", true);
+        service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "", false);
+        service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "", false);
+        service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "", true);
 
         return redirect(routes.Application.index());
     }

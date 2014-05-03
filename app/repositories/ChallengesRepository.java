@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ChallengesRepository {
 
-    public Challenge createChallenge(User user, String challengeName, ChallengeCategory category, String videoId) {
-        Challenge challenge = new Challenge(user, challengeName, category, videoId);
+    public Challenge createChallenge(User user, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
+        Challenge challenge = new Challenge(user, challengeName, category, videoId, visibility);
         JPA.em().persist(challenge);
         return challenge;
     }

@@ -14,8 +14,17 @@ public class FacebookUser {
     @Facebook("first_name")
     private String firstName;
 
+    @Facebook("last_name")
+    private String lastName;
+
     @Facebook("username")
     private String username;
+
+    @Facebook("picture")
+    private String picture;
+
+    @Facebook("name")
+    private String name;
 
     private String gender;
 
@@ -49,6 +58,30 @@ public class FacebookUser {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

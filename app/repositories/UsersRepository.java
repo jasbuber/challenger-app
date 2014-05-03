@@ -20,6 +20,12 @@ public class UsersRepository {
         return user;
     }
 
+    public User createUser(String username, String profilePictureUrl) {
+        User user = new User(username, profilePictureUrl);
+        JPA.em().persist(user);
+        return user;
+    }
+
     public boolean isUserExist(String username) {
         Query userWithUsernameNrQuery = JPA.em().createQuery("SELECT count(u) FROM User u WHERE LOWER(u.username) = LOWER(:username)");
         userWithUsernameNrQuery.setParameter("username", username);

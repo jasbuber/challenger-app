@@ -1,7 +1,11 @@
 package controllers;
 
 import domain.ChallengeCategory;
+import domain.User;
 import play.data.validation.Constraints;
+
+import java.util.Collection;
+import java.util.List;
 
 public class CreateChallengeForm {
 
@@ -12,6 +16,10 @@ public class CreateChallengeForm {
     private String creatorUsername;
 
     private String videoDescriptionUrl;
+
+    private Boolean challengeVisibility;
+
+    private List<String> participants;
 
     private ChallengeCategory challengeCategory;
 
@@ -49,5 +57,21 @@ public class CreateChallengeForm {
 
     public void setVideoDescriptionUrl(String videoDescriptionUrl) {
         this.videoDescriptionUrl = videoDescriptionUrl;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public Boolean getChallengeVisibility() {
+        return challengeVisibility;
+    }
+
+    public void setChallengeVisibility(Boolean challengeVisibility) {
+        this.challengeVisibility = challengeVisibility;
     }
 }

@@ -88,9 +88,32 @@ div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{  }
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
-
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
+
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    width: 25%;
+    height: 80%;
+    background: url('../images/challenges_search_bg.png') repeat;
+    border-radius: 20px;
+    padding: 15px;
+    border: 2px solid #bdc3c7;
+    display: none;
+    overflow: auto;
+}
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants{ list-style-type: none; text-align: left; padding-left: 10px; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants li img{
+    width: 32px;
+    height: 32px;
+    margin-right: 15px;
+}
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants li .switch{
+    vertical-align: middle;
+    margin-left: 15px;
+}
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

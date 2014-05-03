@@ -23,7 +23,7 @@
                 </select>
             </div>
             <div>
-                <select id="challenge-visibility">
+                <select id="challenge-visibility" name="challengeVisibility">
                     <option value="1" selected>Public</option>
                     <option value="0">Private</option>
 
@@ -31,6 +31,23 @@
             </div>
             <div>
                 <input type="submit" class="btn btn-hg btn-primary" value="Start!" />
+            </div>
+            <div id="challenge-participants-wrapper">
+                <div class="form-group" id="search-facebook-friends">
+                    <div class="input-group input-group-hg input-group-rounded">
+                        <input type="text" placeholder="Search" class="form-control input-lg challenge-search-phrase"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn">
+                                <span class="fui-search"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="challenge-participants-div">
+                    <ul id="challenge-participants">
+
+                    </ul>
+                </div>
             </div>
         }
     </div>

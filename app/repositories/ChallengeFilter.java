@@ -67,4 +67,11 @@ public class ChallengeFilter {
         return builder.not(builder.in(this.root.get("id")).value(subquery));
     }
 
+    public Predicate excludePrivateChallenges(){
+        Expression<String> visibility = root.get("visibility");
+        return builder.notEqual(visibility, false);
+    }
+
+
+
 }

@@ -172,8 +172,8 @@ $(document).ready(function(){
 
                     var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
                     $body +=
-                        '<li><a href="#"><img src="' + pictureUrl + '"/>' + participants[i].name +
-                        '</a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
+                        '<li class="friend-item"><a href="#"><img src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
+                        '</span></a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
                 });
                 $("#challenge-participants").html($body);
                 $(".switch").bootstrapSwitch();
@@ -201,7 +201,32 @@ $(document).ready(function(){
             $(".switch").bootstrapSwitch();
             $(".challenge-search-results").spin(false);
         });
-    })
+    });
+
+    $("#friends-filter-input").keyup(function(e){
+
+        var $value = $(this).val().toLowerCase().replace(/\s+/g, "");
+
+        if($value.length >= 3) {
+
+            if (e.keyCode == 8) {
+                $(".friend-item:hidden").each(function () {
+                    if ($(this).find(".friends-name").text().toLowerCase().replace(/\s+/g, "").indexOf($value) >= 0) {
+                        $(this).show();
+                    }
+                });
+            }
+            else{
+                $(".friend-item:visible").each(function(){
+                    if($(this).find(".friends-name").text().toLowerCase().replace(/\s+/g, "").indexOf($value) < 0){
+                        $(this).hide();
+                    }
+                });
+            }
+        }
+        else{ $(".friend-item:hidden").show(); }
+
+    });
 
 
 

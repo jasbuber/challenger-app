@@ -1,4 +1,5 @@
 div#menu-wrapper{ width: 100%; }
+div#menu-wrapper .navbar ul.nav li a{ line-height: 32px; }
 
 div#wrapper{
     width: 80%;

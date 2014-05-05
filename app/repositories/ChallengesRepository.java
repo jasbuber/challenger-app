@@ -81,4 +81,12 @@ public class ChallengesRepository {
     public ChallengeResponse updateChallengeResponse(ChallengeResponse challengeResponse) {
         return JPA.em().merge(challengeResponse);
     }
+
+    public List<User> getAllParticipatorsOf(Challenge challenge) {
+        Query participators = JPA.em().createQuery("SELECT p.participator " +
+                                                  "FROM ChallengeParticipation p " +
+                                                  "WHERE p.challenge = :challenge");
+        participators.setParameter("challenge", challenge);
+        return participators.getResultList();
+    }
 }

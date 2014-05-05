@@ -54,16 +54,37 @@ public class ChallengeService {
             if(isUserParticipatingInChallenge(challenge, participatorUsername)) {
                 throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
             }
-            return JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
+            ChallengeParticipation challengeParticipation = JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
                 @Override
                 public ChallengeParticipation apply() throws Throwable {
                     User participator = usersRepository.getUser(participatorUsername);
                     return challengesRepository.createChallengeParticipation(challenge, participator);
                 }
             });
+
+            notifyChallengeCreator(challenge);
+            notifyAllParticipators(challenge);
+
+            return challengeParticipation;
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
+    }
+
+    private void notifyChallengeCreator(Challenge challenge) {
+        notificationService.notifyUser(challenge.getCreator());
+    }
+
+    private void notifyAllParticipators(final Challenge challenge) throws Throwable {
+        List<User> participators = JPA.withTransaction("default", READ_ONLY, new F.Function0<List<User>>() {
+
+            @Override
+            public List<User> apply() throws Throwable {
+                return challengesRepository.getAllParticipatorsOf(challenge);
+            }
+        });
+
+        notificationService.notifyUsers(participators);
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {

@@ -24,7 +24,7 @@ public class ChallengeService {
     }
 
     public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
-        if(isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
+        if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
                     " has already been created by user " + creatorUsername);
         }
@@ -49,7 +49,7 @@ public class ChallengeService {
     public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername) {
 
         try {
-            if(isUserParticipatingInChallenge(challenge, participatorUsername)) {
+            if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
                 throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
             }
             ChallengeParticipation challengeParticipation = JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
@@ -91,7 +91,7 @@ public class ChallengeService {
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
 
         try {
-            if(!isUserParticipatingInChallenge(challenge, participatorUsername)) {
+            if (!isUserParticipatingInChallenge(challenge, participatorUsername)) {
                 throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
             }
             Boolean challengeRemovalResult = JPA.withTransaction(new F.Function0<Boolean>() {
@@ -102,7 +102,7 @@ public class ChallengeService {
                 }
             });
 
-            notifyCreator(challenge.getCreator());
+            notifyChallengeCreator(challenge);
             notifyAllParticipators(challenge);
             return challengeRemovalResult;
         } catch (Throwable throwable) {
@@ -136,25 +136,28 @@ public class ChallengeService {
         }
     }
 
-    public ChallengeResponse submitChallengeResponse(ChallengeParticipation challengeParticipation) {
+    public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation) {
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
-        ChallengeResponse challengeResponse = challengesRepository.addChallengeResponse(challengeParticipation);
-        notifyCreator(challengeParticipation.getCreator());
-        notifyOtherChallengeParticipators(challengeParticipation.getChallenge());
-        return challengeResponse;
-    }
+        try {
+            ChallengeResponse challengeResponse = JPA.withTransaction(new F.Function0<ChallengeResponse>() {
 
-    private void notifyCreator(User creator) {
-        notificationService.notifyUser(creator);
-    }
+                @Override
+                public ChallengeResponse apply() throws Throwable {
+                    return challengesRepository.addChallengeResponse(challengeParticipation);
+                }
+            });
 
-    private void notifyOtherChallengeParticipators(Challenge challenge) {
-        List<User> otherChallengeParticipators = usersRepository.getParticipatorsFor(challenge);
-        notificationService.notifyUsers(otherChallengeParticipators);
+            notifyChallengeCreator(challengeParticipation.getChallenge());
+            notifyAllParticipators(challengeParticipation.getChallenge());
+
+            return challengeResponse;
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
-        if(isNotScoredResponseExistsFor(challengeParticipation)) {
+        if (isNotScoredResponseExistsFor(challengeParticipation)) {
             throw new IllegalStateException("User " + challengeParticipation.getParticipator() + " has already submitted response that is not scored yet for challenge " + challengeParticipation.getChallenge());
         }
     }
@@ -199,7 +202,7 @@ public class ChallengeService {
         }
     }
 
-    public Challenge getChallenge(final long id){
+    public Challenge getChallenge(final long id) {
         try {
             return JPA.withTransaction("default", READ_ONLY, new F.Function0<Challenge>() {
                 @Override
@@ -250,7 +253,7 @@ public class ChallengeService {
     }
 
     private void assertThatResponseIsNotDecidedYet(ChallengeResponse challengeResponse) {
-        if(challengeResponse.isDecided()) {
+        if (challengeResponse.isDecided()) {
             throw new IllegalStateException("ChallengeResponse id: " + challengeResponse.getId() + " cannot be decided more than once");
         }
     }

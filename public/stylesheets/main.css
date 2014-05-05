@@ -1,4 +1,16 @@
+html{ height: 100%; }
+body{ min-height: 100%; }
+
 div#menu-wrapper{ width: 100%; }
+div#menu-wrapper .navbar ul.nav li a{
+    line-height: 32px;
+    color: #34495e;
+    font-size: 16px;
+    padding: 15px 21px;
+    font-weight: 700;
+}
+div#menu-wrapper .navbar ul.nav li div.dropdown{ padding-top: 15px; padding-right: 10px; }
+div#menu-wrapper .navbar ul.nav li a img{ width: 32px; height: 32px; }
 
 div#wrapper{
     width: 80%;
@@ -114,6 +126,31 @@ div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants
     vertical-align: middle;
     margin-left: 15px;
 }
+div.account-wrapper{ height: 700px; }
+div#wrapper div#profile-body {
+    display: block;
+    text-align: left;
+    background: url('../images/challenges_search_bg.png') repeat;
+    border-radius: 20px;
+    border: 2px solid #bdc3c7;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    height: 90%!important;
+}
+div#wrapper div#profile-body h2{ text-align: center; }
+div#wrapper div#profile-body div#profile-wrapper{
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    font-size: 18px;
+    font-weight: 700;
+}
+div#wrapper div#profile-body div#profile-data, div#wrapper div#profile-body div#profile-stats{ display: inline-block; padding-top: 20px; }
+div#wrapper div#profile-body div#profile-stats{ vertical-align: top; }
+div#wrapper div#profile-body div#profile-stats ul{ list-style-type: none; }
+div#wrapper div#profile-body div#profile-data img{ display: block; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

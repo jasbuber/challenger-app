@@ -1,0 +1,39 @@
+@(firstName: java.lang.String, profilePicUrl: java.lang.String)
+
+<div id="menu-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <a class="navbar-brand" href="#">Challenger</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">
+                        Responses
+                    <!-- Indicator with number -->
+                    <span class="navbar-new">2</span>
+                </a>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <a href="#" data-toggle="dropdown">
+                        @firstName
+                        @if(!profilePicUrl.isEmpty) {
+                            <img src="@profilePicUrl"/>
+                        } else {
+                            <img src="@routes.Assets.at("images/facebook.png")"/>
+                        }
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">My Challenges</a></li>
+                        <li><a href="@routes.Application.showProfile()">View Profile</a></li>
+                    </ul>
+                </div>
+
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -46,11 +46,11 @@ public class FacebookService {
     }
 
     public FacebookUser getFacebookUser() {
-        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, username"));
+        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, username"));
     }
 
     public String getProfilePictureUrl(){
-        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","32"), Parameter.with("height","32"));
+        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","150"), Parameter.with("height","150"));
         return photo.getJsonObject("data").getString("url");
     }
 

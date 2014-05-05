@@ -2,13 +2,11 @@ package services;
 
 import domain.*;
 import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
 import play.libs.F;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChallengeService {
@@ -76,15 +74,18 @@ public class ChallengeService {
     }
 
     private void notifyAllParticipators(final Challenge challenge) throws Throwable {
-        List<User> participators = JPA.withTransaction("default", READ_ONLY, new F.Function0<List<User>>() {
+        List<User> participators = findAllParticipatorsOf(challenge);
+        notificationService.notifyUsers(participators);
+    }
+
+    private List<User> findAllParticipatorsOf(final Challenge challenge) throws Throwable {
+        return JPA.withTransaction("default", READ_ONLY, new F.Function0<List<User>>() {
 
             @Override
             public List<User> apply() throws Throwable {
                 return challengesRepository.getAllParticipatorsOf(challenge);
             }
         });
-
-        notificationService.notifyUsers(participators);
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
@@ -93,13 +94,17 @@ public class ChallengeService {
             if(!isUserParticipatingInChallenge(challenge, participatorUsername)) {
                 throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
             }
-            return JPA.withTransaction(new F.Function0<Boolean>() {
+            Boolean challengeRemovalResult = JPA.withTransaction(new F.Function0<Boolean>() {
                 @Override
                 public Boolean apply() throws Throwable {
                     User participator = usersRepository.getUser(participatorUsername);
                     return challengesRepository.deleteChallengeParticipation(challenge, participator);
                 }
             });
+
+            notifyCreator(challenge.getCreator());
+            notifyAllParticipators(challenge);
+            return challengeRemovalResult;
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }

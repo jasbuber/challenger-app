@@ -12,6 +12,7 @@ import java.util.List;
 public class ChallengeService {
 
     private static final boolean READ_ONLY = true;
+    public static final String TRANSACTION_NAME = "default";
 
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
@@ -46,12 +47,32 @@ public class ChallengeService {
         }
     }
 
+    private void notifyChallengeCreator(Challenge challenge) {
+        notificationService.notifyUser(challenge.getCreator());
+    }
+
+    private void notifyAllParticipators(final Challenge challenge) throws Throwable {
+        List<User> participators = findAllParticipatorsOf(challenge);
+        notificationService.notifyUsers(participators);
+    }
+
+    private List<User> findAllParticipatorsOf(final Challenge challenge) throws Throwable {
+        return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<List<User>>() {
+
+            @Override
+            public List<User> apply() throws Throwable {
+                return challengesRepository.getAllParticipatorsOf(challenge);
+            }
+        });
+    }
+
     public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername) {
 
         try {
             if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
                 throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
             }
+
             ChallengeParticipation challengeParticipation = JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
                 @Override
                 public ChallengeParticipation apply() throws Throwable {
@@ -67,25 +88,6 @@ public class ChallengeService {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
-    }
-
-    private void notifyChallengeCreator(Challenge challenge) {
-        notificationService.notifyUser(challenge.getCreator());
-    }
-
-    private void notifyAllParticipators(final Challenge challenge) throws Throwable {
-        List<User> participators = findAllParticipatorsOf(challenge);
-        notificationService.notifyUsers(participators);
-    }
-
-    private List<User> findAllParticipatorsOf(final Challenge challenge) throws Throwable {
-        return JPA.withTransaction("default", READ_ONLY, new F.Function0<List<User>>() {
-
-            @Override
-            public List<User> apply() throws Throwable {
-                return challengesRepository.getAllParticipatorsOf(challenge);
-            }
-        });
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
@@ -104,6 +106,7 @@ public class ChallengeService {
 
             notifyChallengeCreator(challenge);
             notifyAllParticipators(challenge);
+
             return challengeRemovalResult;
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
@@ -112,7 +115,7 @@ public class ChallengeService {
 
     public boolean isUserParticipatingInChallenge(final Challenge challenge, final String user) {
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Boolean>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
                 @Override
                 public Boolean apply() throws Throwable {
                     return challengesRepository.isUserParticipatingInChallenge(challenge, user);
@@ -125,7 +128,7 @@ public class ChallengeService {
 
     public boolean isUserCreatedChallengeWithName(final String challengeName, final String creator) {
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Boolean>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
                 @Override
                 public Boolean apply() throws Throwable {
                     return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
@@ -164,7 +167,7 @@ public class ChallengeService {
 
     public boolean isNotScoredResponseExistsFor(final ChallengeParticipation challengeParticipation) {
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Boolean>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
                 @Override
                 public Boolean apply() throws Throwable {
                     return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
@@ -177,7 +180,7 @@ public class ChallengeService {
 
     public ChallengeParticipation getChallengeParticipation(final Challenge challenge, final String participatorUsername) {
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<ChallengeParticipation>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<ChallengeParticipation>() {
                 @Override
                 public ChallengeParticipation apply() throws Throwable {
                     return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
@@ -191,7 +194,7 @@ public class ChallengeService {
     public List<Challenge> findChallenges(final ChallengeFilter challengeFilter) {
 
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<List<Challenge>>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<List<Challenge>>() {
                 @Override
                 public List<Challenge> apply() throws Throwable {
                     return challengesRepository.findChallenges(challengeFilter);
@@ -204,7 +207,7 @@ public class ChallengeService {
 
     public Challenge getChallenge(final long id) {
         try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Challenge>() {
+            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Challenge>() {
                 @Override
                 public Challenge apply() throws Throwable {
                     return challengesRepository.getChallenge(id);

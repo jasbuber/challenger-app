@@ -1,7 +1,6 @@
 package services;
 
 import domain.*;
-import play.db.jpa.JPA;
 import play.libs.F;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
@@ -9,10 +8,7 @@ import repositories.UsersRepository;
 
 import java.util.List;
 
-public class ChallengeService {
-
-    private static final boolean READ_ONLY = true;
-    public static final String TRANSACTION_NAME = "default";
+public class ChallengeService extends TransactionalBase {
 
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
@@ -34,31 +30,26 @@ public class ChallengeService {
     }
 
     private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
-        try {
-            return JPA.withTransaction(new F.Function0<Challenge>() {
-                @Override
-                public Challenge apply() throws Throwable {
-                    User creator = usersRepository.getUser(creatorUsername);
-                    return challengesRepository.createChallenge(creator, challengeName, category, videoId, visibility);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withTransaction(new F.Function0<Challenge>() {
+            @Override
+            public Challenge apply() throws Throwable {
+                User creator = usersRepository.getUser(creatorUsername);
+                return challengesRepository.createChallenge(creator, challengeName, category, videoId, visibility);
+            }
+        });
     }
 
     private void notifyChallengeCreator(Challenge challenge) {
         notificationService.notifyUser(challenge.getCreator());
     }
 
-    private void notifyAllParticipators(final Challenge challenge) throws Throwable {
+    private void notifyAllParticipators(final Challenge challenge) {
         List<User> participators = findAllParticipatorsOf(challenge);
         notificationService.notifyUsers(participators);
     }
 
-    private List<User> findAllParticipatorsOf(final Challenge challenge) throws Throwable {
-        return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<List<User>>() {
-
+    private List<User> findAllParticipatorsOf(final Challenge challenge) {
+        return withReadOnlyTransaction(new F.Function0<List<User>>() {
             @Override
             public List<User> apply() throws Throwable {
                 return challengesRepository.getAllParticipatorsOf(challenge);
@@ -67,96 +58,76 @@ public class ChallengeService {
     }
 
     public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername) {
-
-        try {
-            if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
-                throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
-            }
-
-            ChallengeParticipation challengeParticipation = JPA.withTransaction(new F.Function0<ChallengeParticipation>() {
-                @Override
-                public ChallengeParticipation apply() throws Throwable {
-                    User participator = usersRepository.getUser(participatorUsername);
-                    return challengesRepository.createChallengeParticipation(challenge, participator);
-                }
-            });
-
-            notifyChallengeCreator(challenge);
-            notifyAllParticipators(challenge);
-
-            return challengeParticipation;
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+        if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
+            throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
         }
+
+        ChallengeParticipation challengeParticipation = withTransaction(new F.Function0<ChallengeParticipation>() {
+            @Override
+            public ChallengeParticipation apply() throws Throwable {
+                User participator = usersRepository.getUser(participatorUsername);
+                return challengesRepository.createChallengeParticipation(challenge, participator);
+            }
+        });
+
+        notifyChallengeCreator(challenge);
+        notifyAllParticipators(challenge);
+
+        return challengeParticipation;
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
 
-        try {
-            if (!isUserParticipatingInChallenge(challenge, participatorUsername)) {
-                throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
-            }
-            Boolean challengeRemovalResult = JPA.withTransaction(new F.Function0<Boolean>() {
-                @Override
-                public Boolean apply() throws Throwable {
-                    User participator = usersRepository.getUser(participatorUsername);
-                    return challengesRepository.deleteChallengeParticipation(challenge, participator);
-                }
-            });
-
-            notifyChallengeCreator(challenge);
-            notifyAllParticipators(challenge);
-
-            return challengeRemovalResult;
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+        if (!isUserParticipatingInChallenge(challenge, participatorUsername)) {
+            throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
         }
+        Boolean challengeRemovalResult = withTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                User participator = usersRepository.getUser(participatorUsername);
+                return challengesRepository.deleteChallengeParticipation(challenge, participator);
+            }
+        });
+
+        notifyChallengeCreator(challenge);
+        notifyAllParticipators(challenge);
+
+        return challengeRemovalResult;
     }
 
     public boolean isUserParticipatingInChallenge(final Challenge challenge, final String user) {
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
-                @Override
-                public Boolean apply() throws Throwable {
-                    return challengesRepository.isUserParticipatingInChallenge(challenge, user);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.isUserParticipatingInChallenge(challenge, user);
+            }
+        });
     }
 
     public boolean isUserCreatedChallengeWithName(final String challengeName, final String creator) {
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
-                @Override
-                public Boolean apply() throws Throwable {
-                    return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
+            }
+        });
     }
 
     public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation) {
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
-        try {
-            ChallengeResponse challengeResponse = JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+        ChallengeResponse challengeResponse = withTransaction(new F.Function0<ChallengeResponse>() {
 
-                @Override
-                public ChallengeResponse apply() throws Throwable {
-                    return challengesRepository.addChallengeResponse(challengeParticipation);
-                }
-            });
+            @Override
+            public ChallengeResponse apply() throws Throwable {
+                ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
+                return challengesRepository.addChallengeResponse(challengeResponse);
+            }
+        });
 
-            notifyChallengeCreator(challengeParticipation.getChallenge());
-            notifyAllParticipators(challengeParticipation.getChallenge());
+        notifyChallengeCreator(challengeParticipation.getChallenge());
+        notifyAllParticipators(challengeParticipation.getChallenge());
 
-            return challengeResponse;
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return challengeResponse;
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
@@ -166,93 +137,67 @@ public class ChallengeService {
     }
 
     public boolean isNotScoredResponseExistsFor(final ChallengeParticipation challengeParticipation) {
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Boolean>() {
-                @Override
-                public Boolean apply() throws Throwable {
-                    return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
+            }
+        });
     }
 
     public ChallengeParticipation getChallengeParticipation(final Challenge challenge, final String participatorUsername) {
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<ChallengeParticipation>() {
-                @Override
-                public ChallengeParticipation apply() throws Throwable {
-                    return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withReadOnlyTransaction(new F.Function0<ChallengeParticipation>() {
+            @Override
+            public ChallengeParticipation apply() throws Throwable {
+                return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
+            }
+        });
     }
 
     public List<Challenge> findChallenges(final ChallengeFilter challengeFilter) {
-
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<List<Challenge>>() {
-                @Override
-                public List<Challenge> apply() throws Throwable {
-                    return challengesRepository.findChallenges(challengeFilter);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return withReadOnlyTransaction(new F.Function0<List<Challenge>>() {
+            @Override
+            public List<Challenge> apply() throws Throwable {
+                return challengesRepository.findChallenges(challengeFilter);
+            }
+        });
     }
 
     public Challenge getChallenge(final long id) {
-        try {
-            return JPA.withTransaction(TRANSACTION_NAME, READ_ONLY, new F.Function0<Challenge>() {
-                @Override
-                public Challenge apply() throws Throwable {
-                    return challengesRepository.getChallenge(id);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
-
+        return withReadOnlyTransaction(new F.Function0<Challenge>() {
+            @Override
+            public Challenge apply() throws Throwable {
+                return challengesRepository.getChallenge(id);
+            }
+        });
     }
 
     public ChallengeResponse acceptChallengeResponse(final ChallengeResponse challengeResponse) {
-        try {
-            return JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+        return withTransaction(new F.Function0<ChallengeResponse>() {
 
-                @Override
-                public ChallengeResponse apply() throws Throwable {
-                    assertThatResponseIsNotDecidedYet(challengeResponse);
+            @Override
+            public ChallengeResponse apply() throws Throwable {
+                assertThatResponseIsNotDecidedYet(challengeResponse);
 
-                    challengeResponse.accept();
-                    challengesRepository.updateChallengeResponse(challengeResponse);
-                    return challengeResponse;
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+                challengeResponse.accept();
+                challengesRepository.updateChallengeResponse(challengeResponse);
+                return challengeResponse;
+            }
+        });
     }
 
     public ChallengeResponse refuseChallengeResponse(final ChallengeResponse challengeResponse) {
-        try {
-            return JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+        return withTransaction(new F.Function0<ChallengeResponse>() {
 
-                @Override
-                public ChallengeResponse apply() throws Throwable {
-                    assertThatResponseIsNotDecidedYet(challengeResponse);
+            @Override
+            public ChallengeResponse apply() throws Throwable {
+                assertThatResponseIsNotDecidedYet(challengeResponse);
 
-                    challengeResponse.refuse();
-                    challengesRepository.updateChallengeResponse(challengeResponse);
-                    return challengeResponse;
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+                challengeResponse.refuse();
+                challengesRepository.updateChallengeResponse(challengeResponse);
+                return challengeResponse;
+            }
+        });
     }
 
     private void assertThatResponseIsNotDecidedYet(ChallengeResponse challengeResponse) {

@@ -11,6 +11,7 @@ import java.util.List;
 
 public class ChallengesRepository {
 
+    //TODO challenge creation should be delegated to service, respository should not be responsible for creating object. Only for storing it.
     public Challenge createChallenge(User user, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
         Challenge challenge = new Challenge(user, challengeName, category, videoId, visibility);
         JPA.em().persist(challenge);
@@ -28,6 +29,7 @@ public class ChallengesRepository {
         return challengesWithNameOfCreatorNr > 0;
     }
 
+    //TODO challengeParticipation creation should be delegated to service, respository should not be responsible for creating object. Only for storing it.
     public ChallengeParticipation createChallengeParticipation(Challenge challenge, User user) {
         ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, user);
         JPA.em().persist(challengeParticipation);
@@ -58,16 +60,17 @@ public class ChallengesRepository {
         return usernameUsersParticipatingNr > 0;
     }
 
-    public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
-        ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
+    public ChallengeResponse addChallengeResponse(ChallengeResponse challengeResponse) {
         JPA.em().persist(challengeResponse);
         return challengeResponse;
     }
 
+    //TODO must be implemented
     public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
         return new ChallengeParticipation(challenge, new User(participatorUsername));
     }
 
+    //TODO must be implemented
     public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
         return false;
     }

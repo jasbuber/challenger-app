@@ -16,7 +16,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 
-public class AcceptingChallengeResponseServiceTest extends EmTestsBase {
+public class AcceptingChallengeResponseServiceTest {
 
     private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
@@ -24,7 +24,7 @@ public class AcceptingChallengeResponseServiceTest extends EmTestsBase {
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
 
     private static ChallengeParticipation ANY_CHALLENGE_PARTICIPATION = mock(ChallengeParticipation.class);
@@ -32,16 +32,6 @@ public class AcceptingChallengeResponseServiceTest extends EmTestsBase {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    @Before
-    public void setUp() {
-        openTransaction();
-    }
-
-    @After
-    public void tearDown() {
-        closeTransaction();
-    }
 
     @Test
     public void shouldAcceptChallengeResponse() throws Exception {

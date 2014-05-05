@@ -8,14 +8,18 @@ import integration.EmTestsBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.libs.F;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+
+import java.util.Collections;
+import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class ChallengeServiceMainApiTest extends EmTestsBase {
+public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UsersRepositoryStub();
@@ -23,20 +27,17 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = cretaeChallengeService();
+
     private final String challengeName = "challengeName";
+
     private final static String SOME_VIDEO_ID = "videoId";
     private final Boolean VISIBILITY_PRIVATE = false;
     private final Boolean VISIBILITY_PUBLIC = true;
 
-    @Before
-    public void setUp() {
-        openTransaction();
-    }
 
-    @After
-    public void tearDown() {
-        closeTransaction();
+    private ChallengeServiceWithoutTransactionMgmt cretaeChallengeService() {
+        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
     }
 
     @Test
@@ -174,6 +175,11 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
             return challenge.equals(challengeParticipatedIn) && createUserStub(participator).equals(userWhichParticipates);
         }
 
+        @Override
+        public List<User> getAllParticipatorsOf(Challenge challenge) {
+            return Collections.emptyList();
+        }
+
         private User createUserStub(String username) {
             return new User(username);
         }
@@ -186,4 +192,5 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
             return new User(username);
         }
     }
+
 }

@@ -58,8 +58,4 @@ public class UsersRepository {
             throw new IllegalStateException("More than one user with username " + username + " found in storage", nonUniqueExc);
         }
     }
-
-    public List<User> getParticipatorsFor(Challenge challenge) {
-        return new ArrayList<User>();
-    }
 }

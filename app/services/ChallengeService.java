@@ -206,29 +206,21 @@ public class ChallengeService extends TransactionalBase {
         }
     }
 
-    public Long countCreatedChallengesForUser(final String username){
-        try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Long>() {
-                @Override
-                public Long apply() throws Throwable {
-                    return challengesRepository.countCreatedChallengesForUser(username);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+    public Long countCreatedChallengesForUser(final String username) {
+        return withReadOnlyTransaction(new F.Function0<Long>() {
+            @Override
+            public Long apply() throws Throwable {
+                return challengesRepository.countCreatedChallengesForUser(username);
+            }
+        });
     }
 
-    public Long countCompletedChallenges(final String username){
-        try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Long>() {
-                @Override
-                public Long apply() throws Throwable {
-                    return challengesRepository.countCompletedChallenges(username);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+    public Long countCompletedChallenges(final String username) {
+        return withReadOnlyTransaction(new F.Function0<Long>() {
+            @Override
+            public Long apply() throws Throwable {
+                return challengesRepository.countCompletedChallenges(username);
+            }
+        });
     }
 }

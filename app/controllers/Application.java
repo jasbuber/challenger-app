@@ -24,6 +24,7 @@ import views.html.*;
 import java.io.*;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -235,6 +236,13 @@ public class Application extends Controller {
         service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "", true);
 
         return redirect(routes.Application.index());
+    }
+
+    public static Result showProfile(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String date = dateFormat.format(Application.getLoggedInUser().getJoined());
+        return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getFacebookService().getFacebookUser().getLastName(), Application.getProfilePictureUrl(),
+                date, getChallengeService().countCreatedChallengesForUser(Application.getLoggedInUsername()), getChallengeService().countCompletedChallenges(Application.getLoggedInUsername())));
     }
 
 }

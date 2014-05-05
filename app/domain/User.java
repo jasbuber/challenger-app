@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "USERS")
@@ -25,19 +26,27 @@ public class User {
     @Column(name = "PROFILE_PICTURE_URL")
     private String profilePictureUrl;
 
+    @Column(name = "JOINED" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date joined;
+
     protected User() {
         //for jpa purposes...
+        this.joined = new Date();
     }
 
     public User(String username) {
         assertUsername(username);
         this.username = username.toLowerCase();
+        this.joined = new Date();
     }
 
     public User(String username, String profilePictureUrl) {
         assertUsername(username);
         this.username = username.toLowerCase();
         this.profilePictureUrl = profilePictureUrl;
+        this.joined = new Date();
     }
 
     private void assertUsername(String username) {
@@ -76,5 +85,9 @@ public class User {
 
     public String getProfilePictureUrl() {
         return profilePictureUrl;
+    }
+
+    public Date getJoined() {
+        return joined;
     }
 }

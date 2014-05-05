@@ -1,42 +1,14 @@
 @(firstName: java.lang.String, profilePicUrl: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm])
 
 @main("Welcome to Challenge Application") {
-<div id="menu-wrapper">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <a class="navbar-brand" href="#">Challenger</a>
-        </div>
-
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a href="#">
-                    Responses
-                    <!-- Indicator with number -->
-                    <span class="navbar-new">2</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    @firstName
-                    @if(!profilePicUrl.isEmpty) {
-                        <img src="@profilePicUrl"/>
-                    } else {
-                        <img src="@routes.Assets.at("images/facebook.png")"/>
-                    }
-                </a>
-        </ul>
-    </nav>
-</div>
-<div id="wrapper">
-    <div id="challenge-block" class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
-    <div id="browse-block" class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
-    <div id="rank-block" class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
-    <div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">Share!</span></div>
-    @challenge(challengeForm: Form[controllers.CreateChallengeForm])
-    @browse()
-</div>
+    @menu(firstName, profilePicUrl)
+    <div id="wrapper">
+        <div id="challenge-block" class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
+        <div id="browse-block" class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
+        <div id="rank-block" class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
+        <div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">Share!</span></div>
+        @challenge(challengeForm: Form[controllers.CreateChallengeForm])
+        @browse()
+    </div>
 
 }

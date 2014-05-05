@@ -81,4 +81,21 @@ public class ChallengesRepository {
     public ChallengeResponse updateChallengeResponse(ChallengeResponse challengeResponse) {
         return JPA.em().merge(challengeResponse);
     }
+
+    public Long countCreatedChallengesForUser(String username){
+        Query challengesCreatedByUserQuery = JPA.em().createQuery("SELECT count(c) FROM Challenge c " +
+                "WHERE LOWER(c.creator) = LOWER(:username)");
+        challengesCreatedByUserQuery.setParameter("username", username);
+        return (Long) challengesCreatedByUserQuery.getSingleResult();
+    }
+
+    public Long countCompletedChallenges(String participatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "INNER JOIN r.challengeParticipation p " +
+                "WHERE r.isAccepted = 'Y'" +
+                "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
+        completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
+        return (Long) completedChallengesQuery.getSingleResult();
+    }
 }

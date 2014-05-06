@@ -6,6 +6,7 @@ import domain.ChallengeParticipation;
 import domain.User;
 import integration.EmTestsBase;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import play.db.jpa.JPA;
 import repositories.ChallengesRepository;
@@ -21,6 +22,16 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
     private final ChallengesRepository challengesRepository = new ChallengesRepository();
     private final UsersRepository usersRepository = new UsersRepository();
 
+    private Challenge challenge;
+
+    @Before
+    public void setUp() {
+        openTransaction();
+        User creator = usersRepository.createUser("creator");
+        challenge = challengesRepository.createChallenge(new Challenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true));
+        closeTransaction();
+    }
+
     @After
     public void tearDown() {
         openTransaction();
@@ -32,11 +43,6 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
 
     @Test
     public void shouldFindParticipatorIfOneParticipationInChallenge() throws Exception {
-        openTransaction();
-        User creator = usersRepository.createUser("creator");
-        Challenge challenge = challengesRepository.createChallenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true);
-        closeTransaction();
-
         openTransaction();
         User participator = usersRepository.createUser("participator");
         challengesRepository.createChallengeParticipation(challenge, participator);
@@ -52,11 +58,6 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
 
     @Test
     public void shouldFindBothParticipatorsIfTwoParticipationInChallenge() throws Exception {
-        openTransaction();
-        User creator = usersRepository.createUser("creator");
-        Challenge challenge = challengesRepository.createChallenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true);
-        closeTransaction();
-
         openTransaction();
         User participatorOne = usersRepository.createUser("participatorOne");
         challengesRepository.createChallengeParticipation(challenge, participatorOne);
@@ -75,11 +76,6 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
 
     @Test
     public void shouldFindNoParticipatorsIfNoParticipationsInChallenge() throws Exception {
-        openTransaction();
-        User creator = usersRepository.createUser("creator");
-        Challenge challenge = challengesRepository.createChallenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true);
-        closeTransaction();
-
         openTransaction();
         List<User> allParticipators = challengesRepository.getAllParticipatorsOf(challenge);
         closeTransaction();

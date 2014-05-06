@@ -4,11 +4,7 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
-import integration.EmTestsBase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import play.libs.F;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -27,7 +23,7 @@ public class ChallengeServiceMainApiTest {
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengeService challengeService = cretaeChallengeService();
+    private final ChallengeService challengeService = createChallengeService();
 
     private final String challengeName = "challengeName";
 
@@ -36,7 +32,7 @@ public class ChallengeServiceMainApiTest {
     private final Boolean VISIBILITY_PUBLIC = true;
 
 
-    private ChallengeServiceWithoutTransactionMgmt cretaeChallengeService() {
+    private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
         return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
     }
 
@@ -152,15 +148,15 @@ public class ChallengeServiceMainApiTest {
         private Boolean visibility;
 
         @Override
-        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
-            this.challengeCreator = creator;
-            this.challengeName = challengeName;
-            return new Challenge(creator, challengeName, category);
+        public Challenge createChallenge(Challenge challenge) {
+            this.challengeCreator = challenge.getCreator();
+            this.challengeName = challenge.getChallengeName();
+            return challenge;
         }
 
         @Override
         public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
-            return challengeName.equals(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
+            return challengeName.equalsIgnoreCase(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
         }
 
         @Override

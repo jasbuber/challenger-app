@@ -66,7 +66,7 @@ public class ChallengeService extends TransactionalBase {
             @Override
             public ChallengeParticipation apply() throws Throwable {
                 User participator = usersRepository.getUser(participatorUsername);
-                return challengesRepository.createChallengeParticipation(challenge, participator);
+                return challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participator));
             }
         });
 

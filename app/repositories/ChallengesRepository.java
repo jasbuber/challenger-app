@@ -27,9 +27,7 @@ public class ChallengesRepository {
         return challengesWithNameOfCreatorNr > 0;
     }
 
-    //TODO challengeParticipation creation should be delegated to service, respository should not be responsible for creating object. Only for storing it.
-    public ChallengeParticipation createChallengeParticipation(Challenge challenge, User user) {
-        ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, user);
+    public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
         JPA.em().persist(challengeParticipation);
         return challengeParticipation;
     }

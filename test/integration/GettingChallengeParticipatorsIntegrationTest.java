@@ -4,7 +4,6 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
-import integration.EmTestsBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
     public void shouldFindParticipatorIfOneParticipationInChallenge() throws Exception {
         openTransaction();
         User participator = usersRepository.createUser("participator");
-        challengesRepository.createChallengeParticipation(challenge, participator);
+        challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participator));
         closeTransaction();
 
         openTransaction();
@@ -60,9 +59,9 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
     public void shouldFindBothParticipatorsIfTwoParticipationInChallenge() throws Exception {
         openTransaction();
         User participatorOne = usersRepository.createUser("participatorOne");
-        challengesRepository.createChallengeParticipation(challenge, participatorOne);
+        challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participatorOne));
         User participatorTwo = usersRepository.createUser("participatorTwo");
-        challengesRepository.createChallengeParticipation(challenge, participatorTwo);
+        challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participatorTwo));
         closeTransaction();
 
         openTransaction();

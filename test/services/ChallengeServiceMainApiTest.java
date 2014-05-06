@@ -160,10 +160,10 @@ public class ChallengeServiceMainApiTest {
         }
 
         @Override
-        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User participator) {
-            this.challengeParticipatedIn = challenge;
-            this.userWhichParticipates = participator;
-            return new ChallengeParticipation(challenge, participator);
+        public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
+            this.challengeParticipatedIn = challengeParticipation.getChallenge();
+            this.userWhichParticipates = challengeParticipation.getParticipator();
+            return challengeParticipation;
         }
 
         @Override

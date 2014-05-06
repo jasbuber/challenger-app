@@ -34,7 +34,7 @@ public class ChallengeService extends TransactionalBase {
             @Override
             public Challenge apply() throws Throwable {
                 User creator = usersRepository.getUser(creatorUsername);
-                return challengesRepository.createChallenge(creator, challengeName, category, videoId, visibility);
+                return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
             }
         });
     }

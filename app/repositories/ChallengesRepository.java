@@ -103,9 +103,15 @@ public class ChallengesRepository {
         }
     }
 
-    //TODO must be implemented
-    public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
-        return false;
+    public boolean isNotEvaluatedChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
+        Query notEvaluatedChallengeResponsesForParticipationNr = JPA.em().createQuery("SELECT count(r) " +
+                                                                                   "FROM ChallengeResponse r " +
+                                                                                   "WHERE r.challengeParticipation = :challengeParticipation " +
+                                                                                   "AND r.isAccepted IS NULL");
+
+        notEvaluatedChallengeResponsesForParticipationNr.setParameter("challengeParticipation", challengeParticipation);
+        Long notEvaluatedChallengeResponsesNr = (Long) notEvaluatedChallengeResponsesForParticipationNr.getSingleResult();
+        return notEvaluatedChallengeResponsesNr > 0;
     }
 
     public Challenge getChallenge(long id){ return JPA.em().find(Challenge.class, id); }

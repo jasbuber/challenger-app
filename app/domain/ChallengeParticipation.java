@@ -68,4 +68,8 @@ public class ChallengeParticipation {
     public User getCreator() {
         return challenge.getCreator();
     }
+
+    public Long getId() {
+        return id;
+    }
 }

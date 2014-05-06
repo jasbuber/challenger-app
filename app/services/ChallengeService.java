@@ -131,16 +131,16 @@ public class ChallengeService extends TransactionalBase {
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
-        if (isNotScoredResponseExistsFor(challengeParticipation)) {
+        if (isNotEvaluatedResponseExistsFor(challengeParticipation)) {
             throw new IllegalStateException("User " + challengeParticipation.getParticipator() + " has already submitted response that is not scored yet for challenge " + challengeParticipation.getChallenge());
         }
     }
 
-    public boolean isNotScoredResponseExistsFor(final ChallengeParticipation challengeParticipation) {
+    public boolean isNotEvaluatedResponseExistsFor(final ChallengeParticipation challengeParticipation) {
         return withReadOnlyTransaction(new F.Function0<Boolean>() {
             @Override
             public Boolean apply() throws Throwable {
-                return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
+                return challengesRepository.isNotEvaluatedChallengeResponseExistsFor(challengeParticipation);
             }
         });
     }
@@ -177,7 +177,7 @@ public class ChallengeService extends TransactionalBase {
 
             @Override
             public ChallengeResponse apply() throws Throwable {
-                assertThatResponseIsNotDecidedYet(challengeResponse);
+                assertThatResponseIsNotEvaluatedYet(challengeResponse);
 
                 challengeResponse.accept();
                 challengesRepository.updateChallengeResponse(challengeResponse);
@@ -191,7 +191,7 @@ public class ChallengeService extends TransactionalBase {
 
             @Override
             public ChallengeResponse apply() throws Throwable {
-                assertThatResponseIsNotDecidedYet(challengeResponse);
+                assertThatResponseIsNotEvaluatedYet(challengeResponse);
 
                 challengeResponse.refuse();
                 challengesRepository.updateChallengeResponse(challengeResponse);
@@ -200,7 +200,7 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
-    private void assertThatResponseIsNotDecidedYet(ChallengeResponse challengeResponse) {
+    private void assertThatResponseIsNotEvaluatedYet(ChallengeResponse challengeResponse) {
         if (challengeResponse.isDecided()) {
             throw new IllegalStateException("ChallengeResponse id: " + challengeResponse.getId() + " cannot be decided more than once");
         }

@@ -52,7 +52,7 @@ public class SubmittingChallengeResponseTest {
     @Test(expected = IllegalStateException.class)
     public void shouldDenySubmittingIfNotScoredResponseAlreadySubmittedForTheChallengeBySameUser() throws Exception {
         //given
-        given(challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation)).willReturn(true);
+        given(challengesRepository.isNotEvaluatedChallengeResponseExistsFor(challengeParticipation)).willReturn(true);
 
 
         //when

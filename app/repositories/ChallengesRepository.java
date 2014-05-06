@@ -65,9 +65,42 @@ public class ChallengesRepository {
         return challengeResponse;
     }
 
-    //TODO must be implemented
+    /**
+     * THIS METHOD THROWS EXCEPTION WHEN NO CHALLENGE PARTICIPATION EXISTS FOR GIVEN ARGUMENTS.
+     *
+     * Must be used only after succeeded test for user's participation in challenge.
+     *
+     * No exception is thrown if there is more than one challenge participation for user. The first found result will be returned.
+     * However this is invalid state of the system and is logged with error level.
+     *
+     * @param challenge challenge to get one of participations for
+     * @param participatorUsername username of the participator in challenge
+     * @return challengeParticipation for given challenge of given participator
+     * @throws java.lang.IllegalStateException if there is no challengeParticipation for given challenge of given participator
+     */
     public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
-        return new ChallengeParticipation(challenge, new User(participatorUsername));
+        Query getChallengeParticipationQuery = JPA.em().createQuery("SELECT p " +
+                                                                    "FROM ChallengeParticipation p " +
+                                                                    "WHERE p.challenge = :challenge " +
+                                                                    "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
+        getChallengeParticipationQuery.setParameter("challenge", challenge);
+        getChallengeParticipationQuery.setParameter("participatorUsername", participatorUsername);
+
+        List<ChallengeParticipation> challengeParticipations = getChallengeParticipationQuery.getResultList();
+
+        assertThatChallengeParticipationIsFound(challenge, participatorUsername, challengeParticipations);
+
+        if(challengeParticipations.size() > 1) {
+            //TODO when logger will be added then invalid system state should be logged with error level
+        }
+
+        return challengeParticipations.get(0);
+    }
+
+    private void assertThatChallengeParticipationIsFound(Challenge challenge, String participatorUsername, List<ChallengeParticipation> challengeParticipations) {
+        if(challengeParticipations.isEmpty()) {
+            throw new IllegalStateException("Participator: " + participatorUsername + " is not participating in challenge " + challenge.getChallengeName());
+        }
     }
 
     //TODO must be implemented

@@ -21,6 +21,8 @@ public class ChallengeFilter {
 
     private final int limit;
 
+    private Predicate predicate;
+
     public ChallengeFilter(int limit){
 
         this.entityManager = JPA.em();
@@ -29,6 +31,7 @@ public class ChallengeFilter {
         this.root = criteriaQuery.from(Challenge.class);
         this.criteriaQuery.select(root);
         this.limit = limit;
+        this.predicate = null;
     }
 
 
@@ -72,6 +75,19 @@ public class ChallengeFilter {
         return builder.notEqual(visibility, false);
     }
 
+    public Expression<String> getField(String fieldName){
+        return this.getRoot().get(fieldName);
+    }
 
+    public Predicate andCond(Predicate p){
+        if(this.predicate == null){ this.predicate = p;}
+        else{ this.predicate = this.builder.and(this.predicate, p); }
+
+        return this.predicate;
+    }
+
+    public void prepareWhere(){
+        this.criteriaQuery.where(this.predicate);
+    }
 
 }

@@ -129,21 +129,19 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
 
         filter.orderDescBy("creationDate");
-        Expression<String> path = filter.getRoot().get("challengeName");
-        Predicate phraseCond = filter.getBuilder().like(path, "%" + phrase + "%");
+        Expression<String> challengeNameField = filter.getField("challengeName");
 
-        Predicate phraseCondWithoutUser = filter.getBuilder().and(filter.excludeUser(currentUser), phraseCond);
-        Predicate phraseCondWithoutUserFull = filter.getBuilder().and(phraseCondWithoutUser, filter.excludeChallengesThatUserParticipatesIn(currentUser));
-        Predicate resultCond = filter.getBuilder().and(phraseCondWithoutUserFull, filter.excludePrivateChallenges());
-        filter.getCriteriaQuery().where(resultCond);
+        filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase + "%"));
+        filter.andCond(filter.excludeUser(currentUser));
+        filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        filter.andCond(filter.excludePrivateChallenges());
 
         if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
-            Expression<String> categoryPath = filter.getRoot().get("category");
-            Predicate categoryCond = filter.getBuilder().equal(categoryPath, ChallengeCategory.valueOf(category));
-            Predicate bothCond = filter.getBuilder().and(resultCond, categoryCond);
-            filter.getCriteriaQuery().where(bothCond);
+            Expression<String> categoryField = filter.getField("category");
+            filter.andCond(filter.getBuilder().equal(categoryField, ChallengeCategory.valueOf(category)));
         }
 
+        filter.prepareWhere();
         List<Challenge> challenges = service.findChallenges(filter);
 
         return ok(new Gson().toJson(challenges));
@@ -158,17 +156,16 @@ public class Application extends Controller {
 
         filter.orderDescBy("creationDate");
 
-        Predicate phraseCondWithoutUser = filter.getBuilder().and(filter.excludeUser(currentUser), filter.excludeChallengesThatUserParticipatesIn(currentUser));
-        Predicate resultCond = filter.getBuilder().and(phraseCondWithoutUser, filter.excludePrivateChallenges());
-        filter.getCriteriaQuery().where(resultCond);
+        filter.andCond(filter.excludeUser(currentUser));
+        filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        filter.andCond(filter.excludePrivateChallenges());
 
         if(!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))){
-            Expression<String> categoryPath = filter.getRoot().get("category");
-            Predicate categoryCond = filter.getBuilder().equal(categoryPath, ChallengeCategory.valueOf(category));
-            Predicate bothCond = filter.getBuilder().and(resultCond, categoryCond);
-            filter.getCriteriaQuery().where(bothCond);
+            Expression<String> categoryField = filter.getField("category");
+            filter.andCond(filter.getBuilder().equal(categoryField, ChallengeCategory.valueOf(category)));
         }
 
+        filter.prepareWhere();
         List<Challenge> challenges = service.findChallenges(filter);
 
         return ok(new Gson().toJson(challenges));
@@ -181,11 +178,13 @@ public class Application extends Controller {
         ChallengeFilter filter = new ChallengeFilter(10);
         User currentUser = Application.getLoggedInUser();
 
-        Predicate bothCond = filter.getBuilder().and(filter.excludeUser(currentUser), filter.excludeChallengesThatUserParticipatesIn(currentUser));
-        Predicate resultCond = filter.getBuilder().and(bothCond, filter.excludePrivateChallenges());
-        filter.getCriteriaQuery().where(resultCond);
-
         filter.orderDescBy("creationDate");
+
+        filter.andCond(filter.excludeUser(currentUser));
+        filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
+        filter.andCond(filter.excludePrivateChallenges());
+        filter.prepareWhere();
+
         List<Challenge> challenges = service.findChallenges(filter);
 
         return ok(new Gson().toJson(challenges));
@@ -243,6 +242,11 @@ public class Application extends Controller {
         String date = dateFormat.format(Application.getLoggedInUser().getJoined());
         return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getFacebookService().getFacebookUser().getLastName(), Application.getProfilePictureUrl(),
                 date, getChallengeService().countCreatedChallengesForUser(Application.getLoggedInUsername()), getChallengeService().countCompletedChallenges(Application.getLoggedInUsername())));
+    }
+
+    public static Result showMyChallenges(){
+
+        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl()));
     }
 
 }

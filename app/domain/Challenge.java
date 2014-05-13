@@ -44,6 +44,9 @@ public class Challenge {
     @Column(name = "VISIBILITY")
     private Boolean visibility;
 
+    @Column(name = "ACTIVE")
+    private Boolean active;
+
     protected Challenge(){}
 
     public Challenge(User creator, String challengeName, ChallengeCategory category) {
@@ -52,6 +55,7 @@ public class Challenge {
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
+        this.active = true;
     }
 
     public Challenge(User creator, String challengeName, ChallengeCategory category, String videoDescriptionUrl, Boolean visibility) {
@@ -62,6 +66,7 @@ public class Challenge {
         this.creationDate = new Date();
         this.videoDescriptionUrl = videoDescriptionUrl;
         this.visibility = visibility;
+        this.active = true;
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -123,4 +128,10 @@ public class Challenge {
     public Boolean getVisibility() {
         return visibility;
     }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+
 }

@@ -228,6 +228,16 @@ $(document).ready(function(){
 
     });
 
+    $(".challenge-tab-button").click(function(){
+        var $parentId = $(this).parent().attr("id");
+
+        console.log($parentId);
+        $(".challenge-tab-button").removeClass("selected");
+        $(this).addClass("selected");
+        $(".challenges-body").hide();
+        $("." + $parentId + "-body").fadeIn(300);
+
+    });
 
 
 });

@@ -6,7 +6,7 @@
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
                 <span class="sr-only">Toggle navigation</span>
             </button>
-            <a class="navbar-brand" href="#">Challenger</a>
+            <a class="navbar-brand" href="@routes.Application.index()">Challenger</a>
         </div>
 
         <ul class="nav navbar-nav navbar-right">
@@ -28,7 +28,7 @@
                         }
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">My Challenges</a></li>
+                        <li><a href="@routes.Application.showMyChallenges()">My Challenges</a></li>
                         <li><a href="@routes.Application.showProfile()">View Profile</a></li>
                     </ul>
                 </div>

@@ -1,6 +1,3 @@
-html{ height: 100%; }
-body{ min-height: 100%; }
-
 div#menu-wrapper{ width: 100%; }
 div#menu-wrapper .navbar ul.nav li a{
     line-height: 32px;
@@ -126,31 +123,50 @@ div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants
     vertical-align: middle;
     margin-left: 15px;
 }
-div.account-wrapper{ height: 700px; }
-div#wrapper div#profile-body {
-    display: block;
-    text-align: left;
-    background: url('../images/challenges_search_bg.png') repeat;
-    border-radius: 20px;
-    border: 2px solid #bdc3c7;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
+
+div#wrapper div.single-body-block{
     height: 90%!important;
+    padding-top: 2%;
+    padding-left: 2%;
+    margin: 20px auto 0px auto;
 }
-div#wrapper div#profile-body h2{ text-align: center; }
+div#wrapper div.single-body-block h2{ text-align: center; }
 div#wrapper div#profile-body div#profile-wrapper{
     margin-left: auto;
     margin-right: auto;
-    width: 70%;
     font-size: 18px;
     font-weight: 700;
+    width: 70%;
+    padding-bottom: 25%;
 }
+div#wrapper div#profile-body{ background: url('../images/challenges_search_bg.png') repeat; border-radius: 20px; border: 2px solid #bdc3c7; width: 70%;}
 div#wrapper div#profile-body div#profile-data, div#wrapper div#profile-body div#profile-stats{ display: inline-block; padding-top: 20px; }
 div#wrapper div#profile-body div#profile-stats{ vertical-align: top; }
 div#wrapper div#profile-body div#profile-stats ul{ list-style-type: none; }
 div#wrapper div#profile-body div#profile-data img{ display: block; }
+
+div#wrapper div#my-challenges-body{ margin-top: 0px; background-image: url('../images/challenge_background.jpg'); background-size: 100% 100%; width: 90%; padding: 5%; }
+div#wrapper div#my-challenges-body .challenges-wrapper{ margin-top: 5%; margin-bottom: 5%; }
+div#wrapper div#my-challenges-body .challenge-tabs{ margin-left: 5%; position: relative; }
+div#wrapper div#my-challenges-body .challenge-tabs ul{ margin: 0px; position: absolute; bottom: 0px; }
+div#wrapper div#my-challenges-body .challenge-tabs ul li{ display: inline-block; }
+div#wrapper div#my-challenges-body .challenge-tabs button{ margin-right: 5px; }
+div#wrapper div#my-challenges-body .challenge-tabs li#created-tab button.selected{ background: url('../images/challenges_created_bg.png') repeat top left; }
+div#wrapper div#my-challenges-body .challenge-tabs li#participating-tab button.selected{ background: url('../images/challenges_participating_bg.png') repeat top left; }
+div#wrapper div#my-challenges-body .challenge-tabs li#completed-tab button.selected{ background: url('../images/challenges_completed_bg.png') repeat top left; }
+div#wrapper div#my-challenges-body .challenge-tabs button.selected{ border: 2px solid #bdc3c7; border-bottom: none;}
+div#wrapper div#my-challenges-body .challenges-body{
+    width: 100%;
+    height: 500px;
+    overflow-y: auto;
+    background: url('../images/challenges_created_bg.png') repeat;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+div#wrapper div#my-challenges-body #challenges-participating{ background: url('../images/challenges_participating_bg.png') repeat; display: none; }
+div#wrapper div#my-challenges-body #challenges-completed{ background: url('../images/challenges_completed_bg.png') repeat; display: none; }
+
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

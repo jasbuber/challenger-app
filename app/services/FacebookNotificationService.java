@@ -16,4 +16,14 @@ public class FacebookNotificationService implements NotificationService {
     public void notifyUsers(List<User> users) {
 
     }
+
+    @Override
+    public boolean hasUserAnyNotification(User user) {
+        return false;
+    }
+
+    @Override
+    public boolean hasUserUnreadNotification(User user) {
+        return false;
+    }
 }

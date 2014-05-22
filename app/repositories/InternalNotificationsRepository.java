@@ -22,4 +22,8 @@ public class InternalNotificationsRepository {
     public List<Notification> getAllNotificationsFor(User user) {
         return Collections.emptyList();
     }
+
+    public void update(Notification notification) {
+
+    }
 }

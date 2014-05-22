@@ -18,7 +18,7 @@ public class InternalNotificationService implements NotificationService {
 
     @Override
     public void notifyUser(User user) {
-        internalNotificationsRepository.notifyUser(user, null);
+        internalNotificationsRepository.notifyUser(user, new Notification());
     }
 
     @Override
@@ -43,6 +43,7 @@ public class InternalNotificationService implements NotificationService {
 
     @Override
     public void readNotification(Notification notification) {
-
+        notification.read();
+        internalNotificationsRepository.update(notification);
     }
 }

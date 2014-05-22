@@ -1,8 +1,11 @@
 package services;
 
+import domain.Notification;
 import domain.User;
 import repositories.InternalNotificationsRepository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class InternalNotificationService implements NotificationService {
@@ -15,7 +18,7 @@ public class InternalNotificationService implements NotificationService {
 
     @Override
     public void notifyUser(User user) {
-        internalNotificationsRepository.notifyUser(user);
+        internalNotificationsRepository.notifyUser(user, null);
     }
 
     @Override
@@ -31,5 +34,15 @@ public class InternalNotificationService implements NotificationService {
     @Override
     public boolean hasUserUnreadNotification(User user) {
         return internalNotificationsRepository.hasUserUnreadNotification(user);
+    }
+
+    @Override
+    public List<Notification> getAllNotifications(User user) {
+        return internalNotificationsRepository.getAllNotificationsFor(user);
+    }
+
+    @Override
+    public void readNotification(Notification notification) {
+
     }
 }

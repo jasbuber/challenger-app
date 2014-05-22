@@ -1,5 +1,6 @@
 package services;
 
+import domain.Notification;
 import domain.User;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface NotificationService {
     boolean hasUserAnyNotification(User user);
 
     boolean hasUserUnreadNotification(User user);
+
+    List<Notification> getAllNotifications(User user);
+
+    void readNotification(Notification notification);
 }

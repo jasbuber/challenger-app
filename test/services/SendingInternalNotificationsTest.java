@@ -1,10 +1,13 @@
 package services;
 
+import domain.Notification;
 import domain.User;
 import org.junit.Test;
 import repositories.InternalNotificationsRepository;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertFalse;
@@ -37,7 +40,7 @@ public class SendingInternalNotificationsTest {
     }
 
     @Test
-    public void shouldStoreNewUnreadNotificationInRepositoryWhenOneIsSend() throws Exception {
+    public void shouldStoreNewUnreadNotificationInRepositoryWhenOneIsSent() throws Exception {
         //given
         User userToNotify = new User("username");
 
@@ -48,25 +51,50 @@ public class SendingInternalNotificationsTest {
         assertTrue(notificationService.hasUserUnreadNotification(userToNotify));
     }
 
+    /*@Test
+    public void shouldStoreNoUnreadNotificationsInRepositoryIfOneIsAlreadyRead() throws Exception {
+        //given
+        User user = new User("username");
+        notificationService.notifyUser(user);
+
+        //when
+        List<Notification> notifications = notificationService.getAllNotifications(user);
+        Notification notification = notifications.get(0);
+        notificationService.readNotification(notification);
+
+        //then
+        assertFalse(notificationService.hasUserUnreadNotification(user));
+    }*/
+
     private static class InternalNotificationsRepositoryStub extends InternalNotificationsRepository {
 
-        private Map<User, Boolean> isUserNotifiedMap = new HashMap<User, Boolean>();
+        private Map<User, List<Notification>> usersNotifications = new HashMap<User, List<Notification>>();
 
         @Override
         public boolean hasUserAnyNotification(User user) {
-            Boolean isNotified = isUserNotifiedMap.get(user);
-            return isNotified != null && isNotified;
+            List<Notification> userNotifications = usersNotifications.get(user);
+            return userNotifications != null && !userNotifications.isEmpty();
         }
 
         @Override
-        public void notifyUser(User user) {
-            isUserNotifiedMap.put(user, true);
+        public void notifyUser(User user, Notification notification) {
+            List<Notification> userNotifications = usersNotifications.get(user);
+            if(userNotifications == null) {
+                usersNotifications.put(user, Arrays.asList(notification));
+            } else {
+                usersNotifications.get(user).add(notification);
+            }
         }
 
         @Override
         public boolean hasUserUnreadNotification(User user) {
-            Boolean isNotified = isUserNotifiedMap.get(user);
-            return isNotified != null && isNotified;
+            List<Notification> userNotifications = usersNotifications.get(user);
+            return userNotifications != null && !userNotifications.isEmpty();
+        }
+
+        @Override
+        public List<Notification> getAllNotificationsFor(User user) {
+            return usersNotifications.get(user);
         }
     }
 }

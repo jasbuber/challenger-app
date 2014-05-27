@@ -4,6 +4,7 @@ import play.data.validation.Constraints;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -117,8 +118,8 @@ public class Challenge {
 
     public Long getId() { return id;}
 
-    public Date getCreationDate() {
-        return creationDate;
+    public String getCreationDate() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.creationDate);
     }
 
     public String getVideoDescriptionUrl() {
@@ -131,6 +132,10 @@ public class Challenge {
 
     public Boolean isActive() {
         return active;
+    }
+
+    public void setInactive(){
+        this.active = false;
     }
 
 

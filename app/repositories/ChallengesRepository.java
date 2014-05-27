@@ -98,4 +98,34 @@ public class ChallengesRepository {
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         return (Long) completedChallengesQuery.getSingleResult();
     }
+
+    public List getChallengesWithParticipantsNrForUser(String creatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+                "FROM ChallengeParticipation p " +
+                "RIGHT OUTER JOIN p.challenge c " +
+                "WHERE c.active = true " +
+                "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
+                "GROUP BY c.challengeName");
+        completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
+        return completedChallengesQuery.getResultList();
+    }
+
+    public Challenge closeChallenge(long id){
+        Challenge challenge = getChallenge(id);
+        if( challenge.isActive() ){
+            challenge.setInactive();
+            return JPA.em().merge(challenge);
+        }
+        return challenge;
+    }
+
+    public List<ChallengeResponse> getResponsesForChallenge(long challengeId) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT r " +
+                "FROM ChallengeResponse r " +
+                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)");
+        completedChallengesQuery.setParameter("challengeId", challengeId);
+        return completedChallengesQuery.getResultList();
+    }
+
+    public ChallengeResponse getChallengeResponse(long id){ return JPA.em().find(ChallengeResponse.class, id); }
 }

@@ -19,6 +19,9 @@ public class ChallengeResponse {
     @Column(name = "ACCEPTANCE")
     private Character isAccepted;
 
+    @Column(name = "VIDEO_RESPONSE_URL")
+    private String videoResponseUrl;
+
 
     protected ChallengeResponse() {
         //for jpa purposes...
@@ -26,6 +29,11 @@ public class ChallengeResponse {
 
     public ChallengeResponse(ChallengeParticipation challengeParticipation) {
         this.challengeParticipation = challengeParticipation;
+    }
+
+    public ChallengeResponse(ChallengeParticipation challengeParticipation, String videoResponseUrl) {
+        this.challengeParticipation = challengeParticipation;
+        this.videoResponseUrl = videoResponseUrl;
     }
 
     public ChallengeParticipation getChallengeParticipation() {
@@ -50,5 +58,13 @@ public class ChallengeResponse {
 
     public Long getId() {
         return id;
+    }
+
+    public Character getIsAccepted() {
+        return isAccepted;
+    }
+
+    public String getVideoResponseUrl() {
+        return videoResponseUrl;
     }
 }

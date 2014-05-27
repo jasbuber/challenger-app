@@ -100,7 +100,7 @@ div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#vide
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
 
-div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper, div#wrapper div#my-challenges-body .challenge-events, div#wrapper div#my-challenges-body #video-panel{
     position: absolute;
     top: 100px;
     right: 20px;
@@ -164,9 +164,33 @@ div#wrapper div#my-challenges-body .challenges-body{
     padding: 15px;
 }
 
+div#wrapper div#my-challenges-body .challenges-body table{
+    text-align: center;
+    width: 100%;
+}
+div#wrapper div#my-challenges-body .challenges-body table th{ text-align: center; }
+div#wrapper div#my-challenges-body #challenges-created table tbody td div.switch .switch-on,
+    div#wrapper div#my-challenges-body #challenges-created table tbody td div.switch .switch-off{ width: 175px; }
+div#wrapper div#my-challenges-body #challenges-created table tbody td div.switch{ width: 100px;  -webkit-mask: url('../images/switch/mask-long.png') 0 0 no-repeat; mask: url('../images/switch/mask-long.png') 0 0 no-repeat; }
+div#wrapper div#my-challenges-body #challenges-created table tbody td div.switch .switch-off{ left: -72px; }
+div#wrapper div#my-challenges-body #challenges-created table tbody td a{ color: #34495e; font-weight: 900; }
 div#wrapper div#my-challenges-body #challenges-participating{ background: url('../images/challenges_participating_bg.png') repeat; display: none; }
 div#wrapper div#my-challenges-body #challenges-completed{ background: url('../images/challenges_completed_bg.png') repeat; display: none; }
+div#wrapper div#my-challenges-body .challenge-events{ width: 30%; }
+div#wrapper div#my-challenges-body .challenge-events div{ text-align: center; }
+div#wrapper div#my-challenges-body .challenge-events #responses-div > div{ padding: 15px; }
+div#wrapper div#my-challenges-body .challenge-events #responses-div > div .accept-response{ margin-left: 30px; }
+div#wrapper div#my-challenges-body .challenge-events #responses-div > div img{ display: block; margin-left: auto; margin-right: auto; }
+div#wrapper div#my-challenges-body #video-panel{ right: 32%; width: 50%; height: 500px; margin-top: 5%; }
 
+
+.close-window-div{ display: inline-block; float: right;  }
+.title-div { display: inline-block; text-align: center; width: 80%; margin-bottom: 20px; }
+.title-div span { line-height: 48px; font-size: 20px; font-weight: 700;}
+
+div#wrapper div#my-challenges-body #video-panel .upper-div{ height: 60px; }
+div#wrapper div#my-challenges-body #video-panel .close-window-div{ margin-bottom: 5%; }
+div#wrapper div#my-challenges-body #video-panel .video-js{ display: block; margin-left: auto; margin-right: auto; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

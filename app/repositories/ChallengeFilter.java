@@ -90,4 +90,14 @@ public class ChallengeFilter {
         this.criteriaQuery.where(this.predicate);
     }
 
+    public Predicate excludeInactiveChallenges(){
+        Expression<String> active = root.get("active");
+        return builder.notEqual(active, false);
+    }
+
+    public Predicate setCreator(User u){
+        Expression<String> creator = root.get("creator");
+        return builder.equal(creator, u);
+    }
+
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -87,7 +88,7 @@ public class User {
         return profilePictureUrl;
     }
 
-    public Date getJoined() {
-        return joined;
+    public String getJoined() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.joined);
     }
 }

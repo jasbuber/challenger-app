@@ -19,6 +19,16 @@ GET         /challenge/ajax/latest              controllers.Application.ajaxGetL
 
 POST        /challenge/ajax/participants        controllers.Application.ajaxGetFacebookFriends()
 
+GET         /challenge/ajax/close               controllers.Application.ajaxCloseChallenge(id: String)
+
+GET         /challenge/ajax/responses           controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
+
+POST        /response/ajax/decline              controllers.Application.ajaxDeclineResponse(id: String)
+
+POST        /response/ajax/accept               controllers.Application.ajaxAcceptResponse(id: String)
+
+GET         /javascriptRoutes                   controllers.Application.javascriptRoutes()
+
 #to be removed very soon
 GET         /generate                           controllers.Application.generateData()
 

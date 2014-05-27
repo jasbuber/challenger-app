@@ -2,11 +2,9 @@ package controllers;
 
 import com.restfb.*;
 import com.restfb.json.JsonObject;
-import domain.FacebookUser;
+import domain.*;
 import com.google.gson.Gson;
-import domain.Challenge;
-import domain.ChallengeCategory;
-import domain.User;
+import play.Routes;
 import play.data.Form;
 import play.api.mvc.Request;
 import play.db.jpa.Transactional;
@@ -224,11 +222,21 @@ public class Application extends Controller {
         UserService userService =  new UserService(new UsersRepository());
         ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
 
-        User testUser   = userService.createNewOrGetExistingUser("testuser");
+        User testUser   = userService.createNewOrGetExistingUser(getLoggedInUsername());
         User otherUser  = userService.createNewOrGetExistingUser("otherUser");
         User otherUser2 = userService.createNewOrGetExistingUser("otherUser2");
 
-        service.createChallenge(testUser.getUsername(), "testchgfgfgfallenge", ChallengeCategory.FOOD, "", true);
+        Challenge challenge = service.createChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "", true);
+        service.createChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "", true);
+        service.createChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "", true);
+        service.createChallenge(testUser.getUsername(), "testgh", ChallengeCategory.GETTING_INVOLVED, "", true);
+        service.createChallenge(testUser.getUsername(), "testchgfgfg", ChallengeCategory.FREAK_MODE, "", true);
+        service.createChallenge(testUser.getUsername(), "testchgfgfgfae", ChallengeCategory.USING_A_BRAIN, "", true);
+
+        service.submitChallengeResponse(service.participateInChallenge(challenge, getLoggedInUsername()));
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"));
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"));
+
         service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "", true);
         service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "", false);
         service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "", false);
@@ -238,15 +246,71 @@ public class Application extends Controller {
     }
 
     public static Result showProfile(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String date = dateFormat.format(Application.getLoggedInUser().getJoined());
         return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getFacebookService().getFacebookUser().getLastName(), Application.getProfilePictureUrl(),
-                date, getChallengeService().countCreatedChallengesForUser(Application.getLoggedInUsername()), getChallengeService().countCompletedChallenges(Application.getLoggedInUsername())));
+                Application.getLoggedInUser().getJoined(), getChallengeService().countCreatedChallengesForUser(Application.getLoggedInUsername()), getChallengeService().countCompletedChallenges(Application.getLoggedInUsername())));
     }
 
+    @play.db.jpa.Transactional
     public static Result showMyChallenges(){
 
-        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl()));
+        ChallengeService service =  Application.getChallengeService();
+        User currentUser = Application.getLoggedInUser();
+
+        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername());
+
+        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxCloseChallenge(String id){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        service.closeChallenge(Long.parseLong(id));
+
+        return ok("success");
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxGetResponsesForChallenge(String challengeId){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        List<ChallengeResponse> responses = service.getResponsesForChallenge(Long.parseLong(challengeId));
+
+        return ok(new Gson().toJson(responses));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxDeclineResponse(String responseId){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        ChallengeResponse response = service.getChallengeResponse(Long.parseLong(responseId));
+        service.refuseChallengeResponse(response);
+
+        return ok("success");
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxAcceptResponse(String responseId){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        ChallengeResponse response = service.getChallengeResponse(Long.parseLong(responseId));
+        service.acceptChallengeResponse(response);
+
+        return ok("success");
+    }
+
+    public static Result javascriptRoutes() {
+        response().setContentType("text/javascript");
+        return ok(
+                Routes.javascriptRouter("jsRoutes",
+                        routes.javascript.Application.ajaxDeclineResponse(),
+                        routes.javascript.Application.ajaxAcceptResponse()
+                )
+        );
     }
 
 }

@@ -110,21 +110,55 @@ public class ChallengeService {
         }
     }
 
-    public ChallengeResponse submitChallengeResponse(ChallengeParticipation challengeParticipation) {
-        assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
-        ChallengeResponse challengeResponse = challengesRepository.addChallengeResponse(challengeParticipation);
-        notifyCreator(challengeParticipation.getCreator());
-        notifyOtherChallengeParticipators(challengeParticipation.getChallenge());
-        return challengeResponse;
+    public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation) {
+
+        try {
+            return JPA.withTransaction(new F.Function0<ChallengeResponse>() {
+
+                @Override
+                public ChallengeResponse apply() throws Throwable {
+                    assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
+                    ChallengeResponse challengeResponse = challengesRepository.addChallengeResponse(challengeParticipation);
+                    notifyCreator(challengeParticipation.getCreator());
+                    notifyOtherChallengeParticipators(challengeParticipation.getChallenge());
+                    return challengeResponse;
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
-    private void notifyCreator(User creator) {
-        notificationService.notifyUser(creator);
+    private Boolean notifyCreator(final User creator) {
+        try {
+            return JPA.withTransaction(new F.Function0<Boolean>() {
+
+                @Override
+                public Boolean apply() throws Throwable {
+                    notificationService.notifyUser(creator);
+                    return true;
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
-    private void notifyOtherChallengeParticipators(Challenge challenge) {
-        List<User> otherChallengeParticipators = usersRepository.getParticipatorsFor(challenge);
-        notificationService.notifyUsers(otherChallengeParticipators);
+    private Boolean notifyOtherChallengeParticipators(final Challenge challenge) {
+
+        try {
+            return JPA.withTransaction(new F.Function0<Boolean>() {
+
+                @Override
+                public Boolean apply() throws Throwable {
+                    List<User> otherChallengeParticipators = usersRepository.getParticipatorsFor(challenge);
+                    notificationService.notifyUsers(otherChallengeParticipators);
+                    return true;
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
@@ -134,16 +168,7 @@ public class ChallengeService {
     }
 
     public boolean isNotScoredResponseExistsFor(final ChallengeParticipation challengeParticipation) {
-        try {
-            return JPA.withTransaction("default", READ_ONLY, new F.Function0<Boolean>() {
-                @Override
-                public Boolean apply() throws Throwable {
-                    return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        return challengesRepository.isNotScoredChallengeResponseExistsFor(challengeParticipation);
     }
 
     public ChallengeParticipation getChallengeParticipation(final Challenge challenge, final String participatorUsername) {
@@ -253,5 +278,58 @@ public class ChallengeService {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
+    }
+
+    public List getChallengesWithParticipantsNrForUser(final String username){
+        try {
+            return JPA.withTransaction("default", READ_ONLY, new F.Function0<List>() {
+                @Override
+                public List apply() throws Throwable {
+                    return challengesRepository.getChallengesWithParticipantsNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Challenge closeChallenge(final long id){
+        try {
+            return JPA.withTransaction(new F.Function0<Challenge>() {
+                @Override
+                public Challenge apply() throws Throwable {
+                    return challengesRepository.closeChallenge(id);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public List<ChallengeResponse> getResponsesForChallenge(final long challengeId){
+        try {
+            return JPA.withTransaction("default", READ_ONLY, new F.Function0<List>() {
+                @Override
+                public List apply() throws Throwable {
+                    return challengesRepository.getResponsesForChallenge(challengeId);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public ChallengeResponse getChallengeResponse(final long id){
+        try {
+            return JPA.withTransaction("default", READ_ONLY, new F.Function0<ChallengeResponse>() {
+                @Override
+                public ChallengeResponse apply() throws Throwable {
+                    return challengesRepository.getChallengeResponse(id);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+
     }
 }

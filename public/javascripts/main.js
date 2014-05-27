@@ -48,7 +48,7 @@ $(document).ready(function(){
                 '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="' + challenges[i].id + '"/></div></td></tr>';
         });
         return $body;
-    }
+    };
 
     $("#browse-block-body .form-wrapper form").submit(function(e){
 
@@ -231,7 +231,6 @@ $(document).ready(function(){
     $(".challenge-tab-button").click(function(){
         var $parentId = $(this).parent().attr("id");
 
-        console.log($parentId);
         $(".challenge-tab-button").removeClass("selected");
         $(this).addClass("selected");
         $(".challenges-body").hide();
@@ -239,5 +238,128 @@ $(document).ready(function(){
 
     });
 
+    $(document).on("change", ".challenge-status", function(){
+        var $this = $(this);
+        console.log($(this).parents(".switch").find(".challenge-id").val());
+        if (!$(this).is(":checked")) {
+            alertify.confirm("Are you sure you want to complete the challenge ? Successful responses will be rewarded with points immediately.", function (e) {
+                if (e) {
+                    $("#challenges-created").spin();
+
+                    $.ajax({
+                        url: "/challenge/ajax/close",
+                        data: {
+                            id: $this.parents(".switch").find(".challenge-id").val()
+                        },
+                        method: "GET"
+                    }).done(function (response) {
+                        $("#challenges-created").spin(false);
+                        $this.parents("tr").hide();
+                    });
+                } else {
+                    $this.parents(".switch").bootstrapSwitch('toggleState');
+                }
+            });
+        }
+    });
+
+
+    var formResponses = function(responses){
+
+        var $body = '';
+
+        $.each(responses, function(i) {
+            $body += "<div>" +  responses[i].challengeParticipation.participator.username + '<a class="play-video-response" href="#"><img src="/assets/images/thumbnail.png"/></a>';
+            if(typeof responses[i].isAccepted == 'undefined'){
+                $body += '<div class="rate-response"><button class="btn btn-danger decline-response">Decline</button><button class="btn btn-success accept-response">Accept</button><input class="response-id" type="hidden" value="'+ responses[i].id + '"/> </div>';
+            }
+            $body += '</div>';
+        });
+
+        return $body;
+    }
+
+    $(".show-challenge-events").click(function(e){
+        $("#challenges-created").spin();
+
+        var $this= $(this);
+        $.ajax({
+            url: $this.attr("href"),
+            method: "GET"
+        }).done(function(response){
+            var responses = jQuery.parseJSON(response);
+            $("#challenges-created").spin(false);
+
+            $("#responses-div").html(formResponses(responses));
+            $(".challenge-events").show();
+            $(".challenge-events").find(".challenge-events-title").text($this.text());
+
+        });
+
+        e.preventDefault();
+    });
+
+    $(".close-window").click(function(e){
+        $(this).parents(".challenge-events").hide();
+        $("#video-panel").hide();
+        e.preventDefault();
+    });
+
+    $(document).on("click", ".play-video-response", function(e){
+
+        var $vid_obj = _V_("video-response-player");
+
+        // hide the current loaded poster
+        $("img.vjs-poster").hide();
+
+        // hide the video UI
+        $("#video-response-player_html5_api").hide();
+
+        // and stop it from playing
+        $vid_obj.pause();
+
+        // assign the targeted videos to the source nodes
+        $("video:nth-child(1)").attr("src", "/assets/test_video.mp4");
+
+        // replace the poster source
+        //$("img.vjs-poster").attr("src",$content_path+$target+".jpg").show();
+
+        // reset the UI states
+        //$(".vjs-big-play-button").show();
+
+        $("#video-response-player").removeClass("vjs-playing").addClass("vjs-paused");
+
+
+        // load the new sources
+        $vid_obj.load();
+        $("#video-response-player_html5_api").show();
+
+        $("#video-panel").show();
+        e.preventDefault();
+    });
+
+    $(document).on("click", ".decline-response", function(e){
+        var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
+
+        jsRoutes.controllers.Application.ajaxDeclineResponse($id).ajax({
+            done : function(data) {
+                $(".challenge-events").spin(false);
+            }
+        });
+
+        $parent.fadeOut(1200);
+    });
+
+    $(document).on("click", ".accept-response", function(e){
+        var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
+
+        jsRoutes.controllers.Application.ajaxAcceptResponse($id).ajax({
+            done : function(data) {
+                $(".challenge-events").spin(false);
+            }
+        });
+
+        $parent.fadeOut(1200);
+    });
 
 });

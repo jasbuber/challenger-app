@@ -2,28 +2,38 @@ package domain;
 
 import services.ChallengeEvent;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
+@Entity
+@Table(name = "NOTIFICATIONS")
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private boolean isRead;
+    @Column(name = "IS_READ")
+    private Character isRead = 'N';
 
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    @NotNull
+    private User user;
 
     public Notification() {
     }
 
+    public Notification(User user) {
+        this.user = user;
+    }
+
     public void read() {
-        this.isRead = true;
+        this.isRead = 'Y';
     }
 
     public boolean isRead() {
-        return isRead;
+        return isRead == 'Y';
     }
 
     @Override

@@ -2,8 +2,9 @@ package repositories;
 
 import domain.Notification;
 import domain.User;
+import play.db.jpa.JPA;
 
-import java.util.Collections;
+import javax.persistence.Query;
 import java.util.List;
 
 public class InternalNotificationsRepository {
@@ -20,7 +21,12 @@ public class InternalNotificationsRepository {
     }
 
     public List<Notification> getAllNotificationsFor(User user) {
-        return Collections.emptyList();
+        Query getAllNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
+                                                                     "FROM Notification n " +
+                                                                     "WHERE n.user = :user");
+
+        getAllNotificationsForUserQuery.setParameter("user", user);
+        return getAllNotificationsForUserQuery.getResultList();
     }
 
     public void update(Notification notification) {

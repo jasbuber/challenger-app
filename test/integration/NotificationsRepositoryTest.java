@@ -4,10 +4,10 @@ import domain.Notification;
 import domain.User;
 import org.junit.After;
 import org.junit.Test;
-import play.db.jpa.JPA;
 import repositories.InternalNotificationsRepository;
 import repositories.UsersRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
@@ -25,7 +25,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     @Test
     public void shouldGetNoNotificationsIfNoneForUserInRepository() throws Exception {
-        User user = createUser();
+        User user = createUser("username");
 
         openTransaction();
         List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
@@ -36,7 +36,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     @Test
     public void shouldUserHaveNotificationAfterNotifyingHim() throws Exception {
-        User user = createUser();
+        User user = createUser("username");
 
         openTransaction();
         internalNotificationsRepository.addNotification(new Notification(user));
@@ -54,7 +54,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     @Test
     public void shouldUserHaveNoUnreadNotificationAfterSetOnlyAsRead() throws Exception {
-        User user = createUser();
+        User user = createUser("username");
 
         openTransaction();
         Notification notification = new Notification(user);
@@ -75,9 +75,27 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         assertEquals(1, nrOfUnreadNotifications);
     }
 
-    private User createUser() {
+    @Test
+    public void shouldBothUsersHaveNotificationAfterNotifyingThem() throws Exception {
+        User userOne = createUser("userOne");
+        User userTwo = createUser("userTwo");
+
         openTransaction();
-        User user = usersRepository.createUser("username");
+        internalNotificationsRepository.addNotifications(Arrays.asList(new Notification(userOne), new Notification(userTwo)));
+        closeTransaction();
+
+        openTransaction();
+        List<Notification> notificationsUserOne = internalNotificationsRepository.getAllNotificationsFor(userOne);
+        List<Notification> notificationsUserTwo = internalNotificationsRepository.getAllNotificationsFor(userTwo);
+        closeTransaction();
+
+        assertEquals(1, notificationsUserOne.size());
+        assertEquals(1, notificationsUserTwo.size());
+    }
+
+    private User createUser(String username) {
+        openTransaction();
+        User user = usersRepository.createUser(username);
         closeTransaction();
         return user;
     }

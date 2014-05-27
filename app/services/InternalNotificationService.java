@@ -5,6 +5,7 @@ import domain.User;
 import play.libs.F;
 import repositories.InternalNotificationsRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InternalNotificationService extends TransactionalBase implements NotificationService {
@@ -28,6 +29,22 @@ public class InternalNotificationService extends TransactionalBase implements No
 
     @Override
     public void notifyUsers(List<User> users) {
+        final List<Notification> notifications = createNotificationsFor(users);
+
+        withTransaction(new F.Function0<List<Notification>>() {
+            @Override
+            public List<Notification> apply() throws Throwable {
+                return internalNotificationsRepository.addNotifications(notifications);
+            }
+        });
+    }
+
+    private List<Notification> createNotificationsFor(List<User> users) {
+        final List<Notification> notifications = new ArrayList<Notification>();
+        for (User user : users) {
+            notifications.add(new Notification(user));
+        }
+        return notifications;
     }
 
     @Override

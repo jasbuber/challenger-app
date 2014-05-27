@@ -4,6 +4,7 @@ import services.ChallengeEvent;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "NOTIFICATIONS")
@@ -20,6 +21,11 @@ public class Notification {
     @JoinColumn(name = "USER_ID")
     @NotNull
     private User user;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATION_TIMESTAMP")
+    @NotNull
+    private Date creationTimestamp = new Date();
 
     protected Notification() {
     }

@@ -28,7 +28,6 @@ public class InternalNotificationService extends TransactionalBase implements No
 
     @Override
     public void notifyUsers(List<User> users) {
-
     }
 
     @Override

@@ -9,11 +9,20 @@ import java.util.List;
 
 public class InternalNotificationsRepository {
     public boolean hasUserUnreadNotification(User user) {
-        return false;
+        return getNumberOfUnreadNotifications(user) > 0;
+    }
+
+    public Long getNumberOfUnreadNotifications(User user) {
+        Query getUnreadNotificationsForUserQuery = JPA.em().createQuery("SELECT COUNT(n) " +
+                                                                        "FROM Notification n " +
+                                                                        "WHERE n.user = :user " +
+                                                                        "AND n.isRead = 'Y'");
+        getUnreadNotificationsForUserQuery.setParameter("user", user);
+        return (Long) getUnreadNotificationsForUserQuery.getSingleResult();
     }
 
     public boolean hasUserAnyNotification(User user) {
-        return false;
+        return !getAllNotificationsFor(user).isEmpty();
     }
 
     public Notification addNotification(Notification notification) {

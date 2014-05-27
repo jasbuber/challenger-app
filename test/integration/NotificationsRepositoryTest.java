@@ -25,9 +25,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     @Test
     public void shouldGetNoNotificationsIfNoneForUserInRepository() throws Exception {
-        openTransaction();
-        User user = usersRepository.createUser("username");
-        closeTransaction();
+        User user = createUser();
 
         openTransaction();
         List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
@@ -38,9 +36,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     @Test
     public void shouldUserHaveNotificationAfterNotifyingHim() throws Exception {
-        openTransaction();
-        User user = usersRepository.createUser("username");
-        closeTransaction();
+        User user = createUser();
 
         openTransaction();
         internalNotificationsRepository.addNotification(new Notification(user));
@@ -49,9 +45,41 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
         openTransaction();
         List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
+        boolean hasUserAnyNotification = internalNotificationsRepository.hasUserAnyNotification(user);
         closeTransaction();
 
         assertEquals(1, notifications.size());
+        assertTrue(hasUserAnyNotification);
+    }
+
+    @Test
+    public void shouldUserHaveNoUnreadNotificationAfterSetOnlyAsRead() throws Exception {
+        User user = createUser();
+
+        openTransaction();
+        Notification notification = new Notification(user);
+        internalNotificationsRepository.addNotification(notification);
+        closeTransaction();
+
+        openTransaction();
+        notification.read();
+        internalNotificationsRepository.update(notification);
+        closeTransaction();
+
+        openTransaction();
+        boolean hasUnreadNotification = internalNotificationsRepository.hasUserUnreadNotification(user);
+        long nrOfUnreadNotifications = internalNotificationsRepository.getNumberOfUnreadNotifications(user);
+        closeTransaction();
+
+        assertTrue(hasUnreadNotification);
+        assertEquals(1, nrOfUnreadNotifications);
+    }
+
+    private User createUser() {
+        openTransaction();
+        User user = usersRepository.createUser("username");
+        closeTransaction();
+        return user;
     }
 
 

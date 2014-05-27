@@ -11,8 +11,7 @@ import java.util.List;
 
 public class ChallengesRepository {
 
-    public Challenge createChallenge(User user, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
-        Challenge challenge = new Challenge(user, challengeName, category, videoId, visibility);
+    public Challenge createChallenge(Challenge challenge) {
         JPA.em().persist(challenge);
         return challenge;
     }
@@ -28,8 +27,7 @@ public class ChallengesRepository {
         return challengesWithNameOfCreatorNr > 0;
     }
 
-    public ChallengeParticipation createChallengeParticipation(Challenge challenge, User user) {
-        ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, user);
+    public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
         JPA.em().persist(challengeParticipation);
         return challengeParticipation;
     }
@@ -58,18 +56,58 @@ public class ChallengesRepository {
         return usernameUsersParticipatingNr > 0;
     }
 
-    public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
-        ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
+    public ChallengeResponse addChallengeResponse(ChallengeResponse challengeResponse) {
         JPA.em().persist(challengeResponse);
         return challengeResponse;
     }
 
+    /**
+     * THIS METHOD THROWS EXCEPTION WHEN NO CHALLENGE PARTICIPATION EXISTS FOR GIVEN ARGUMENTS.
+     *
+     * Must be used only after succeeded test for user's participation in challenge.
+     *
+     * No exception is thrown if there is more than one challenge participation for user. The first found result will be returned.
+     * However this is invalid state of the system and is logged with error level.
+     *
+     * @param challenge challenge to get one of participations for
+     * @param participatorUsername username of the participator in challenge
+     * @return challengeParticipation for given challenge of given participator
+     * @throws java.lang.IllegalStateException if there is no challengeParticipation for given challenge of given participator
+     */
     public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
-        return new ChallengeParticipation(challenge, new User(participatorUsername));
+        Query getChallengeParticipationQuery = JPA.em().createQuery("SELECT p " +
+                                                                    "FROM ChallengeParticipation p " +
+                                                                    "WHERE p.challenge = :challenge " +
+                                                                    "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
+        getChallengeParticipationQuery.setParameter("challenge", challenge);
+        getChallengeParticipationQuery.setParameter("participatorUsername", participatorUsername);
+
+        List<ChallengeParticipation> challengeParticipations = getChallengeParticipationQuery.getResultList();
+
+        assertThatChallengeParticipationIsFound(challenge, participatorUsername, challengeParticipations);
+
+        if(challengeParticipations.size() > 1) {
+            //TODO when logger will be added then invalid system state should be logged with error level
+        }
+
+        return challengeParticipations.get(0);
     }
 
-    public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
-        return false;
+    private void assertThatChallengeParticipationIsFound(Challenge challenge, String participatorUsername, List<ChallengeParticipation> challengeParticipations) {
+        if(challengeParticipations.isEmpty()) {
+            throw new IllegalStateException("Participator: " + participatorUsername + " is not participating in challenge " + challenge.getChallengeName());
+        }
+    }
+
+    public boolean isNotEvaluatedChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
+        Query notEvaluatedChallengeResponsesForParticipationNr = JPA.em().createQuery("SELECT count(r) " +
+                                                                                   "FROM ChallengeResponse r " +
+                                                                                   "WHERE r.challengeParticipation = :challengeParticipation " +
+                                                                                   "AND r.isAccepted IS NULL");
+
+        notEvaluatedChallengeResponsesForParticipationNr.setParameter("challengeParticipation", challengeParticipation);
+        Long notEvaluatedChallengeResponsesNr = (Long) notEvaluatedChallengeResponsesForParticipationNr.getSingleResult();
+        return notEvaluatedChallengeResponsesNr > 0;
     }
 
     public Challenge getChallenge(long id){ return JPA.em().find(Challenge.class, id); }
@@ -80,6 +118,14 @@ public class ChallengesRepository {
 
     public ChallengeResponse updateChallengeResponse(ChallengeResponse challengeResponse) {
         return JPA.em().merge(challengeResponse);
+    }
+
+    public List<User> getAllParticipatorsOf(Challenge challenge) {
+        Query participators = JPA.em().createQuery("SELECT p.participator " +
+                                                  "FROM ChallengeParticipation p " +
+                                                  "WHERE p.challenge = :challenge");
+        participators.setParameter("challenge", challenge);
+        return participators.getResultList();
     }
 
     public Long countCreatedChallengesForUser(String username){

@@ -1,10 +1,9 @@
 package services;
 
 import domain.*;
-import integration.EmTestsBase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -12,35 +11,31 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class SubmittingChallengeResponseTest extends EmTestsBase {
+public class SubmittingChallengeResponseTest {
 
     private final static ChallengeCategory SOME_CHALLENGE_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
+    private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
 
     private final NotificationService notificationService = mock(NotificationService.class);
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");
     private Challenge challenge = new Challenge(creator, challengeName, SOME_CHALLENGE_CATEGORY);
     private ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participator);
 
-
     @Before
     public void setUp() {
-        openTransaction();
-    }
-
-    @After
-    public void tearDown() {
-        closeTransaction();
+        when(challengesRepository.addChallengeResponse(Matchers.any(ChallengeResponse.class))).then(returnsFirstArg());
     }
 
     @Test
@@ -57,6 +52,8 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
     @Test(expected = IllegalStateException.class)
     public void shouldDenySubmittingIfNotScoredResponseAlreadySubmittedForTheChallengeBySameUser() throws Exception {
         //given
+        given(challengesRepository.isNotEvaluatedChallengeResponseExistsFor(challengeParticipation)).willReturn(true);
+
 
         //when
         challengeService.submitChallengeResponse(challengeParticipation);
@@ -120,7 +117,7 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
 
         ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challenge, participatorOne);
 
-        given(usersRepository.getParticipatorsFor(challenge)).willReturn(Collections.singletonList(participatorTwo));
+        given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
         challengeService.submitChallengeResponse(challengeParticipationOne);
@@ -128,22 +125,4 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
         //then
         verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo));
     }
-
-    private class ChallengesRepositoryStub extends ChallengesRepository {
-
-        private ChallengeResponse lastlyAddedChallengeResponse;
-
-        @Override
-        public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
-            return lastlyAddedChallengeResponse != null && challengeParticipation.equals(lastlyAddedChallengeResponse.getChallengeParticipation());
-        }
-
-        @Override
-        public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
-            ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
-            lastlyAddedChallengeResponse = challengeResponse;
-            return challengeResponse;
-        }
-    }
-
 }

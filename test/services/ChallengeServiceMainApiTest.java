@@ -4,18 +4,18 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
-import integration.EmTestsBase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+
+import java.util.Collections;
+import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class ChallengeServiceMainApiTest extends EmTestsBase {
+public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UsersRepositoryStub();
@@ -23,20 +23,17 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = createChallengeService();
+
     private final String challengeName = "challengeName";
+
     private final static String SOME_VIDEO_ID = "videoId";
     private final Boolean VISIBILITY_PRIVATE = false;
     private final Boolean VISIBILITY_PUBLIC = true;
 
-    @Before
-    public void setUp() {
-        openTransaction();
-    }
 
-    @After
-    public void tearDown() {
-        closeTransaction();
+    private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
+        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
     }
 
     @Test
@@ -151,27 +148,32 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
         private Boolean visibility;
 
         @Override
-        public Challenge createChallenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
-            this.challengeCreator = creator;
-            this.challengeName = challengeName;
-            return new Challenge(creator, challengeName, category);
+        public Challenge createChallenge(Challenge challenge) {
+            this.challengeCreator = challenge.getCreator();
+            this.challengeName = challenge.getChallengeName();
+            return challenge;
         }
 
         @Override
         public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
-            return challengeName.equals(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
+            return challengeName.equalsIgnoreCase(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
         }
 
         @Override
-        public ChallengeParticipation createChallengeParticipation(Challenge challenge, User participator) {
-            this.challengeParticipatedIn = challenge;
-            this.userWhichParticipates = participator;
-            return new ChallengeParticipation(challenge, participator);
+        public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
+            this.challengeParticipatedIn = challengeParticipation.getChallenge();
+            this.userWhichParticipates = challengeParticipation.getParticipator();
+            return challengeParticipation;
         }
 
         @Override
         public boolean isUserParticipatingInChallenge(Challenge challenge, String participator) {
             return challenge.equals(challengeParticipatedIn) && createUserStub(participator).equals(userWhichParticipates);
+        }
+
+        @Override
+        public List<User> getAllParticipatorsOf(Challenge challenge) {
+            return Collections.emptyList();
         }
 
         private User createUserStub(String username) {
@@ -186,4 +188,5 @@ public class ChallengeServiceMainApiTest extends EmTestsBase {
             return new User(username);
         }
     }
+
 }

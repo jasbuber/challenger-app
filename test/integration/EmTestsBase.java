@@ -60,4 +60,12 @@ public class EmTestsBase {
         }
     }
 
+    protected void clearDatabase() {
+        openTransaction();
+        JPA.em().createQuery("DELETE FROM Notification").executeUpdate();
+        JPA.em().createQuery("DELETE FROM User").executeUpdate();
+        JPA.em().createQuery("DELETE FROM Challenge").executeUpdate();
+        JPA.em().createQuery("DELETE FROM ChallengeParticipation ").executeUpdate();
+        closeTransaction();
+    }
 }

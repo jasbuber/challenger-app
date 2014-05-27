@@ -2,7 +2,9 @@ package integration;
 
 import domain.Notification;
 import domain.User;
+import org.junit.After;
 import org.junit.Test;
+import play.db.jpa.JPA;
 import repositories.InternalNotificationsRepository;
 import repositories.UsersRepository;
 
@@ -15,6 +17,11 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
     private final InternalNotificationsRepository internalNotificationsRepository = new InternalNotificationsRepository();
     private final UsersRepository usersRepository = new UsersRepository();
+
+    @After
+    public void tearDown() {
+        clearDatabase();
+    }
 
     @Test
     public void shouldGetNoNotificationsIfNoneForUserInRepository() throws Exception {
@@ -29,14 +36,14 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         assertTrue(notifications.isEmpty());
     }
 
-    /*@Test
+    @Test
     public void shouldUserHaveNotificationAfterNotifyingHim() throws Exception {
         openTransaction();
         User user = usersRepository.createUser("username");
         closeTransaction();
 
         openTransaction();
-        internalNotificationsRepository.notifyUser(user, new Notification());
+        internalNotificationsRepository.addNotification(new Notification(user));
         closeTransaction();
 
 
@@ -45,7 +52,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         closeTransaction();
 
         assertEquals(1, notifications.size());
-    }*/
+    }
 
 
 }

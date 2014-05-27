@@ -16,8 +16,9 @@ public class InternalNotificationsRepository {
         return false;
     }
 
-    public void notifyUser(User user, Notification notification) {
-
+    public Notification addNotification(Notification notification) {
+        JPA.em().persist(notification);
+        return notification;
     }
 
     public List<Notification> getAllNotificationsFor(User user) {
@@ -29,7 +30,7 @@ public class InternalNotificationsRepository {
         return getAllNotificationsForUserQuery.getResultList();
     }
 
-    public void update(Notification notification) {
-
+    public Notification update(Notification notification) {
+        return JPA.em().merge(notification);
     }
 }

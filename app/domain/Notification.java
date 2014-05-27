@@ -21,7 +21,7 @@ public class Notification {
     @NotNull
     private User user;
 
-    public Notification() {
+    protected Notification() {
     }
 
     public Notification(User user) {
@@ -50,5 +50,9 @@ public class Notification {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

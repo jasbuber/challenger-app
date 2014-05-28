@@ -177,7 +177,7 @@ $(document).ready(function(){
                 });
                 $("#challenge-participants").html($body);
                 $(".switch").bootstrapSwitch();
-            })
+            });
         }
         else {
             $("#challenge-participants-wrapper").hide();

@@ -25,11 +25,7 @@ public class CheckingForExistenceOfNotEvaluatedChallengeResponsesTest extends Em
 
     @After
     public void tearDown() {
-        openTransaction();
-        JPA.em().createQuery("DELETE FROM User").executeUpdate();
-        JPA.em().createQuery("DELETE FROM Challenge").executeUpdate();
-        JPA.em().createQuery("DELETE FROM ChallengeParticipation ").executeUpdate();
-        closeTransaction();
+        clearDatabase();
     }
 
     @Test

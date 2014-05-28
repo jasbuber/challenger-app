@@ -7,7 +7,6 @@ import domain.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.db.jpa.JPA;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -33,11 +32,7 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
 
     @After
     public void tearDown() {
-        openTransaction();
-        JPA.em().createQuery("DELETE FROM User").executeUpdate();
-        JPA.em().createQuery("DELETE FROM Challenge").executeUpdate();
-        JPA.em().createQuery("DELETE FROM ChallengeParticipation ").executeUpdate();
-        closeTransaction();
+        clearDatabase();
     }
 
     @Test

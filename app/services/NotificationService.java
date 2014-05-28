@@ -17,5 +17,5 @@ public interface NotificationService {
 
     List<Notification> getAllNotifications(User user);
 
-    void readNotification(Notification notification);
+    Notification readNotification(Notification notification);
 }

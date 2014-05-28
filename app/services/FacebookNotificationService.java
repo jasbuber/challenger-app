@@ -35,7 +35,7 @@ public class FacebookNotificationService implements NotificationService {
     }
 
     @Override
-    public void readNotification(Notification notification) {
-
+    public Notification readNotification(Notification notification) {
+        return null;
     }
 }

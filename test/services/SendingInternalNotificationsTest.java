@@ -13,7 +13,8 @@ import static junit.framework.TestCase.assertTrue;
 public class SendingInternalNotificationsTest {
 
     private final InternalNotificationsRepository internalNotificationsRepository = new InternalNotificationsRepositoryStub();
-    private final NotificationService notificationService = new InternalNotificationService(internalNotificationsRepository);
+    private final NotificationService notificationService =
+            new InternalNotificationServiceWithoutTransactionMgmt(internalNotificationsRepository);
 
     @Test
     public void shouldUserHaveNoNotificationsIfNoneWasSentToHim() throws Exception {
@@ -76,16 +77,6 @@ public class SendingInternalNotificationsTest {
         }
 
         @Override
-        public void notifyUser(User user, Notification notification) {
-            List<Notification> userNotifications = usersNotifications.get(user);
-            if (userNotifications == null) {
-                usersNotifications.put(user, Arrays.asList(notification));
-            } else {
-                usersNotifications.get(user).add(notification);
-            }
-        }
-
-        @Override
         public boolean hasUserUnreadNotification(User user) {
             List<Notification> userNotifications = usersNotifications.get(user);
             List<Notification> unreadNotifications = new ArrayList<Notification>();
@@ -104,15 +95,29 @@ public class SendingInternalNotificationsTest {
         }
 
         @Override
-        public void update(Notification notification) {
+        public Notification update(Notification notification) {
             Collection<List<Notification>> allNotifications = usersNotifications.values();
             for (List<Notification> userNotifications : allNotifications) {
                 for (Notification userNotification : userNotifications) {
-                    if (notification.equals(notification)) {
+                    if (userNotification.equals(notification)) {
                         userNotification.read();
+                        return userNotification;
                     }
                 }
             }
+            return notification;
+        }
+
+        @Override
+        public Notification addNotification(Notification notification) {
+            User user = notification.getUser();
+            List<Notification> userNotifications = usersNotifications.get(user);
+            if (userNotifications == null) {
+                usersNotifications.put(user, Arrays.asList(notification));
+            } else {
+                usersNotifications.get(user).add(notification);
+            }
+            return notification;
         }
     }
 }

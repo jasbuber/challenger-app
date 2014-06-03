@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 public class NotificationsRepositoryTest extends EmTestsBase {
 
+    private final static String SOME_NOTIFICATION_MSG = "notificationMsg";
+
     private final InternalNotificationsRepository internalNotificationsRepository = new InternalNotificationsRepository();
     private final UsersRepository usersRepository = new UsersRepository();
 
@@ -39,7 +41,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User user = createUser("username");
 
         openTransaction();
-        internalNotificationsRepository.addNotification(new Notification(user));
+        internalNotificationsRepository.addNotification(new Notification(user, SOME_NOTIFICATION_MSG));
         closeTransaction();
 
 
@@ -57,7 +59,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User user = createUser("username");
 
         openTransaction();
-        Notification notification = new Notification(user);
+        Notification notification = new Notification(user, SOME_NOTIFICATION_MSG);
         internalNotificationsRepository.addNotification(notification);
         closeTransaction();
 
@@ -81,7 +83,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User userTwo = createUser("userTwo");
 
         openTransaction();
-        internalNotificationsRepository.addNotifications(Arrays.asList(new Notification(userOne), new Notification(userTwo)));
+        internalNotificationsRepository.addNotifications(Arrays.asList(new Notification(userOne, SOME_NOTIFICATION_MSG), new Notification(userTwo, SOME_NOTIFICATION_MSG)));
         closeTransaction();
 
         openTransaction();

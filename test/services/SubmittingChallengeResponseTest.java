@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 public class SubmittingChallengeResponseTest {
 
     private final static ChallengeCategory SOME_CHALLENGE_CATEGORY = ChallengeCategory.ALL;
+    private final static String SOME_NOTIFICATION_MSG = "notificationMsg";
 
     private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
@@ -106,7 +107,7 @@ public class SubmittingChallengeResponseTest {
         challengeService.submitChallengeResponse(challengeParticipation);
 
         //then
-        verify(notificationService).notifyUser(creator);
+        verify(notificationService).notifyUser(creator, SOME_NOTIFICATION_MSG);
     }
 
     @Test
@@ -123,6 +124,6 @@ public class SubmittingChallengeResponseTest {
         challengeService.submitChallengeResponse(challengeParticipationOne);
 
         //then
-        verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo));
+        verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo), SOME_NOTIFICATION_MSG);
     }
 }

@@ -12,6 +12,8 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SendingInternalNotificationsTest {
 
+    private final static String SOME_NOTIFICATION_MSG = "notificationMsg";
+
     private final InternalNotificationsRepository internalNotificationsRepository = new InternalNotificationsRepositoryStub();
     private final NotificationService notificationService =
             new InternalNotificationServiceWithoutTransactionMgmt(internalNotificationsRepository);
@@ -31,7 +33,7 @@ public class SendingInternalNotificationsTest {
         User userToNotify = new User("username");
 
         //when
-        notificationService.notifyUser(userToNotify);
+        notificationService.notifyUser(userToNotify, SOME_NOTIFICATION_MSG);
 
         //then
         assertTrue(notificationService.hasUserAnyNotification(userToNotify));
@@ -43,7 +45,7 @@ public class SendingInternalNotificationsTest {
         User userToNotify = new User("username");
 
         //when
-        notificationService.notifyUser(userToNotify);
+        notificationService.notifyUser(userToNotify, SOME_NOTIFICATION_MSG);
 
         //then
         assertTrue(notificationService.hasUserUnreadNotification(userToNotify));
@@ -53,7 +55,7 @@ public class SendingInternalNotificationsTest {
     public void shouldStoreNoUnreadNotificationsInRepositoryIfOneIsAlreadyRead() throws Exception {
         //given
         User user = new User("username");
-        notificationService.notifyUser(user);
+        notificationService.notifyUser(user, SOME_NOTIFICATION_MSG);
 
         //when
         List<Notification> notifications = notificationService.getAllNotifications(user);

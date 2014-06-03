@@ -7,8 +7,8 @@ import repositories.UsersRepository;
 public class ChallengeServiceWithoutTransactionMgmt extends ChallengeService {
 
     public ChallengeServiceWithoutTransactionMgmt(ChallengesRepository challengesRepository, UsersRepository usersRepository,
-                                                  NotificationService notificationService) {
-        super(challengesRepository, usersRepository, notificationService);
+                                                  ChallengeNotificationsService challengeNotificationsService) {
+        super(challengesRepository, usersRepository, challengeNotificationsService);
     }
 
     @Override

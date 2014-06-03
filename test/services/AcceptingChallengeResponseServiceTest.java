@@ -3,9 +3,6 @@ package services;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
-import integration.EmTestsBase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -20,11 +17,11 @@ public class AcceptingChallengeResponseServiceTest {
 
     private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
-    private final NotificationService notificationService = mock(NotificationService.class);
+    private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
     private final String challengeName = "challengeName";
 
     private static ChallengeParticipation ANY_CHALLENGE_PARTICIPATION = mock(ChallengeParticipation.class);

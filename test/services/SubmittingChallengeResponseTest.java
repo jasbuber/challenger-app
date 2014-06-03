@@ -20,14 +20,13 @@ import static org.mockito.Mockito.when;
 public class SubmittingChallengeResponseTest {
 
     private final static ChallengeCategory SOME_CHALLENGE_CATEGORY = ChallengeCategory.ALL;
-    private final static String SOME_NOTIFICATION_MSG = "notificationMsg";
 
     private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
 
-    private final NotificationService notificationService = mock(NotificationService.class);
+    private final ChallengeNotificationsService challengeNotficiationService = mock(ChallengeNotificationsService.class);
 
-    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
+    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotficiationService);
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");
@@ -107,7 +106,7 @@ public class SubmittingChallengeResponseTest {
         challengeService.submitChallengeResponse(challengeParticipation);
 
         //then
-        verify(notificationService).notifyUser(creator, SOME_NOTIFICATION_MSG);
+        verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.<User>emptyList());
     }
 
     @Test
@@ -116,14 +115,14 @@ public class SubmittingChallengeResponseTest {
         User participatorOne = new User("participatorOne");
         User participatorTwo = new User("participatorTwo");
 
-        ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challenge, participatorOne);
+        ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participatorOne);
 
         given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipationOne);
+        challengeService.submitChallengeResponse(challengeParticipation);
 
         //then
-        verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo), SOME_NOTIFICATION_MSG);
+        verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.singletonList(participatorTwo));
     }
 }

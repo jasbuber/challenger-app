@@ -12,9 +12,9 @@ public class ChallengeService extends TransactionalBase {
 
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
-    private final NotificationService notificationService;
+    private final ChallengeNotificationsService notificationService;
 
-    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, NotificationService notificationService) {
+    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, ChallengeNotificationsService notificationService) {
         this.challengesRepository = challengesRepository;
         this.usersRepository = usersRepository;
         this.notificationService = notificationService;
@@ -28,7 +28,7 @@ public class ChallengeService extends TransactionalBase {
 
         Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
 
-        notifyAboutChallengeCreation(challenge);
+        notificationService.notifyAboutChallengeCreation(challenge);
 
         return challenge;
     }
@@ -41,20 +41,6 @@ public class ChallengeService extends TransactionalBase {
                 return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
             }
         });
-    }
-
-    private void notifyAboutChallengeCreation(Challenge challenge) {
-        String notificationMsg = "Challenge " + challenge.getChallengeName() + " was successfully created";
-        notifyChallengeCreator(challenge, notificationMsg);
-    }
-
-    private void notifyChallengeCreator(Challenge challenge, String notificationMsg) {
-        notificationService.notifyUser(challenge.getCreator(), notificationMsg);
-    }
-
-    private void notifyAllParticipators(final Challenge challenge, String notificationMsg) {
-        List<User> participators = findAllParticipatorsOf(challenge);
-        notificationService.notifyUsers(participators, notificationMsg);
     }
 
     private List<User> findAllParticipatorsOf(final Challenge challenge) {
@@ -79,21 +65,11 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyAboutNewChallengeParticipation(challenge, participatorUsername);
+        notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, findAllParticipatorsOf(challenge));
 
         return challengeParticipation;
     }
 
-    private void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorUsername) {
-        String challengeCreatorMsg = "New participation was added to your challenge " + challenge.getChallengeName() + "." +
-                " Participator username is " + participatorUsername;
-        String challengeParticipatorsMsg = "New participation was added to the challenge " + challenge.getChallengeName() + ". " +
-                "Participator username is " + participatorUsername + "." +
-                " Challenge creator is " + challenge.getCreator().getUsername();
-
-        notifyChallengeCreator(challenge, challengeCreatorMsg);
-        notifyAllParticipators(challenge, challengeParticipatorsMsg);
-    }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
 
@@ -108,18 +84,9 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyAboutChallengeLeaving(challenge, participatorUsername);
+        notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, findAllParticipatorsOf(challenge));
 
         return challengeRemovalResult;
-    }
-
-    private void notifyAboutChallengeLeaving(Challenge challenge, String participatorUsername) {
-        String challengeCreatorMsg = "Participator " + participatorUsername + " has left your challenge " + challenge.getChallengeName();
-        String challengeParticipatorsMsg = "Participator " + participatorUsername + " has left challenge " + challenge.getChallengeName()
-                + " of user " + challenge.getCreator().getUsername();
-
-        notifyChallengeCreator(challenge, challengeCreatorMsg);
-        notifyAllParticipators(challenge, challengeParticipatorsMsg);
     }
 
     public boolean isUserParticipatingInChallenge(final Challenge challenge, final String user) {
@@ -151,21 +118,9 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyAboutSubmittingChallengeResponse(challengeParticipation);
+        notificationService.notifyAboutSubmittingChallengeResponse(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
 
         return challengeResponse;
-    }
-
-    private void notifyAboutSubmittingChallengeResponse(ChallengeParticipation challengeParticipation) {
-        Challenge challenge = challengeParticipation.getChallenge();
-
-        String challengeCreatorMsg = "User " + challengeParticipation.getParticipator() + " has just submitted response to your challenge " + challenge.getChallengeName();
-        String challengeParticipatorsMsg = "User " + challengeParticipation.getParticipator() + " has just submitted response to the challenge " + challenge.getChallengeName()
-                + " of user " + challenge.getCreator().getUsername();
-
-        notifyChallengeCreator(challenge, challengeCreatorMsg);
-        notifyAllParticipators(challenge, challengeParticipatorsMsg);
-
     }
 
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
@@ -224,20 +179,9 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyAboutChallengeResponseAcceptance(acceptedResponse.getChallengeParticipation());
+        ChallengeParticipation challengeParticipation = acceptedResponse.getChallengeParticipation();
+        notificationService.notifyAboutChallengeResponseAcceptance(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return acceptedResponse;
-    }
-
-    private void notifyAboutChallengeResponseAcceptance(ChallengeParticipation challengeParticipation) {
-        Challenge challenge = challengeParticipation.getChallenge();
-
-        String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
-                " has been accepted by " + challenge.getCreator().getUsername();
-        String participatorsMsg = "Challenge participation in challenge " + challenge.getChallengeName() +
-                " has been accepted by " + challenge.getCreator().getUsername();
-
-        notificationService.notifyUser(challengeParticipation.getParticipator(), challengeParticipatorMsg);
-        notifyAllParticipators(challenge, participatorsMsg);
     }
 
     public ChallengeResponse refuseChallengeResponse(final ChallengeResponse challengeResponse) {
@@ -253,20 +197,9 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyAboutChallengeResponseRefusal(refusedResponse.getChallengeParticipation());
+        ChallengeParticipation challengeParticipation = refusedResponse.getChallengeParticipation();
+        notificationService.notifyAboutChallengeResponseRefusal(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return refusedResponse;
-    }
-
-    private void notifyAboutChallengeResponseRefusal(ChallengeParticipation challengeParticipation) {
-        Challenge challenge = challengeParticipation.getChallenge();
-
-        String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
-                " has been refused by " + challenge.getCreator().getUsername();
-        String participatorsMsg = "Challenge participation in challenge " + challenge.getChallengeName() +
-                " has been refused by " + challenge.getCreator().getUsername();
-
-        notificationService.notifyUser(challengeParticipation.getParticipator(), challengeParticipatorMsg);
-        notifyAllParticipators(challenge, participatorsMsg);
     }
 
     private void assertThatResponseIsNotEvaluatedYet(ChallengeResponse challengeResponse) {
@@ -321,9 +254,9 @@ public class ChallengeService extends TransactionalBase {
 
     public List<ChallengeResponse> getResponsesForChallenge(final long challengeId){
         try {
-            return withReadOnlyTransaction(new F.Function0<List>() {
+            return withReadOnlyTransaction(new F.Function0<List<ChallengeResponse>>() {
                 @Override
-                public List apply() throws Throwable {
+                public List<ChallengeResponse> apply() throws Throwable {
                     return challengesRepository.getResponsesForChallenge(challengeId);
                 }
             });

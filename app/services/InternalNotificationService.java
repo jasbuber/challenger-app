@@ -17,8 +17,8 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public void notifyUser(User user) {
-        final Notification notification = new Notification(user);
+    public void notifyUser(User user, String notificationMsg) {
+        final Notification notification = new Notification(user, notificationMsg);
         withTransaction(new F.Function0<Notification>() {
             @Override
             public Notification apply() throws Throwable {
@@ -28,8 +28,8 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public void notifyUsers(List<User> users) {
-        final List<Notification> notifications = createNotificationsFor(users);
+    public void notifyUsers(List<User> users, String notificationMsg) {
+        final List<Notification> notifications = createNotificationsFor(users, notificationMsg);
 
         withTransaction(new F.Function0<List<Notification>>() {
             @Override
@@ -39,10 +39,10 @@ public class InternalNotificationService extends TransactionalBase implements No
         });
     }
 
-    private List<Notification> createNotificationsFor(List<User> users) {
+    private List<Notification> createNotificationsFor(List<User> users, String notificationMsg) {
         final List<Notification> notifications = new ArrayList<Notification>();
         for (User user : users) {
-            notifications.add(new Notification(user));
+            notifications.add(new Notification(user, notificationMsg));
         }
         return notifications;
     }

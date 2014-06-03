@@ -27,11 +27,15 @@ public class Notification {
     @NotNull
     private Date creationTimestamp = new Date();
 
+    @Column(name = "MESSAGE")
+    private String notificationMsg;
+
     protected Notification() {
     }
 
-    public Notification(User user) {
+    public Notification(User user, String notificationMsg) {
         this.user = user;
+        this.notificationMsg = notificationMsg;
     }
 
     public void read() {

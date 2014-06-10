@@ -174,4 +174,23 @@ public class ChallengesRepository {
     }
 
     public ChallengeResponse getChallengeResponse(long id){ return JPA.em().find(ChallengeResponse.class, id); }
+/*
+    public List<ChallengeParticipation> getChallengeParticipationsForUser(String creatorUsername) {
+        Query challengeParticipationsQuery = JPA.em().createQuery("SELECT p " +
+                "FROM ChallengeParticipation p " +
+                "WHERE p.challenge.active = true " +
+                "AND LOWER(p.participator.username) = LOWER(:creatorUsername)");
+        challengeParticipationsQuery.setParameter("creatorUsername", creatorUsername);
+        return challengeParticipationsQuery.getResultList();
+    }*/
+
+    public List<ChallengeResponse> getChallengeParticipationsForUser(String creatorUsername) {
+        Query challengeParticipationsQuery = JPA.em().createQuery("SELECT p, r " +
+                "FROM ChallengeResponse r " +
+                "RIGHT OUTER JOIN r.challengeParticipation p " +
+                "WHERE p.challenge.active = true " +
+                "AND LOWER(p.participator.username) = LOWER(:creatorUsername)");
+        challengeParticipationsQuery.setParameter("creatorUsername", creatorUsername);
+        return challengeParticipationsQuery.getResultList();
+    }
 }

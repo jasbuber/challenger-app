@@ -113,7 +113,7 @@ $(document).ready(function(){
     var fileInput = $(':file').wrap(wrapper);
 
     fileInput.change(function(){
-        $this = $(this);
+        var $this = $(this);
         if($this.val()!= '') {
             $('#video-input-wrapper').html(' <div id="video-screenshot"><img src="/assets/images/video.png"/>' + $this.val().replace(/.*(\/|\\)/, '') + "</div>");
         }
@@ -122,8 +122,24 @@ $(document).ready(function(){
         }
     });
 
+    var uploadResponse = $(':file').wrap(wrapper);
+
     $('#video-input-wrapper').click(function(){
         fileInput.click();
+    }).show();
+
+    uploadResponse.change(function(){
+        var $this = $(this);
+        if($this.val()!= '') {
+            $('#upload-response-wrapper').html(' <div><img src="/assets/images/video.png"/>' + $this.val().replace(/.*(\/|\\)/, '') + "</div>");
+        }
+        else{
+            $('#upload-response-wrapper').html('<button type="button" class="btn btn-warning">Submit a response.</button>');
+        }
+    });
+
+    $('#upload-response-wrapper').click(function(){
+        uploadResponse.click();
     }).show();
 
     $('#create-challenge-form').submit(function(e) {
@@ -229,18 +245,28 @@ $(document).ready(function(){
     });
 
     $(".challenge-tab-button").click(function(){
-        var $parentId = $(this).parent().attr("id");
+        var $parentId = $(this).parent().attr("id"), $tab = $("." + $parentId + "-body"), $tbody = $tab.find("table tbody");
 
         $(".challenge-tab-button").removeClass("selected");
         $(this).addClass("selected");
         $(".challenges-body").hide();
-        $("." + $parentId + "-body").fadeIn(300);
+        $tab.fadeIn(300);
+
+        if(!$.trim($tbody.html())) {
+            $tab.spin();
+            jsRoutes.controllers.Application.ajaxGetUserParticipations().ajax({
+                success: function (data) {
+                    $tab.spin(false);
+                    $tbody.html(formParticipationsRows(jQuery.parseJSON(data)));
+                }
+            });
+        }
 
     });
 
     $(document).on("change", ".challenge-status", function(){
         var $this = $(this);
-        console.log($(this).parents(".switch").find(".challenge-id").val());
+
         if (!$(this).is(":checked")) {
             alertify.confirm("Are you sure you want to complete the challenge ? Successful responses will be rewarded with points immediately.", function (e) {
                 if (e) {
@@ -341,8 +367,10 @@ $(document).ready(function(){
     $(document).on("click", ".decline-response", function(e){
         var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
 
+        $(".challenge-events").spin();
+
         jsRoutes.controllers.Application.ajaxDeclineResponse($id).ajax({
-            done : function(data) {
+            success : function(data) {
                 $(".challenge-events").spin(false);
             }
         });
@@ -353,13 +381,99 @@ $(document).ready(function(){
     $(document).on("click", ".accept-response", function(e){
         var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
 
+        $(".challenge-events").spin();
+
         jsRoutes.controllers.Application.ajaxAcceptResponse($id).ajax({
-            done : function(data) {
+            success : function(data) {
                 $(".challenge-events").spin(false);
             }
         });
 
         $parent.fadeOut(1200);
+    });
+
+    var formParticipationsRows = function(participations){
+        var $body = "";
+
+        $.each(participations, function(i) {
+            $body += '<tr><td>' + participations[i][0].challenge.challengeName + '</td><td>' + $.formatDateTime('mm/dd/y g:ii a', new Date(participations[i][0].joined)) +
+                '</td><td>time left</td>';
+            if(participations[i][1]!= null){
+                $body += '<td></td><td>submitted <img src="/assets/images/done.png"/></td>';
+            }else {
+                $body += '<td><button type="button" class="btn btn-warning show-upload-response">Submit a response</button></td>' +
+                    '<td><button type="button" class="btn btn-danger leave-challenge">Forfeit</button><input type="hidden" class="challenge-id" value="' + participations[i][0].challenge.id + '"/></div></td></tr>';
+            }
+        });
+        return $body;
+    };
+
+    $(document).on("click", ".leave-challenge", function(){
+        var challengeId = $(this).siblings(".challenge-id").val(), parent = $(this).parents("tr");
+
+        alertify.confirm("Are you sure you want to forfeit this challenge ?", function (e) {
+            if (e) {
+                $(".participating-tab-body").spin();
+
+                jsRoutes.controllers.Application.ajaxLeaveChallenge(challengeId).ajax({
+                    success : function(data) {
+                        parent.remove();
+                        $(".participating-tab-body").spin(false);
+                    }
+                });
+            }
+        });
+
+    });
+
+    $(".close-window-upper-div").click(function(e){
+        e.preventDefault();
+        $(".active-participation").removeClass("active-participation");
+        $(this).parent().parent().hide();
+    });
+
+    $(document).on("click", ".show-upload-response", function(){
+        var challengeId = $(this).parents("tr").find(".challenge-id").val();
+
+        $(".active-participation").removeClass("active-participation");
+        $(this).parents("tr").addClass("active-participation");
+        $("#send-response-wrapper").find("#response-challenge-id").val(challengeId)
+        $('#upload-response-wrapper').html('<button type="button" class="btn btn-warning btn-hg">Upload a video response...</button>');
+        $("#send-response-wrapper").show();
+
+    });
+
+    $('#upload-response-form').submit(function(e) {
+
+        $("#send-response-wrapper").spin();
+        $(this).ajaxSubmit({
+            success: function(response){
+                if(response == "success") {
+
+                    var $parentTd = $(".active-participation").find(".leave-challenge").parents("td");
+
+                    $("#send-response-wrapper").hide();
+                    $(".active-participation").find(".leave-challenge").remove();
+                    $(".active-participation").find(".show-upload-response").remove();
+
+                    $parentTd.html('submitted <img src="/assets/images/done.png"/>');
+                    alertify.alert("Response send!");
+                }
+                else{
+                    var fields = jQuery.parseJSON(response);
+
+                    $.each(fields, function(i) {
+                        var errors = fields[i];
+                        $.each(errors, function(j) {
+                            alertify.error(errors[j].message);
+                        });
+                    });
+                }
+                $("#send-response-wrapper").spin(false);
+            }
+        });
+        e.preventDefault();
+
     });
 
 });

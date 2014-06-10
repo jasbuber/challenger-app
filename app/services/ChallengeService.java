@@ -113,13 +113,13 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
-    public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation) {
+    public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation, final String message, final String videoDescriptionUrl) {
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
         ChallengeResponse challengeResponse = withTransaction(new F.Function0<ChallengeResponse>() {
 
             @Override
             public ChallengeResponse apply() throws Throwable {
-                ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
+                ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation, videoDescriptionUrl, message);
                 return challengesRepository.addChallengeResponse(challengeResponse);
             }
         });
@@ -276,5 +276,18 @@ public class ChallengeService extends TransactionalBase {
             throw new RuntimeException(throwable);
         }
 
+    }
+
+    public List<ChallengeResponse> getChallengeParticipationsForUser(final String participatorUsername) {
+        try {
+            return withReadOnlyTransaction(new F.Function0<List<ChallengeResponse>>() {
+                @Override
+                public List<ChallengeResponse> apply() throws Throwable {
+                    return challengesRepository.getChallengeParticipationsForUser(participatorUsername);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 }

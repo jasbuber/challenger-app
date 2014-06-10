@@ -43,7 +43,7 @@ public class SubmittingChallengeResponseTest {
         //given
 
         //when
-        ChallengeResponse challengeResponse = challengeService.submitChallengeResponse(challengeParticipation);
+        ChallengeResponse challengeResponse = challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
         assertTrue(challengeResponse != null);
@@ -56,8 +56,8 @@ public class SubmittingChallengeResponseTest {
 
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipation);
-        challengeService.submitChallengeResponse(challengeParticipation);
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then throw exception
     }
@@ -73,8 +73,8 @@ public class SubmittingChallengeResponseTest {
         ChallengeParticipation challengeParticipationTwo = new ChallengeParticipation(challenge, participatorTwo);
 
         //when
-        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne);
-        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo);
+        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo, "test", "test");
 
         //then
         assertEquals(challengeParticipationOne, responseForParticipationOne.getChallengeParticipation());
@@ -92,8 +92,8 @@ public class SubmittingChallengeResponseTest {
 
 
         //when
-        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne);
-        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo);
+        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo, "test", "test");
 
         //then
         assertEquals(challengeParticipationOne, responseForParticipationOne.getChallengeParticipation());
@@ -103,7 +103,7 @@ public class SubmittingChallengeResponseTest {
     @Test
     public void shouldNotifyChallengeCreatorWhenSubmittingForChallenge() throws Exception {
         //when
-        challengeService.submitChallengeResponse(challengeParticipation);
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
         verify(notificationService).notifyUser(creator);
@@ -120,7 +120,7 @@ public class SubmittingChallengeResponseTest {
         given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipationOne);
+        challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
 
         //then
         verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo));

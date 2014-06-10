@@ -3,38 +3,44 @@
 # ~~~~
 
 # Home page
-GET         /account                            controllers.Application.index()
+GET         /account                                controllers.Application.index()
 
-GET         /                                   controllers.Application.start(code: String ?= "", error_reason: String ?= "")
+GET         /                                       controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 
-POST        /challenge/create                   controllers.Application.ajaxCreateChallenge()
+POST        /challenge/create                       controllers.Application.ajaxCreateChallenge()
 
-GET         /challenge/ajax/search              controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
+GET         /challenge/ajax/search                  controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
-GET         /challenge/ajax/participate         controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
+GET         /challenge/ajax/participate             controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
 
-GET         /challenge/ajax/searchbycategory    controllers.Application.ajaxGetChallengesForCategory(category: String)
+GET         /challenge/ajax/searchbycategory        controllers.Application.ajaxGetChallengesForCategory(category: String)
 
-GET         /challenge/ajax/latest              controllers.Application.ajaxGetLatestChallenges()
+GET         /challenge/ajax/latest                  controllers.Application.ajaxGetLatestChallenges()
 
-POST        /challenge/ajax/participants        controllers.Application.ajaxGetFacebookFriends()
+POST        /challenge/ajax/participants            controllers.Application.ajaxGetFacebookFriends()
 
-GET         /challenge/ajax/close               controllers.Application.ajaxCloseChallenge(id: String)
+GET         /challenge/ajax/close                   controllers.Application.ajaxCloseChallenge(id: String)
 
-GET         /challenge/ajax/responses           controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
+GET         /challenge/ajax/responses               controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
 
-POST        /response/ajax/decline              controllers.Application.ajaxDeclineResponse(id: String)
+POST        /response/ajax/decline                  controllers.Application.ajaxDeclineResponse(id: String)
 
-POST        /response/ajax/accept               controllers.Application.ajaxAcceptResponse(id: String)
+POST        /response/ajax/accept                   controllers.Application.ajaxAcceptResponse(id: String)
 
-GET         /javascriptRoutes                   controllers.Application.javascriptRoutes()
+POST        /response/ajax/submit                   controllers.Application.ajaxSubmitChallengeResponse()
+
+GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
+
+POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
+
+GET         /javascriptRoutes                       controllers.Application.javascriptRoutes()
 
 #to be removed very soon
-GET         /generate                           controllers.Application.generateData()
+GET         /generate                               controllers.Application.generateData()
 
-GET         /profile                            controllers.Application.showProfile()
+GET         /profile                                controllers.Application.showProfile()
 
-GET         /challenges                         controllers.Application.showMyChallenges()
+GET         /challenges                             controllers.Application.showMyChallenges()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                       controllers.Assets.at(path="/public", file)
+GET         /assets/*file                           controllers.Assets.at(path="/public", file)

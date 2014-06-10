@@ -233,9 +233,9 @@ public class Application extends Controller {
         service.createChallenge(testUser.getUsername(), "testchgfgfg", ChallengeCategory.FREAK_MODE, "", true);
         service.createChallenge(testUser.getUsername(), "testchgfgfgfae", ChallengeCategory.USING_A_BRAIN, "", true);
 
-        service.submitChallengeResponse(service.participateInChallenge(challenge, getLoggedInUsername()));
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"));
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"));
+        service.submitChallengeResponse(service.participateInChallenge(challenge, getLoggedInUsername()), "fsfdsdss", "");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"), "fsfdsdss", "");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsfdsdss", "");
 
         service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "", true);
         service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "", false);
@@ -255,10 +255,11 @@ public class Application extends Controller {
 
         ChallengeService service =  Application.getChallengeService();
         User currentUser = Application.getLoggedInUser();
+        Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
         List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername());
 
-        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges));
+        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, responseForm));
     }
 
     @play.db.jpa.Transactional
@@ -308,9 +309,67 @@ public class Application extends Controller {
         return ok(
                 Routes.javascriptRouter("jsRoutes",
                         routes.javascript.Application.ajaxDeclineResponse(),
-                        routes.javascript.Application.ajaxAcceptResponse()
+                        routes.javascript.Application.ajaxAcceptResponse(),
+                        routes.javascript.Application.ajaxGetUserParticipations(),
+                        routes.javascript.Application.ajaxLeaveChallenge()
                 )
         );
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxGetUserParticipations(){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        List<ChallengeResponse> participations = service.getChallengeParticipationsForUser(getLoggedInUsername());
+
+        return ok(new Gson().toJson(participations));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxLeaveChallenge(String challengeId){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        Challenge challenge = service.getChallenge(Long.parseLong(challengeId));
+
+        service.leaveChallenge(challenge, getLoggedInUsername());
+
+        return ok("success");
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxSubmitChallengeResponse(){
+
+        Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class).bindFromRequest();
+
+        ChallengeService service = getChallengeService();
+
+        if(responseForm.hasErrors()) {
+            return ok(new Gson().toJson(responseForm.errors()));
+        } else {
+            CreateChallengeResponseForm response = responseForm.get();
+
+            String videoId = "";
+            if(request().body().asMultipartFormData().getFile("video-description") !=null) {
+                try {
+                    Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
+                    InputStream stream = new FileInputStream(resourceFile.getFile());
+                    videoId = Application.getFacebookService().publishAVideo(resourceFile.getFilename(), stream, resourceFile.getFilename());
+
+                } catch (FileNotFoundException e) {}
+            }else {
+                responseForm.reject("You need to choose a video response...");
+                return ok(new Gson().toJson(responseForm.errors()));
+            }
+
+            Challenge challenge = service.getChallenge(Long.parseLong(response.getChallengeId()));
+
+            ChallengeParticipation participation = service.getChallengeParticipation(challenge, getLoggedInUsername());
+            ChallengeResponse newResponse = service.submitChallengeResponse(participation, videoId, response.getMessage());
+
+            return ok("success");
+        }
     }
 
 }

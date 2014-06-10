@@ -7,6 +7,9 @@ package domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "CHALLENGE_PARTICIPATIONS")
@@ -27,6 +30,11 @@ public class ChallengeParticipation {
     @NotNull
     private User participator;
 
+    @Column(name = "JOINED" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date joined;
+
     protected ChallengeParticipation() {
         //for jpa purposes...
     }
@@ -35,6 +43,7 @@ public class ChallengeParticipation {
     public ChallengeParticipation(Challenge challenge, User participator) {
         this.challenge = challenge;
         this.participator = participator;
+        this.joined = new Date();
     }
 
     public Challenge getChallenge() {
@@ -72,4 +81,9 @@ public class ChallengeParticipation {
     public Long getId() {
         return id;
     }
+
+    public String getJoined() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.joined);
+    }
+
 }

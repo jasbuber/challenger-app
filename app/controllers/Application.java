@@ -315,7 +315,12 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetUserParticipations(),
                         routes.javascript.Application.ajaxLeaveChallenge(),
                         routes.javascript.Application.ajaxChangeChallengeParticipation(),
-                        routes.javascript.Application.ajaxCloseChallenge()
+                        routes.javascript.Application.ajaxCloseChallenge(),
+                        routes.javascript.Application.ajaxGetChallengesForCriteria(),
+                        routes.javascript.Application.ajaxGetChallengesForCategory(),
+                        routes.javascript.Application.ajaxGetLatestChallenges(),
+                        routes.javascript.Application.ajaxGetResponsesForChallenge(),
+                        routes.javascript.Application.ajaxGetFacebookFriends()
                 )
         );
     }

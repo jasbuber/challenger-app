@@ -26,7 +26,7 @@
                                 <tbody>
                                     @challenges.map { challenge =>
                                     <tr>
-                                        <td><a class="show-challenge-events" href="@routes.Application.ajaxGetResponsesForChallenge(challenge.apply(3).toString)">@challenge.apply(0)</a></td>
+                                        <td><a class="show-challenge-events" href="@challenge.apply(3).toString">@challenge.apply(0)</a></td>
                                         <td>@challenge.apply(1).asInstanceOf[Date].format("dd-MM-yyyy")</td>
                                         <td><b>@challenge.apply(2)</b></td>
                                         <td>

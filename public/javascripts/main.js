@@ -52,22 +52,20 @@ $(document).ready(function(){
 
     $("#browse-block-body .form-wrapper form").submit(function(e){
 
+        var phrase = $(".challenge-search-phrase").val(), category = $(".challenge-category").val();
+
         $(".challenge-search-results").spin();
 
-        $.ajax({
-            url: "/challenge/ajax/search",
-            data: {
-                phrase: $(".challenge-search-phrase").val(),
-                category: $(".challenge-category").val()
-            },
-            method: "get"
-        }).done(function(response){
-            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+        jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category).ajax({
+            success : function(response) {
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
 
-            $(".challenge-search-results table tbody").html(body);
-            $(".switch").bootstrapSwitch();
-            $(".challenge-search-results").spin(false);
-        })
+                $(".challenge-search-results table tbody").html(body);
+                $(".switch").bootstrapSwitch();
+                $(".challenge-search-results").spin(false);
+            }
+        });
+
         e.preventDefault();
     });
 
@@ -75,16 +73,16 @@ $(document).ready(function(){
 
         $(".challenge-search-results").spin();
 
-        $.ajax({
-            url: "/challenge/ajax/latest",
-            method: "get"
-        }).done(function(response){
-            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+        jsRoutes.controllers.Application.ajaxGetLatestChallenges().ajax({
+            success : function(response) {
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
 
-            $(".challenge-search-results table tbody").html(body);
-            $(".switch").bootstrapSwitch();
-            $(".challenge-search-results").spin(false);
-        })
+                $(".challenge-search-results table tbody").html(body);
+                $(".switch").bootstrapSwitch();
+                $(".challenge-search-results").spin(false);
+            }
+        });
+
         e.preventDefault();
     });
 
@@ -172,22 +170,21 @@ $(document).ready(function(){
             $("#challenge-participants-wrapper").show();
             $("#challenge-participants-wrapper").spin();
 
-            $.ajax({
-                url: "/challenge/ajax/participants",
-                method: "POST"
-            }).done(function(response){
-                var participants = jQuery.parseJSON(response), $body = "";
-                $("#challenge-participants-wrapper").spin(false);
+            jsRoutes.controllers.Application.ajaxGetFacebookFriends().ajax({
+                success : function(response) {
+                    var participants = jQuery.parseJSON(response), $body = "";
+                    $("#challenge-participants-wrapper").spin(false);
 
-                $.each(participants, function(i) {
+                    $.each(participants, function(i) {
 
-                    var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
-                    $body +=
-                        '<li class="friend-item"><a href="#"><img src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
-                        '</span></a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
-                });
-                $("#challenge-participants").html($body);
-                $(".switch").bootstrapSwitch();
+                        var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
+                        $body +=
+                            '<li class="friend-item"><a href="#"><img src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
+                            '</span></a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
+                    });
+                    $("#challenge-participants").html($body);
+                    $(".switch").bootstrapSwitch();
+                }
             });
         }
         else {
@@ -196,6 +193,8 @@ $(document).ready(function(){
     });
 
     $(".challenge-category").change(function(e){
+
+        var category = $(".challenge-category").val();
 
         $(".challenge-search-results").spin();
 
@@ -211,6 +210,16 @@ $(document).ready(function(){
             $(".challenge-search-results table tbody").html(body);
             $(".switch").bootstrapSwitch();
             $(".challenge-search-results").spin(false);
+        });
+
+        jsRoutes.controllers.Application.ajaxGetChallengesForCategory(category).ajax({
+            success : function(response) {
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+
+                $(".challenge-search-results table tbody").html(body);
+                $(".switch").bootstrapSwitch();
+                $(".challenge-search-results").spin(false);
+            }
         });
     });
 
@@ -298,20 +307,20 @@ $(document).ready(function(){
     }
 
     $(".show-challenge-events").click(function(e){
+
+        var $this = $(this), challengeId = $this.attr("href");
+
         $("#challenges-created").spin();
 
-        var $this= $(this);
-        $.ajax({
-            url: $this.attr("href"),
-            method: "GET"
-        }).done(function(response){
-            var responses = jQuery.parseJSON(response);
-            $("#challenges-created").spin(false);
+        jsRoutes.controllers.Application.ajaxGetResponsesForChallenge(challengeId).ajax({
+            success: function (response) {
+                var responses = jQuery.parseJSON(response);
+                $("#challenges-created").spin(false);
 
-            $("#responses-div").html(formResponses(responses));
-            $(".challenge-events").show();
-            $(".challenge-events").find(".challenge-events-title").text($this.text());
-
+                $("#responses-div").html(formResponses(responses));
+                $(".challenge-events").show();
+                $(".challenge-events").find(".challenge-events-title").text($this.text());
+            }
         });
 
         e.preventDefault();
@@ -391,7 +400,7 @@ $(document).ready(function(){
             $body += '<tr><td>' + participations[i][0].challenge.challengeName + '</td><td>' + $.formatDateTime('mm/dd/y g:ii a', new Date(participations[i][0].joined)) +
                 '</td><td>time left</td>';
             if(participations[i][1]!= null){
-                $body += '<td></td><td>submitted <img src="/assets/images/done.png"/></td>';
+                $body += '<td><img src="/assets/images/done.png"/></td><td></td>';
             }else {
                 $body += '<td><button type="button" class="btn btn-warning show-upload-response">Submit a response</button></td>' +
                     '<td><button type="button" class="btn btn-danger leave-challenge">Forfeit</button><input type="hidden" class="challenge-id" value="' + participations[i][0].challenge.id + '"/></div></td></tr>';

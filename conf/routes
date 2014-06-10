@@ -11,7 +11,7 @@ POST        /challenge/create                       controllers.Application.ajax
 
 GET         /challenge/ajax/search                  controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
-GET         /challenge/ajax/participate             controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
+POST        /challenge/ajax/participate             controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
 
 GET         /challenge/ajax/searchbycategory        controllers.Application.ajaxGetChallengesForCategory(category: String)
 
@@ -19,7 +19,7 @@ GET         /challenge/ajax/latest                  controllers.Application.ajax
 
 POST        /challenge/ajax/participants            controllers.Application.ajaxGetFacebookFriends()
 
-GET         /challenge/ajax/close                   controllers.Application.ajaxCloseChallenge(id: String)
+POST        /challenge/ajax/close                   controllers.Application.ajaxCloseChallenge(id: String)
 
 GET         /challenge/ajax/responses               controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
 

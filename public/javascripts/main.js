@@ -90,23 +90,18 @@ $(document).ready(function(){
 
     $(document).on("change", ".challenge-search-results .switch input[type=checkbox]", function(){
 
-        var $this = $(this);
+        var $this = $(this), id = $(this).parents(".switch").find(".challenge-id").val(), state = $(this).is(":checked");
         $(".challenge-search-results").spin();
 
-        $.ajax({
-            url: "/challenge/ajax/participate",
-            data: {
-                id: $(this).parents(".switch").find(".challenge-id").val(),
-                state: $(this).is(":checked")
-            },
-            method: "get"
-        }).done(function(response){
-            if(response === "success" && $this.is(":checked")) {
-                alertify.success("You joined the competition!");
+        jsRoutes.controllers.Application.ajaxChangeChallengeParticipation(id, state).ajax({
+            success : function(response) {
+                if(response === "success" && $this.is(":checked")) {
+                    alertify.success("You joined the competition!");
+                }
+                else{ alertify.error("You left the competition...");}
+                $(".challenge-search-results").spin(false);
             }
-            else{ alertify.error("You left the competition...");}
-            $(".challenge-search-results").spin(false);
-        })
+        });
     });
 
     var wrapper = $('<div/>').css({height:0,width:0,'display':'none'});
@@ -265,23 +260,20 @@ $(document).ready(function(){
     });
 
     $(document).on("change", ".challenge-status", function(){
-        var $this = $(this);
+        var $this = $(this), id = $this.parents(".switch").find(".challenge-id").val();
 
         if (!$(this).is(":checked")) {
             alertify.confirm("Are you sure you want to complete the challenge ? Successful responses will be rewarded with points immediately.", function (e) {
                 if (e) {
                     $("#challenges-created").spin();
 
-                    $.ajax({
-                        url: "/challenge/ajax/close",
-                        data: {
-                            id: $this.parents(".switch").find(".challenge-id").val()
-                        },
-                        method: "GET"
-                    }).done(function (response) {
-                        $("#challenges-created").spin(false);
-                        $this.parents("tr").hide();
+                    jsRoutes.controllers.Application.ajaxCloseChallenge(id).ajax({
+                        success: function (response) {
+                            $("#challenges-created").spin(false);
+                            $this.parents("tr").hide();
+                        }
                     });
+
                 } else {
                     $this.parents(".switch").bootstrapSwitch('toggleState');
                 }

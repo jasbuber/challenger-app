@@ -313,7 +313,9 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxDeclineResponse(),
                         routes.javascript.Application.ajaxAcceptResponse(),
                         routes.javascript.Application.ajaxGetUserParticipations(),
-                        routes.javascript.Application.ajaxLeaveChallenge()
+                        routes.javascript.Application.ajaxLeaveChallenge(),
+                        routes.javascript.Application.ajaxChangeChallengeParticipation(),
+                        routes.javascript.Application.ajaxCloseChallenge()
                 )
         );
     }

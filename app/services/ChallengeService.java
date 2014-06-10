@@ -12,9 +12,9 @@ public class ChallengeService extends TransactionalBase {
 
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
-    private final NotificationService notificationService;
+    private final ChallengeNotificationsService notificationService;
 
-    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, NotificationService notificationService) {
+    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, ChallengeNotificationsService notificationService) {
         this.challengesRepository = challengesRepository;
         this.usersRepository = usersRepository;
         this.notificationService = notificationService;
@@ -26,7 +26,11 @@ public class ChallengeService extends TransactionalBase {
                     " has already been created by user " + creatorUsername);
         }
 
-        return createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+
+        notificationService.notifyAboutChallengeCreation(challenge);
+
+        return challenge;
     }
 
     private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
@@ -37,15 +41,6 @@ public class ChallengeService extends TransactionalBase {
                 return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
             }
         });
-    }
-
-    private void notifyChallengeCreator(Challenge challenge) {
-        notificationService.notifyUser(challenge.getCreator());
-    }
-
-    private void notifyAllParticipators(final Challenge challenge) {
-        List<User> participators = findAllParticipatorsOf(challenge);
-        notificationService.notifyUsers(participators);
     }
 
     private List<User> findAllParticipatorsOf(final Challenge challenge) {
@@ -70,11 +65,11 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyChallengeCreator(challenge);
-        notifyAllParticipators(challenge);
+        notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, findAllParticipatorsOf(challenge));
 
         return challengeParticipation;
     }
+
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
 
@@ -89,8 +84,7 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyChallengeCreator(challenge);
-        notifyAllParticipators(challenge);
+        notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, findAllParticipatorsOf(challenge));
 
         return challengeRemovalResult;
     }
@@ -124,8 +118,7 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notifyChallengeCreator(challengeParticipation.getChallenge());
-        notifyAllParticipators(challengeParticipation.getChallenge());
+        notificationService.notifyAboutSubmittingChallengeResponse(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
 
         return challengeResponse;
     }
@@ -174,7 +167,7 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public ChallengeResponse acceptChallengeResponse(final ChallengeResponse challengeResponse) {
-        return withTransaction(new F.Function0<ChallengeResponse>() {
+        ChallengeResponse acceptedResponse = withTransaction(new F.Function0<ChallengeResponse>() {
 
             @Override
             public ChallengeResponse apply() throws Throwable {
@@ -185,10 +178,14 @@ public class ChallengeService extends TransactionalBase {
                 return challengeResponse;
             }
         });
+
+        ChallengeParticipation challengeParticipation = acceptedResponse.getChallengeParticipation();
+        notificationService.notifyAboutChallengeResponseAcceptance(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
+        return acceptedResponse;
     }
 
     public ChallengeResponse refuseChallengeResponse(final ChallengeResponse challengeResponse) {
-        return withTransaction(new F.Function0<ChallengeResponse>() {
+        ChallengeResponse refusedResponse = withTransaction(new F.Function0<ChallengeResponse>() {
 
             @Override
             public ChallengeResponse apply() throws Throwable {
@@ -199,6 +196,10 @@ public class ChallengeService extends TransactionalBase {
                 return challengeResponse;
             }
         });
+
+        ChallengeParticipation challengeParticipation = refusedResponse.getChallengeParticipation();
+        notificationService.notifyAboutChallengeResponseRefusal(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
+        return refusedResponse;
     }
 
     private void assertThatResponseIsNotEvaluatedYet(ChallengeResponse challengeResponse) {
@@ -253,9 +254,9 @@ public class ChallengeService extends TransactionalBase {
 
     public List<ChallengeResponse> getResponsesForChallenge(final long challengeId){
         try {
-            return withReadOnlyTransaction(new F.Function0<List>() {
+            return withReadOnlyTransaction(new F.Function0<List<ChallengeResponse>>() {
                 @Override
-                public List apply() throws Throwable {
+                public List<ChallengeResponse> apply() throws Throwable {
                     return challengesRepository.getResponsesForChallenge(challengeId);
                 }
             });

@@ -19,7 +19,7 @@ public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UsersRepositoryStub();
-    private final NotificationService notificationService = mock(NotificationService.class);
+    private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
@@ -33,7 +33,7 @@ public class ChallengeServiceMainApiTest {
 
 
     private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
-        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, notificationService);
+        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
     }
 
     @Test

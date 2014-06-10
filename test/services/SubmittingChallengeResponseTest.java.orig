@@ -120,7 +120,11 @@ public class SubmittingChallengeResponseTest {
         given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
+<<<<<<< HEAD
         challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+=======
+        challengeService.submitChallengeResponse(challengeParticipation);
+>>>>>>> origin/facebook-integration
 
         //then
         verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.singletonList(participatorTwo));

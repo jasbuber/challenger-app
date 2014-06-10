@@ -12,11 +12,9 @@ import play.mvc.*;
 
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
+import repositories.InternalNotificationsRepository;
 import repositories.UsersRepository;
-import services.ChallengeService;
-import services.FacebookNotificationService;
-import services.FacebookService;
-import services.UserService;
+import services.*;
 import views.html.*;
 
 import java.io.*;
@@ -89,7 +87,7 @@ public class Application extends Controller {
 
     //need to exist until dependency injection framework is added
     private static ChallengeService getChallengeService() {
-        return new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
+        return new ChallengeService(new ChallengesRepository(), new UsersRepository(), createNotificationService());
     }
 
     //need to exist until dependency injection framework is added
@@ -220,7 +218,7 @@ public class Application extends Controller {
     public static Result generateData(){
 
         UserService userService =  new UserService(new UsersRepository());
-        ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), new FacebookNotificationService());
+        ChallengeService service =  new ChallengeService(new ChallengesRepository(), new UsersRepository(), createNotificationService());
 
         User testUser   = userService.createNewOrGetExistingUser(getLoggedInUsername());
         User otherUser  = userService.createNewOrGetExistingUser("otherUser");
@@ -243,6 +241,10 @@ public class Application extends Controller {
         service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "", true);
 
         return redirect(routes.Application.index());
+    }
+
+    private static ChallengeNotificationsService createNotificationService() {
+        return new ChallengeNotificationsService(new InternalNotificationService(new InternalNotificationsRepository()));
     }
 
     public static Result showProfile(){

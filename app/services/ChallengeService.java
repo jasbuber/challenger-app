@@ -291,4 +291,17 @@ public class ChallengeService extends TransactionalBase {
             throw new RuntimeException(throwable);
         }
     }
+
+    public List<Challenge> getCompletedChallenges(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<List<Challenge>>() {
+                @Override
+                public List<Challenge> apply() throws Throwable {
+                    return challengesRepository.getCompletedChallenges(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
 }

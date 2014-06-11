@@ -174,15 +174,6 @@ public class ChallengesRepository {
     }
 
     public ChallengeResponse getChallengeResponse(long id){ return JPA.em().find(ChallengeResponse.class, id); }
-/*
-    public List<ChallengeParticipation> getChallengeParticipationsForUser(String creatorUsername) {
-        Query challengeParticipationsQuery = JPA.em().createQuery("SELECT p " +
-                "FROM ChallengeParticipation p " +
-                "WHERE p.challenge.active = true " +
-                "AND LOWER(p.participator.username) = LOWER(:creatorUsername)");
-        challengeParticipationsQuery.setParameter("creatorUsername", creatorUsername);
-        return challengeParticipationsQuery.getResultList();
-    }*/
 
     public List<ChallengeResponse> getChallengeParticipationsForUser(String creatorUsername) {
         Query challengeParticipationsQuery = JPA.em().createQuery("SELECT p, r " +
@@ -192,5 +183,15 @@ public class ChallengesRepository {
                 "AND LOWER(p.participator.username) = LOWER(:creatorUsername)");
         challengeParticipationsQuery.setParameter("creatorUsername", creatorUsername);
         return challengeParticipationsQuery.getResultList();
+    }
+
+    public List<Challenge> getCompletedChallenges(String username) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT DISTINCT c " +
+                "FROM Challenge c " +
+                "WHERE c.active = false AND LOWER(c.creator.username) = LOWER(:username) OR c IN " +
+                "(SELECT p.challenge FROM ChallengeParticipation p WHERE LOWER(p.participator.username) = LOWER(:username) AND p.challenge.active = false)"
+        );
+        completedChallengesQuery.setParameter("username", username);
+        return completedChallengesQuery.getResultList();
     }
 }

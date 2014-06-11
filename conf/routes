@@ -31,6 +31,8 @@ POST        /response/ajax/submit                   controllers.Application.ajax
 
 GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
 
+GET         /challenge/ajax/completed               controllers.Application.ajaxGetCompletedChallenges()
+
 POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
 
 GET         /javascriptRoutes                       controllers.Application.javascriptRoutes()

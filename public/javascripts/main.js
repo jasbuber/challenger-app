@@ -258,12 +258,23 @@ $(document).ready(function(){
 
         if(!$.trim($tbody.html())) {
             $tab.spin();
-            jsRoutes.controllers.Application.ajaxGetUserParticipations().ajax({
-                success: function (data) {
-                    $tab.spin(false);
-                    $tbody.html(formParticipationsRows(jQuery.parseJSON(data)));
-                }
-            });
+
+            if($parentId == "participating-tab") {
+                jsRoutes.controllers.Application.ajaxGetUserParticipations().ajax({
+                    success: function (data) {
+                        $tab.spin(false);
+                        $tbody.html(formParticipationsRows(jQuery.parseJSON(data)));
+                    }
+                });
+            }
+            else if($parentId == "completed-tab"){
+                jsRoutes.controllers.Application.ajaxGetCompletedChallenges().ajax({
+                    success: function (data) {
+                        $tab.spin(false);
+                        $tbody.html(formCompletedChallengeRows(jQuery.parseJSON(data)));
+                    }
+                });
+            }
         }
 
     });
@@ -476,5 +487,15 @@ $(document).ready(function(){
         e.preventDefault();
 
     });
+
+    var formCompletedChallengeRows = function(completedChallenges){
+        var $body = "";
+
+        $.each(completedChallenges, function(i) {
+            $body += '<tr><td>' + completedChallenges[i].creator.username + '</td><td>' + completedChallenges[i].challengeName + '</td><td>' +
+                $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].creationDate)) + '</td><tr/>';
+        });
+        return $body;
+    };
 
 });

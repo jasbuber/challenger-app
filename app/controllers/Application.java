@@ -320,7 +320,8 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetChallengesForCategory(),
                         routes.javascript.Application.ajaxGetLatestChallenges(),
                         routes.javascript.Application.ajaxGetResponsesForChallenge(),
-                        routes.javascript.Application.ajaxGetFacebookFriends()
+                        routes.javascript.Application.ajaxGetFacebookFriends(),
+                        routes.javascript.Application.ajaxGetCompletedChallenges()
                 )
         );
     }
@@ -379,6 +380,16 @@ public class Application extends Controller {
 
             return ok("success");
         }
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxGetCompletedChallenges(){
+
+        ChallengeService service =  Application.getChallengeService();
+
+        List<Challenge> completedChallenges = service.getCompletedChallenges(getLoggedInUsername());
+
+        return ok(new Gson().toJson(completedChallenges));
     }
 
 }

@@ -25,6 +25,8 @@ public class ChallengeResponse {
     @Column(name = "MESSAGE")
     private String message;
 
+    @Transient
+    private String thumbnailUrl;
 
     protected ChallengeResponse() {
         //for jpa purposes...
@@ -79,5 +81,13 @@ public class ChallengeResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

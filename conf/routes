@@ -29,6 +29,8 @@ POST        /response/ajax/accept                   controllers.Application.ajax
 
 POST        /response/ajax/submit                   controllers.Application.ajaxSubmitChallengeResponse()
 
+GET         /response/ajax/video                    controllers.Application.ajaxGetVideo(videoId: String)
+
 GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
 
 GET         /challenge/ajax/completed               controllers.Application.ajaxGetCompletedChallenges()

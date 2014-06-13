@@ -307,9 +307,9 @@ $(document).ready(function(){
         var $body = '';
 
         $.each(responses, function(i) {
-            $body += "<div>" +  responses[i].challengeParticipation.participator.username + '<a class="play-video-response" href="#"><img src="/assets/images/thumbnail.png"/></a>';
+            $body += "<div>" +  responses[i].challengeParticipation.participator.username + '<a class="play-video-response" href="#"><img src="' + responses[i].thumbnailUrl + '"/></a>';
             if(typeof responses[i].isAccepted == 'undefined'){
-                $body += '<div class="rate-response"><button class="btn btn-danger decline-response">Decline</button><button class="btn btn-success accept-response">Accept</button><input class="response-id" type="hidden" value="'+ responses[i].id + '"/> </div>';
+                $body += '<div class="rate-response"><button class="btn btn-danger decline-response">Decline</button><button class="btn btn-success accept-response">Accept</button><input class="response-id" type="hidden" value="'+ responses[i].id + '"/><input class="video-id" type="hidden" value="'+ responses[i].videoResponseUrl + '"/> </div>';
             }
             $body += '</div>';
         });
@@ -345,34 +345,43 @@ $(document).ready(function(){
 
     $(document).on("click", ".play-video-response", function(e){
 
-        var $vid_obj = _V_("video-response-player");
-
-        // hide the current loaded poster
-        $("img.vjs-poster").hide();
-
-        // hide the video UI
-        $("#video-response-player_html5_api").hide();
-
-        // and stop it from playing
-        $vid_obj.pause();
-
-        // assign the targeted videos to the source nodes
-        $("video:nth-child(1)").attr("src", "/assets/test_video.mp4");
-
-        // replace the poster source
-        //$("img.vjs-poster").attr("src",$content_path+$target+".jpg").show();
-
-        // reset the UI states
-        //$(".vjs-big-play-button").show();
-
-        $("#video-response-player").removeClass("vjs-playing").addClass("vjs-paused");
-
-
-        // load the new sources
-        $vid_obj.load();
-        $("#video-response-player_html5_api").show();
+        var $vid_obj = _V_("video-response-player"), videoId = $(this).siblings("div").find(".video-id").val();
 
         $("#video-panel").show();
+        $("#video-panel").spin();
+        jsRoutes.controllers.Application.ajaxGetVideo(videoId).ajax({
+            success: function (response) {
+                var video = jQuery.parseJSON(response);
+
+                // hide the current loaded poster
+                $("img.vjs-poster").hide();
+
+                // hide the video UI
+                $("#video-response-player_html5_api").hide();
+
+                // and stop it from playing
+                $vid_obj.pause();
+
+                // assign the targeted videos to the source nodes
+                $("video:nth-child(1)").attr("src", video.source);
+
+                // replace the poster source
+               // $("#video-response-player_html5_api").attr("poster", video.picture);
+
+                // reset the UI states
+                //$(".vjs-big-play-button").show();
+
+                $("#video-response-player").removeClass("vjs-playing").addClass("vjs-paused");
+
+
+                // load the new sources
+                $vid_obj.load();
+                $("#video-response-player_html5_api").show();
+
+                $("#video-panel").spin(false);
+            }
+        });
+
         e.preventDefault();
     });
 
@@ -468,7 +477,7 @@ $(document).ready(function(){
                     $(".active-participation").find(".leave-challenge").remove();
                     $(".active-participation").find(".show-upload-response").remove();
 
-                    $parentTd.html('submitted <img src="/assets/images/done.png"/>');
+                    $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");
                 }
                 else{

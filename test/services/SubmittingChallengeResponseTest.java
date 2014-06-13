@@ -120,7 +120,7 @@ public class SubmittingChallengeResponseTest {
         given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
         verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.singletonList(participatorTwo));

@@ -1,14 +1,19 @@
 package services;
 
 import com.restfb.*;
+import com.restfb.batch.BatchRequest;
+import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
+import com.restfb.types.Video;
+import domain.ChallengeResponse;
 import domain.FacebookUser;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -63,8 +68,37 @@ public class FacebookService {
     }
 
     public List<FacebookUser> getFacebookFriends(){
-
         Connection<FacebookUser> facebookFriends = this.client.fetchConnection("me/friends", FacebookUser.class,  Parameter.with("fields", "id, first_name, last_name, username, picture.url, name"));
         return facebookFriends.getData();
+    }
+
+    public Video getVideo(String videoId){
+
+        Video video = this.client.fetchObject(videoId, Video.class, Parameter.with("fields", "source, picture"));
+
+        return video;
+    }
+
+    public List<ChallengeResponse> getThumbnailsForResponses(List<ChallengeResponse> responses){
+
+        List<BatchRequest> requests = new ArrayList<BatchRequest>();
+
+        JsonMapper jsonMapper = new DefaultJsonMapper();
+
+        for (Iterator<ChallengeResponse> i = responses.iterator(); i.hasNext(); ) {
+            BatchRequest request = new BatchRequest.BatchRequestBuilder(i.next().getVideoResponseUrl()).body(Parameter.with("fields", "picture")).build();
+            requests.add(request);
+
+        }
+        List<BatchResponse> batchResponses = this.client.executeBatch(requests);
+
+        for (int i = 0; i < responses.size(); i++) {
+
+            Video video = jsonMapper.toJavaObject(batchResponses.get(i).getBody(), Video.class);
+            responses.get(i).setThumbnailUrl(video.getPicture());
+        }
+
+        return responses;
+
     }
 }

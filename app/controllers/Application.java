@@ -1,7 +1,10 @@
 package controllers;
 
 import com.restfb.*;
+import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonObject;
+import com.restfb.types.FacebookType;
+import com.restfb.types.Video;
 import domain.*;
 import com.google.gson.Gson;
 import play.Routes;
@@ -21,8 +24,7 @@ import java.io.*;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Application extends Controller {
 
@@ -30,7 +32,7 @@ public class Application extends Controller {
 
         if(!error.equals("")) { return ok(error_view.render("You rejected the permissions!"));}
         else if(code.equals("")) {
-            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()) + "&scope=publish_stream");
+            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()) + "&scope=publish_stream,user_videos");
         }
         else {
             String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
@@ -227,13 +229,10 @@ public class Application extends Controller {
         Challenge challenge = service.createChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "", true);
         service.createChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "", true);
         service.createChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "", true);
-        service.createChallenge(testUser.getUsername(), "testgh", ChallengeCategory.GETTING_INVOLVED, "", true);
-        service.createChallenge(testUser.getUsername(), "testchgfgfg", ChallengeCategory.FREAK_MODE, "", true);
-        service.createChallenge(testUser.getUsername(), "testchgfgfgfae", ChallengeCategory.USING_A_BRAIN, "", true);
 
-        service.submitChallengeResponse(service.participateInChallenge(challenge, getLoggedInUsername()), "fsfdsdss", "");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"), "fsfdsdss", "");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsfdsdss", "");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, getLoggedInUsername()), "fsfdsdss", "543758585740375");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"), "fsfdsdss", "543763142406586");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsfdsdss", "544923992290501");
 
         service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "", true);
         service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "", false);
@@ -281,7 +280,9 @@ public class Application extends Controller {
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(Long.parseLong(challengeId));
 
-        return ok(new Gson().toJson(responses));
+        List<ChallengeResponse> responsesWithThumbnails = getFacebookService().getThumbnailsForResponses(responses);
+
+        return ok(new Gson().toJson(responsesWithThumbnails));
     }
 
     @play.db.jpa.Transactional
@@ -321,7 +322,8 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetLatestChallenges(),
                         routes.javascript.Application.ajaxGetResponsesForChallenge(),
                         routes.javascript.Application.ajaxGetFacebookFriends(),
-                        routes.javascript.Application.ajaxGetCompletedChallenges()
+                        routes.javascript.Application.ajaxGetCompletedChallenges(),
+                        routes.javascript.Application.ajaxGetVideo()
                 )
         );
     }
@@ -376,7 +378,7 @@ public class Application extends Controller {
             Challenge challenge = service.getChallenge(Long.parseLong(response.getChallengeId()));
 
             ChallengeParticipation participation = service.getChallengeParticipation(challenge, getLoggedInUsername());
-            ChallengeResponse newResponse = service.submitChallengeResponse(participation, videoId, response.getMessage());
+            ChallengeResponse newResponse = service.submitChallengeResponse(participation, response.getMessage(), videoId);
 
             return ok("success");
         }
@@ -390,6 +392,19 @@ public class Application extends Controller {
         List<Challenge> completedChallenges = service.getCompletedChallenges(getLoggedInUsername());
 
         return ok(new Gson().toJson(completedChallenges));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxGetVideo(String videoId){
+
+        FacebookService service =  Application.getFacebookService();
+
+        Video video = service.getVideo(videoId);
+
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("source", video.getSource());
+        data.put("picture", video.getPicture());
+        return ok(new Gson().toJson(data));
     }
 
 }

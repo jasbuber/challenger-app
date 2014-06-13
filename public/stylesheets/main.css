@@ -88,7 +88,7 @@ div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results 
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td{ padding-top: 10px; text-align: center; overflow-x: hidden; }
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
 div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
-div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; }
+div#wrapper div#browse-block-body div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; width: 32px; height: 32px;}
 
 div#wrapper div#challenge-block-body div.form-wrapper{ width: 75%; }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 5px; }
@@ -184,7 +184,7 @@ div#wrapper div#my-challenges-body .challenge-events{ width: 30%; }
 div#wrapper div#my-challenges-body .challenge-events div{ text-align: center; }
 div#wrapper div#my-challenges-body .challenge-events #responses-div > div{ padding: 15px; }
 div#wrapper div#my-challenges-body .challenge-events #responses-div > div .accept-response{ margin-left: 30px; }
-div#wrapper div#my-challenges-body .challenge-events #responses-div > div img{ display: block; margin-left: auto; margin-right: auto; }
+div#wrapper div#my-challenges-body .challenge-events #responses-div > div img{ display: block; margin-left: auto; margin-right: auto; height: 194px; width: 254px; }
 div#wrapper div#my-challenges-body #video-panel{ right: 32%; width: 50%; height: 500px; margin-top: 5%; }
 div#wrapper div#my-challenges-body #send-response-wrapper{ right: 30%; width: 42%; height: 450px; margin-top: 10%; padding: 25px; text-align: center; }
 div#wrapper div#my-challenges-body #send-response-wrapper form > div{ padding: 15px; }

@@ -280,9 +280,9 @@ public class Application extends Controller {
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(Long.parseLong(challengeId));
 
-        List<ChallengeResponse> responsesWithThumbnails = getFacebookService().getThumbnailsForResponses(responses);
+        if(responses.isEmpty()){ return ok(new Gson().toJson(responses)); }
+        else{ return ok(new Gson().toJson(getFacebookService().getThumbnailsForResponses(responses))); }
 
-        return ok(new Gson().toJson(responsesWithThumbnails));
     }
 
     @play.db.jpa.Transactional

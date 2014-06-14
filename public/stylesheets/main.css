@@ -112,6 +112,7 @@ div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants
     border: 2px solid #bdc3c7;
     display: none;
     overflow: auto;
+    z-index: 100;
 }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants{ list-style-type: none; text-align: left; padding-left: 10px; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants li img{

@@ -17,7 +17,7 @@ GET         /challenge/ajax/searchbycategory        controllers.Application.ajax
 
 GET         /challenge/ajax/latest                  controllers.Application.ajaxGetLatestChallenges()
 
-POST        /challenge/ajax/participants            controllers.Application.ajaxGetFacebookFriends()
+POST        /challenge/ajax/fbfriends               controllers.Application.ajaxGetFacebookFriends()
 
 POST        /challenge/ajax/close                   controllers.Application.ajaxCloseChallenge(id: String)
 
@@ -37,12 +37,16 @@ GET         /challenge/ajax/completed               controllers.Application.ajax
 
 POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
 
+GET         /challenge/participators                controllers.Application.showParticipators(challengeId: String, challengeName: String)
+
 GET         /javascriptRoutes                       controllers.Application.javascriptRoutes()
 
 #to be removed very soon
 GET         /generate                               controllers.Application.generateData()
 
-GET         /profile                                controllers.Application.showProfile()
+GET         /currentprofile                         controllers.Application.showCurrentProfile()
+
+GET         /profile                                controllers.Application.showProfile(username: String)
 
 GET         /challenges                             controllers.Application.showMyChallenges()
 

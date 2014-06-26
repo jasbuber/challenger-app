@@ -40,10 +40,10 @@ $(document).ready(function(){
     var formChallengesRows = function(challenges){
         var $body = "";
 
-        $.each(challenges, function(i) {
 
+        $.each(challenges, function(i) {
             $body += '<tr>' +
-                '<td><a href="#"><img src="' + challenges[i].creator.profilePictureUrl + '"/>' + challenges[i].creator.username + '</a></td>' +
+                '<td><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '"><img src="' + ((challenges[i].creator.profilePictureUrl != null) ? challenges[i].creator.profilePictureUrl : "/assets/images/avatar_small.png") + '"/>' + challenges[i].creator.username + '</a></td>' +
                 '<td>' + challenges[i].challengeName + '</td><td>' + challenges[i].category + '</td><td>time left</td>' +
                 '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="' + challenges[i].id + '"/></div></td></tr>';
         });
@@ -307,7 +307,7 @@ $(document).ready(function(){
         var $body = '';
 
         $.each(responses, function(i) {
-            $body += "<div>" +  responses[i].challengeParticipation.participator.username + '<a class="play-video-response" href="#"><img src="' + responses[i].thumbnailUrl + '"/></a>';
+            $body += '<div><a href="' + jsRoutes.controllers.Application.showProfile(responses[i].challengeParticipation.participator.username).url + '">' +  responses[i].challengeParticipation.participator.username + '</a><a class="play-video-response" href="#"><img src="' + responses[i].thumbnailUrl + '"/></a>';
             if(typeof responses[i].isAccepted == 'undefined'){
                 $body += '<div class="rate-response"><button class="btn btn-danger decline-response">Decline</button><button class="btn btn-success accept-response">Accept</button><input class="response-id" type="hidden" value="'+ responses[i].id + '"/><input class="video-id" type="hidden" value="'+ responses[i].videoResponseUrl + '"/> </div>';
             }
@@ -502,9 +502,16 @@ $(document).ready(function(){
 
         $.each(completedChallenges, function(i) {
             $body += '<tr><td>' + completedChallenges[i].creator.username + '</td><td>' + completedChallenges[i].challengeName + '</td><td>' +
-                $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].creationDate)) + '</td><tr/>';
+                $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].creationDate)) + '</td><td>' + $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].endingDate)) + '</td><tr/>';
         });
         return $body;
     };
+
+    $(document).on("click", ".stop-player", function(e){
+        var $vid_obj = _V_("video-response-player");
+console.log("ble");
+        $vid_obj.pause();
+        e.preventDefault();
+    });
 
 });

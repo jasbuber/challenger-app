@@ -48,6 +48,10 @@ public class Challenge {
     @Column(name = "ACTIVE")
     private Boolean active;
 
+    @Column(name = "ENDING_DATE" )
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endingDate;
+
     protected Challenge(){}
 
     public Challenge(User creator, String challengeName, ChallengeCategory category) {
@@ -136,7 +140,10 @@ public class Challenge {
 
     public void setInactive(){
         this.active = false;
+        this.endingDate = new Date();
     }
 
-
+    public Date getEndingDate() {
+        return endingDate;
+    }
 }

@@ -246,8 +246,8 @@ public class Application extends Controller {
         return new ChallengeNotificationsService(new InternalNotificationService(new InternalNotificationsRepository()));
     }
 
-    public static Result showProfile(){
-        return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getFacebookService().getFacebookUser().getLastName(), Application.getProfilePictureUrl(),
+    public static Result showCurrentProfile(){
+        return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getLoggedInUsername(), Application.getProfilePictureUrl(), Application.getProfilePictureUrl(),
                 Application.getLoggedInUser().getJoined(), getChallengeService().countCreatedChallengesForUser(Application.getLoggedInUsername()), getChallengeService().countCompletedChallenges(Application.getLoggedInUsername())));
     }
 
@@ -323,7 +323,8 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetResponsesForChallenge(),
                         routes.javascript.Application.ajaxGetFacebookFriends(),
                         routes.javascript.Application.ajaxGetCompletedChallenges(),
-                        routes.javascript.Application.ajaxGetVideo()
+                        routes.javascript.Application.ajaxGetVideo(),
+                        routes.javascript.Application.showProfile()
                 )
         );
     }
@@ -405,6 +406,26 @@ public class Application extends Controller {
         data.put("source", video.getSource());
         data.put("picture", video.getPicture());
         return ok(new Gson().toJson(data));
+    }
+
+    public static Result showParticipators(String challengeId, String challengeName) {
+
+        if(getChallengeService().isUserCreatedChallengeWithName(challengeName, getLoggedInUsername())) {
+            List<ChallengeParticipation> participations = getChallengeService().getParticipantsForChallenge(Long.parseLong(challengeId));
+
+            return ok(participants.render(getFacebookService().getFacebookUser().getFirstName(), getProfilePictureUrl(), challengeName, participations));
+        }
+        else{
+            return redirect(routes.Application.index());
+        }
+    }
+
+    public static Result showProfile(String username){
+
+        User user = getUsersService().createNewOrGetExistingUser(username);
+
+        return ok(profile.render(Application.getFacebookService().getFacebookUser().getFirstName(), user.getUsername(), getProfilePictureUrl(), user.getProfilePictureUrl(),
+                user.getJoined(), getChallengeService().countCreatedChallengesForUser(user.getUsername()), getChallengeService().countCompletedChallenges(user.getUsername())));
     }
 
 }

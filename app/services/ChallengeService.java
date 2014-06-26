@@ -304,4 +304,17 @@ public class ChallengeService extends TransactionalBase {
             throw new RuntimeException(throwable);
         }
     }
+
+    public List<ChallengeParticipation> getParticipantsForChallenge(final long challengeId){
+        try {
+            return withReadOnlyTransaction(new F.Function0<List<ChallengeParticipation>>() {
+                @Override
+                public List<ChallengeParticipation> apply() throws Throwable {
+                    return challengesRepository.getParticipantsForChallenge(challengeId);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
 }

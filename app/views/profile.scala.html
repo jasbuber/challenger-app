@@ -1,14 +1,21 @@
-@(firstName: java.lang.String, lastName: java.lang.String, bigProfilePicUrl: java.lang.String, joined: java.lang.String,
+@(currentFirstName: java.lang.String, profileUsername: String, currentProfilePic: String, bigProfilePicUrl: java.lang.String, joined: java.lang.String,
         created: Long, completed: Long)
 
 @main("Welcome to Challenge Application") {
-    @menu(firstName, bigProfilePicUrl)
+    @menu(currentFirstName, currentProfilePic)
     <div id="wrapper" class="account-wrapper">
         <div class="single-body-block" id="profile-body">
             <div class="top-block"><a href="/"><button class="btn btn-inverse">Back</button></a></div>
             <div id="profile-wrapper">
                 <h2>Profile</h2>
-                <div id="profile-data"><img src="@bigProfilePicUrl"/> @firstName @lastName</div>
+                <div id="profile-data">
+                    @if(bigProfilePicUrl != null) {
+                        <img src="@bigProfilePicUrl"/>
+                    } else {
+                        <img src="@routes.Assets.at("images/avatar_big.png")"/>
+                    }
+                    @profileUsername
+                </div>
                 <div id="profile-stats">
                     <ul>
                         <li>Joined : @joined</li>

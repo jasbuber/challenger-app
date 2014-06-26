@@ -21,15 +21,15 @@
                 <div class="dropdown">
                     <a href="#" data-toggle="dropdown">
                         @firstName
-                        @if(!profilePicUrl.isEmpty) {
+                        @if(profilePicUrl != null) {
                             <img src="@profilePicUrl"/>
                         } else {
-                            <img src="@routes.Assets.at("images/facebook.png")"/>
+                            <img src="@routes.Assets.at("images/avatar_small.png")"/>
                         }
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="@routes.Application.showMyChallenges()">My Challenges</a></li>
-                        <li><a href="@routes.Application.showProfile()">View Profile</a></li>
+                        <li><a href="@routes.Application.showCurrentProfile()">View Profile</a></li>
                     </ul>
                 </div>
 

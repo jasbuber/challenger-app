@@ -1,0 +1,42 @@
+@(firstName: String, bigProfilePicUrl: String, challengeName: java.lang.String, participations: java.util.List[domain.ChallengeParticipation])
+
+@main("Welcome to Challenge Application") {
+    @menu(firstName, bigProfilePicUrl)
+    <div id="wrapper">
+    <div id="challenge-participant-block" class="single-body-block">
+        <div class="top-block"><a href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+        <h2>@challengeName</h2>
+        <div class="form-wrapper">
+            <div class="challenge-search-results challenge-participants-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><div>User</div></th>
+                            <th><div>Joined challenge</div></th>
+                            <th><div>Participates in</div></th>
+                            <th>Points</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @participations.map { participation =>
+                        <tr>
+                            <td><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
+                                @if(participation.getParticipator.getProfilePictureUrl != null) {
+                                    <img src="@participation.getParticipator.getProfilePictureUrl"/>
+                                } else {
+                                    <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                                }
+                                @participation.getParticipator.getUsername</a></td>
+                            <td>@participation.getJoined</td>
+                            <td><b>6</b></td>
+                            <td>404</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+}

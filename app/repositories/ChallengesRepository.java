@@ -130,7 +130,7 @@ public class ChallengesRepository {
 
     public Long countCreatedChallengesForUser(String username){
         Query challengesCreatedByUserQuery = JPA.em().createQuery("SELECT count(c) FROM Challenge c " +
-                "WHERE LOWER(c.creator) = LOWER(:username)");
+                "WHERE LOWER(c.creator.username) = LOWER(:username)");
         challengesCreatedByUserQuery.setParameter("username", username);
         return (Long) challengesCreatedByUserQuery.getSingleResult();
     }
@@ -193,5 +193,15 @@ public class ChallengesRepository {
         );
         completedChallengesQuery.setParameter("username", username);
         return completedChallengesQuery.getResultList();
+    }
+
+    public List<ChallengeParticipation> getParticipantsForChallenge(long challengeId){
+
+        Query participantsForChallengeQuery = JPA.em().createQuery("SELECT p " +
+                        "FROM ChallengeParticipation p " +
+                        "WHERE p.challenge.id = :challengeId");
+
+        participantsForChallengeQuery.setParameter("challengeId", challengeId);
+        return participantsForChallengeQuery.getResultList();
     }
 }

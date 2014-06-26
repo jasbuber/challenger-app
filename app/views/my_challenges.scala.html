@@ -28,7 +28,7 @@
                                     <tr>
                                         <td><a class="show-challenge-events" href="@challenge.apply(3).toString">@challenge.apply(0)</a></td>
                                         <td>@challenge.apply(1).asInstanceOf[Date].format("dd-MM-yyyy")</td>
-                                        <td><b>@challenge.apply(2)</b></td>
+                                        <td><b><a href="@routes.Application.showParticipators(challenge.apply(3).toString, challenge.apply(0).toString)">@challenge.apply(2)</a></b></td>
                                         <td>
                                             <div class="switch switch-square" data-on-label="OPEN" data-off-label="DONE"><input class="challenge-status" checked type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="@challenge.apply(3)"/>
 
@@ -79,6 +79,7 @@
                                     <th>Author</th>
                                     <th>Name</th>
                                     <th>Started</th>
+                                    <th>Ended</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,11 +89,11 @@
                 </div>
             </div>
             <div class="challenge-events">
-                <div class="upper-div"><div class="title-div"><span class="challenge-events-title"></span></div><div class="close-window-div"><a class="close-window" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
+                <div class="upper-div"><div class="title-div"><span class="challenge-events-title"></span></div><div class="close-window-div"><a class="close-window stop-player" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
                 <div id="responses-div"></div>
             </div>
             <div id="video-panel">
-                <div class="upper-div"><div class="close-window-div"><a class="close-window" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
+                <div class="upper-div"><div class="close-window-div"><a class="close-window stop-player" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
                 <div id="video-player-wrapper">
                     <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="600" height="350" data-setup="{}">
                         <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>

@@ -1,8 +1,8 @@
 @(currentFirstName: java.lang.String, profileUsername: String, currentProfilePic: String, bigProfilePicUrl: java.lang.String, joined: java.lang.String,
-        created: Long, completed: Long)
+        created: Long, completed: Long, unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
-    @menu(currentFirstName, currentProfilePic)
+    @menu(currentFirstName, currentProfilePic, unreadNotificationsNr, newestNotifications)
     <div id="wrapper" class="account-wrapper">
         <div class="single-body-block" id="profile-body">
             <div class="top-block"><a href="/"><button class="btn btn-inverse">Back</button></a></div>

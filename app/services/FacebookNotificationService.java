@@ -38,4 +38,14 @@ public class FacebookNotificationService implements NotificationService {
     public Notification readNotification(Notification notification) {
         return null;
     }
+
+    @Override
+    public Long getNumberOfUnreadNotifications(User user) {
+        return null;
+    }
+
+    @Override
+    public List<Notification> getNewestNotifications(User user) {
+        return null;
+    }
 }

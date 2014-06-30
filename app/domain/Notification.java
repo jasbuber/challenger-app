@@ -65,4 +65,16 @@ public class Notification {
     public User getUser() {
         return user;
     }
+
+    public String getNotificationMsg() {
+        return notificationMsg;
+    }
+
+    public Date getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public Character getIsRead() {
+        return isRead;
+    }
 }

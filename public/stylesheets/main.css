@@ -9,6 +9,11 @@ div#menu-wrapper .navbar ul.nav li a{
 div#menu-wrapper .navbar ul.nav li div.dropdown{ padding-top: 15px; padding-right: 10px; }
 div#menu-wrapper .navbar ul.nav li a img{ width: 32px; height: 32px; }
 
+div.dropdown{ padding-bottom: 15px; }
+div.dropdown span.navbar-new{ top: 35%; right: 22px; }
+div.dropdown li.more-elements a{ text-align: right; }
+
+
 div#wrapper{
     width: 80%;
     margin-left: auto;
@@ -67,7 +72,7 @@ div#wrapper div.ui-block-body div.form-wrapper form > div{ padding: 15px; }
 div#wrapper div#browse-block-body div.form-wrapper div.form-group{ display: inline-block; width: 50%;}
 div#wrapper div#browse-block-body div.form-wrapper form input{ display: inline; }
 div#wrapper div#browse-block-body div.form-wrapper form div.btn-group{ vertical-align: top; padding-top: 15px;}
-div#wrapper div.form-wrapper div.challenge-search-results{
+div#wrapper div.form-wrapper div.common-table-wrapper{
     width: 100%;
     height: 400px;
     overflow-y: auto;
@@ -76,19 +81,20 @@ div#wrapper div.form-wrapper div.challenge-search-results{
     padding: 15px;
     border: 2px solid #bdc3c7;
 }
+div#wrapper div.form-wrapper div.common-table-wrapper table{ width: 100%; }
+div#wrapper div.form-wrapper div.common-table-wrapper table thead tr{ border-bottom: 2px solid #bdc3c7; }
+div#wrapper div.form-wrapper div.common-table-wrapper table thead tr th{ padding-bottom: 10px; }
+div#wrapper div.form-wrapper div.common-table-wrapper table th{ text-align: center; }
+div#wrapper div.form-wrapper div.common-table-wrapper table td{ padding-top: 10px; text-align: center; overflow-x: hidden; }
+div#wrapper div.form-wrapper div.common-table-wrapper table td img{ margin-right: 10px; }
+div#wrapper div.form-wrapper div.common-table-wrapper table td.profilePicTd img{ width: 32px; height: 32px;}
 
-div#wrapper div.form-wrapper div.challenge-search-results table{ width: 100%; }
-div#wrapper div.form-wrapper div.challenge-search-results table thead tr{ border-bottom: 2px solid #bdc3c7; }
-div#wrapper div.form-wrapper div.challenge-search-results table thead tr th{ padding-bottom: 10px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(1) div{ width: 160px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(2) div{ width: 160px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(3) div{ width: 100px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(4) div{ width: 100px; }
-div#wrapper div.form-wrapper div.challenge-search-results table th{ text-align: center; }
-div#wrapper div.form-wrapper div.challenge-search-results table td{ padding-top: 10px; text-align: center; overflow-x: hidden; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
-div#wrapper div.form-wrapper div.challenge-search-results table td img{ margin-right: 10px; width: 32px; height: 32px;}
 
 div#wrapper div#challenge-block-body div.form-wrapper{ width: 75%; }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 5px; }
@@ -124,6 +130,7 @@ div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants
     vertical-align: middle;
     margin-left: 15px;
 }
+div#wrapper div.form-wrapper div.challenge-participants-wrapper table td:nth-of-type(1){ text-align: left; }
 
 div#wrapper div.single-body-block{
     height: 90%!important;
@@ -199,6 +206,9 @@ div#wrapper div#my-challenges-body #send-response-wrapper form dt, div#wrapper d
 div#wrapper div#my-challenges-body #video-panel .upper-div{ height: 60px; }
 div#wrapper div#my-challenges-body #video-panel .close-window-div{ margin-bottom: 5%; }
 div#wrapper div#my-challenges-body #video-panel .video-js{ display: block; margin-left: auto; margin-right: auto; }
+
+div#wrapper div.form-wrapper div.user-notification-wrapper{ height: 500px; }
+div#wrapper div.form-wrapper div.user-notification-wrapper table thead tr th:nth-of-type(2) div{ width: 180px; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

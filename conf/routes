@@ -50,5 +50,7 @@ GET         /profile                                controllers.Application.show
 
 GET         /challenges                             controllers.Application.showMyChallenges()
 
+GET         /notifications                          controllers.Application.showMyNotifications()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                           controllers.Assets.at(path="/public", file)

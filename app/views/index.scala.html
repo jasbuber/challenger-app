@@ -1,7 +1,7 @@
-@(firstName: java.lang.String, profilePicUrl: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm])
+@(firstName: java.lang.String, profilePicUrl: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
-    @menu(firstName, profilePicUrl)
+    @menu(firstName, profilePicUrl, unreadNotificationsNr, newestNotifications)
     <div id="wrapper">
         <div id="challenge-block" class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
         <div id="browse-block" class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>

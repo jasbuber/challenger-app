@@ -1,13 +1,13 @@
-@(firstName: String, bigProfilePicUrl: String, challengeName: java.lang.String, participations: java.util.List[domain.ChallengeParticipation])
+@(firstName: String, bigProfilePicUrl: String, challengeName: java.lang.String, participations: java.util.List[domain.ChallengeParticipation], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
-    @menu(firstName, bigProfilePicUrl)
+    @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
     <div id="wrapper">
     <div id="challenge-participant-block" class="single-body-block">
         <div class="top-block"><a href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
         <h2>@challengeName</h2>
         <div class="form-wrapper">
-            <div class="challenge-search-results challenge-participants-wrapper">
+            <div class="common-table-wrapper challenge-participants-wrapper">
                 <table>
                     <thead>
                         <tr>
@@ -21,7 +21,7 @@
                     <tbody>
                     @participations.map { participation =>
                         <tr>
-                            <td><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
+                            <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
                                 @if(participation.getParticipator.getProfilePictureUrl != null) {
                                     <img src="@participation.getParticipator.getProfilePictureUrl"/>
                                 } else {

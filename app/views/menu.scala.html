@@ -1,4 +1,4 @@
-@(firstName: java.lang.String, profilePicUrl: java.lang.String)
+@(firstName: java.lang.String, profilePicUrl: java.lang.String, unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 <div id="menu-wrapper">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -11,11 +11,24 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="#">
+                <div class="dropdown">
+                    <a href="#" data-toggle="dropdown">
                         Responses
-                    <!-- Indicator with number -->
-                    <span class="navbar-new">2</span>
-                </a>
+                        <!-- Indicator with number -->
+                        @if(unreadNotificationsNr != 0) { <span class="navbar-new">@unreadNotificationsNr</span> }
+
+                    </a>
+                    <ul class="dropdown-menu">
+                    @newestNotifications.map { notification =>
+                            @if(notification.getNotificationMsg.length < 50) {
+                                <li><a href="#">@notification.getNotificationMsg</a></li>
+                            }else{
+                                <li><a href="#">@notification.getNotificationMsg.substring(0, 50)...</a></li>
+                            }
+                    }
+                        <li class="more-elements"><a href="@routes.Application.showMyNotifications()">see all</a></li>
+                    </ul>
+                </div>
             </li>
             <li>
                 <div class="dropdown">
@@ -32,7 +45,6 @@
                         <li><a href="@routes.Application.showCurrentProfile()">View Profile</a></li>
                     </ul>
                 </div>
-
             </li>
         </ul>
     </nav>

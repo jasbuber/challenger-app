@@ -17,7 +17,7 @@ public class InternalNotificationsRepository {
         Query getUnreadNotificationsForUserQuery = JPA.em().createQuery("SELECT COUNT(n) " +
                 "FROM Notification n " +
                 "WHERE n.user = :user " +
-                "AND n.isRead = 'Y'");
+                "AND n.isRead <> 'Y'");
         getUnreadNotificationsForUserQuery.setParameter("user", user);
         return (Long) getUnreadNotificationsForUserQuery.getSingleResult();
     }
@@ -50,6 +50,17 @@ public class InternalNotificationsRepository {
 
     public Notification update(Notification notification) {
         return JPA.em().merge(notification);
+    }
+
+    public List<Notification> getNewestNotificationsForUser(User user) {
+        Query getNewestNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
+                "FROM Notification n " +
+                "WHERE n.user = :user"
+        );
+
+        getNewestNotificationsForUserQuery.setParameter("user", user);
+        getNewestNotificationsForUserQuery.setMaxResults(5);
+        return getNewestNotificationsForUserQuery.getResultList();
     }
 
 }

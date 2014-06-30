@@ -43,7 +43,7 @@ $(document).ready(function(){
 
         $.each(challenges, function(i) {
             $body += '<tr>' +
-                '<td><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '"><img src="' + ((challenges[i].creator.profilePictureUrl != null) ? challenges[i].creator.profilePictureUrl : "/assets/images/avatar_small.png") + '"/>' + challenges[i].creator.username + '</a></td>' +
+                '<td class="profilePicTd"><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '"><img src="' + ((challenges[i].creator.profilePictureUrl != null) ? challenges[i].creator.profilePictureUrl : "/assets/images/avatar_small.png") + '"/>' + challenges[i].creator.username + '</a></td>' +
                 '<td>' + challenges[i].challengeName + '</td><td>' + challenges[i].category + '</td><td>time left</td>' +
                 '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="' + challenges[i].id + '"/></div></td></tr>';
         });
@@ -509,7 +509,6 @@ $(document).ready(function(){
 
     $(document).on("click", ".stop-player", function(e){
         var $vid_obj = _V_("video-response-player");
-console.log("ble");
         $vid_obj.pause();
         e.preventDefault();
     });

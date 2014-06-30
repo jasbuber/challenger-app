@@ -1,0 +1,37 @@
+@(firstName: String, bigProfilePicUrl: String, notifications: java.util.List[domain.Notification], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+
+@main("Welcome to Challenge Application") {
+@menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
+<div id="wrapper">
+    <div id="challenge-participant-block" class="single-body-block">
+        <div class="top-block"><a href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+        <h2>My notifications</h2>
+        <div class="form-wrapper">
+            <div class="common-table-wrapper user-notification-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th><div>Received</div></th>
+                        <th><div>Message</div></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @notifications.map { notification =>
+                    <tr>
+                        <td>
+                        @if(notification.getIsRead == 'N') {
+                            <img src="@routes.Assets.at("images/unread.png")"/>
+                        }
+                        </td>
+                        <td>@notification.getCreationTimestamp.asInstanceOf[Date].format("dd-MM-yyyy H:mm")</td>
+                        <td>@notification.getNotificationMsg</td>
+                    </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+}

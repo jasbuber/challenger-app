@@ -87,4 +87,24 @@ public class InternalNotificationService extends TransactionalBase implements No
             }
         });
     }
+
+    @Override
+    public Long getNumberOfUnreadNotifications(final User user) {
+        return withReadOnlyTransaction(new F.Function0<Long>() {
+            @Override
+            public Long apply() throws Throwable {
+                return internalNotificationsRepository.getNumberOfUnreadNotifications(user);
+            }
+        });
+    }
+
+    @Override
+    public List<Notification> getNewestNotifications(final User user) {
+        return withReadOnlyTransaction(new F.Function0<List<Notification>>() {
+            @Override
+            public List<Notification> apply() throws Throwable {
+                return internalNotificationsRepository.getNewestNotificationsForUser(user);
+            }
+        });
+    }
 }

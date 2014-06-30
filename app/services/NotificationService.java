@@ -18,4 +18,8 @@ public interface NotificationService {
     List<Notification> getAllNotifications(User user);
 
     Notification readNotification(Notification notification);
+
+    Long getNumberOfUnreadNotifications(User user);
+
+    List<Notification> getNewestNotifications(final User user);
 }

@@ -26,11 +26,7 @@ public class ChallengeService extends TransactionalBase {
                     " has already been created by user " + creatorUsername);
         }
 
-        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
-
-        notificationService.notifyAboutChallengeCreation(challenge);
-
-        return challenge;
+        return createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
     }
 
     private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {

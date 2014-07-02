@@ -14,11 +14,6 @@ public class ChallengeNotificationsService {
         this.notificationService = notificationService;
     }
 
-    public void notifyAboutChallengeCreation(Challenge challenge) {
-        String notificationMsg = "Challenge " + challenge.getChallengeName() + " was successfully created";
-        notifyChallengeCreator(challenge, notificationMsg);
-    }
-
     private void notifyChallengeCreator(Challenge challenge, String notificationMsg) {
         notificationService.notifyUser(challenge.getCreator(), notificationMsg);
     }

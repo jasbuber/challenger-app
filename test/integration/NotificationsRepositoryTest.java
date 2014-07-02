@@ -12,6 +12,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class NotificationsRepositoryTest extends EmTestsBase {
 
@@ -37,7 +38,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
     }
 
     @Test
-    public void shouldUserHaveNotificationAfterNotifyingHim() throws Exception {
+    public void shouldUserHaveUnreadNotificationJustAfterBeingNotified() throws Exception {
         User user = createUser("username");
 
         openTransaction();
@@ -48,10 +49,12 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         openTransaction();
         List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
         boolean hasUserAnyNotification = internalNotificationsRepository.hasUserAnyNotification(user);
+        boolean hasUserUnreadNotifications = internalNotificationsRepository.hasUserUnreadNotification(user);
         closeTransaction();
 
         assertEquals(1, notifications.size());
         assertTrue(hasUserAnyNotification);
+        assertTrue(hasUserUnreadNotifications);
     }
 
     @Test
@@ -73,8 +76,8 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         long nrOfUnreadNotifications = internalNotificationsRepository.getNumberOfUnreadNotifications(user);
         closeTransaction();
 
-        assertTrue(hasUnreadNotification);
-        assertEquals(1, nrOfUnreadNotifications);
+        assertFalse(hasUnreadNotification);
+        assertEquals(0, nrOfUnreadNotifications);
     }
 
     @Test

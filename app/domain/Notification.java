@@ -15,6 +15,7 @@ public class Notification {
     private Long id;
 
     @Column(name = "IS_READ")
+    @NotNull
     private Character isRead = 'N';
 
     @ManyToOne

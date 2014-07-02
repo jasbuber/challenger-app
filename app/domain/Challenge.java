@@ -21,7 +21,7 @@ public class Challenge {
      */
 
 
-    @Column(name = "NAME", unique = true)
+    @Column(name = "NAME")
     @NotNull
     private String challengeName;
 

@@ -18,15 +18,19 @@
                     </thead>
                     <tbody>
                     @notifications.map { notification =>
-                    <tr>
-                        <td>
                         @if(notification.getIsRead == 'N') {
-                            <img src="@routes.Assets.at("images/unread.png")"/>
+                            <tr class="notificationUnread">
+                                <td><img src="@routes.Assets.at("images/unread.png")"/></td>
+                                <td>@notification.getCreationTimestamp.asInstanceOf[Date].format("dd-MM-yyyy H:mm")</td>
+                                <td><a href="@routes.Application.followNotification(notification.getId)">@notification.getNotificationMsg</a></td>
+                            </tr>
+                        }else{
+                            <tr>
+                                <td></td>
+                                <td>@notification.getCreationTimestamp.asInstanceOf[Date].format("dd-MM-yyyy H:mm")</td>
+                                <td><a href="@routes.Application.followNotification(notification.getId)">@notification.getNotificationMsg</a></td>
+                            </tr>
                         }
-                        </td>
-                        <td>@notification.getCreationTimestamp.asInstanceOf[Date].format("dd-MM-yyyy H:mm")</td>
-                        <td>@notification.getNotificationMsg</td>
-                    </tr>
                     }
                     </tbody>
                 </table>

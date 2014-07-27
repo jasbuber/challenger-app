@@ -453,4 +453,14 @@ public class Application extends Controller {
 
     }
 
+    public static Result followNotification(long notificationId){
+        InternalNotificationService service = getNotificationService();
+
+        Notification notification = service.getNotification(notificationId);
+        notification.read();
+        service.readNotification(notification);
+
+        return redirect(routes.Application.showMyChallenges());
+    }
+
 }

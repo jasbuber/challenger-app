@@ -64,4 +64,6 @@ public class InternalNotificationsRepository {
         return getNewestNotificationsForUserQuery.getResultList();
     }
 
+    public Notification getNotification(long id){ return JPA.em().find(Notification.class, id); }
+
 }

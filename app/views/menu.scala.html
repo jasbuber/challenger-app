@@ -16,15 +16,17 @@
                         Responses
                         <!-- Indicator with number -->
                         @if(unreadNotificationsNr != 0) { <span class="navbar-new">@unreadNotificationsNr</span> }
-
                     </a>
                     <ul class="dropdown-menu">
                     @newestNotifications.map { notification =>
-                            @if(notification.getNotificationMsg.length < 50) {
-                                <li><a href="#">@notification.getNotificationMsg</a></li>
-                            }else{
-                                <li><a href="#">@notification.getNotificationMsg.substring(0, 50)...</a></li>
+                        @defining( if(notification.getNotificationMsg.length < 50) { notification.getNotificationMsg}
+                                   else { notification.getNotificationMsg.substring(0, 50) + "..." }) { notificationMsg =>
+                            @if(notification.getIsRead == 'N') {
+                                    <li><a class="notificationUnread" href="@routes.Application.followNotification(notification.getId)"><img src="@routes.Assets.at("images/unread.png")"/>@notificationMsg</a></li>
+                            } else {
+                                    <li><a href="@routes.Application.followNotification(notification.getId)">@notificationMsg</a></li>
                             }
+                        }
                     }
                         <li class="more-elements"><a href="@routes.Application.showMyNotifications()">see all</a></li>
                     </ul>

@@ -107,4 +107,13 @@ public class InternalNotificationService extends TransactionalBase implements No
             }
         });
     }
+
+    public Notification getNotification(final long id) {
+        return withReadOnlyTransaction(new F.Function0<Notification>() {
+            @Override
+            public Notification apply() throws Throwable {
+                return internalNotificationsRepository.getNotification(id);
+            }
+        });
+    }
 }

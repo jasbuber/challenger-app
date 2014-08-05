@@ -78,4 +78,8 @@ public class Notification {
     public Character getIsRead() {
         return isRead;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

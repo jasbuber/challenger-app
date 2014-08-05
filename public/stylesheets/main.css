@@ -210,6 +210,11 @@ div#wrapper div#my-challenges-body #video-panel .video-js{ display: block; margi
 div#wrapper div.form-wrapper div.user-notification-wrapper{ height: 500px; }
 div#wrapper div.form-wrapper div.user-notification-wrapper table thead tr th:nth-of-type(2) div{ width: 180px; }
 
+div#menu-wrapper .navbar ul.nav li a.notificationUnread, a.notificationUnread{ padding-left: 10px; }
+div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px; }
+
+.notificationUnread{ font-weight: 800!important; }
+
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }
 .palette-pumpkin:hover{ background-color: #E67E22;}

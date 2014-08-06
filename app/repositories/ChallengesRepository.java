@@ -204,4 +204,13 @@ public class ChallengesRepository {
         participantsForChallengeQuery.setParameter("challengeId", challengeId);
         return participantsForChallengeQuery.getResultList();
     }
+
+    public long getNrOfParticipationsOf(Challenge challenge) {
+        Query nrOfParticipationsOfChallengeQuery = JPA.em().createQuery("SELECT COUNT(p) " +
+                "FROM ChallengeParticipation p " +
+                "WHERE p.challenge = :challenge");
+
+        nrOfParticipationsOfChallengeQuery.setParameter("challenge", challenge);
+        return (Long) nrOfParticipationsOfChallengeQuery.getSingleResult();
+    }
 }

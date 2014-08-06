@@ -8,11 +8,12 @@ import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class ChallengeParticipationTest {
 
@@ -28,17 +29,17 @@ public class ChallengeParticipationTest {
     private final ChallengeService challengeService = createChallengeService();
 
     private final String challengeName = "challengeName";
+    private final String user = "username";
+
+    private final Challenge challenge = createChallenge(user);
 
     private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
-            return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
-        }
+        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
+    }
+
 
     @Test
     public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
         //when
         challengeService.participateInChallenge(challenge, user);
         boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
@@ -49,10 +50,6 @@ public class ChallengeParticipationTest {
 
     @Test
     public void shouldUserParticipationBeFalseIfUserIsNotParticipatingInChallengeYet() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
         //when
         boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
 
@@ -62,10 +59,6 @@ public class ChallengeParticipationTest {
 
     @Test
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
         //when
         ChallengeParticipation challengeParticipation =
                 challengeService.participateInChallenge(challenge, user);
@@ -76,15 +69,47 @@ public class ChallengeParticipationTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
         //when
         challengeService.participateInChallenge(challenge, user);
         challengeService.participateInChallenge(challenge, user);
 
         //then throw exception
+    }
+
+    @Test
+    public void shouldNotNotifyUntilPopularityFactorIsAchieved() throws Exception {
+        //when
+        challengeService.participateInChallenge(challenge, "participator");
+
+        //then
+        verify(challengeNotificationService, never()).notifyAboutNewChallengeParticipation(challenge, "participator", Collections.<User>emptyList());
+    }
+
+    @Test
+    public void shouldNotifyParticipatorForWhomPopularityFactorIsAchieved() throws Exception {
+        //when
+        achieveOneFromPopularityFactor(challenge);
+        challengeService.participateInChallenge(challenge, "participatorOfFactorAchievement");
+
+        //then
+        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, "participatorOfFactorAchievement", Collections.<User>emptyList());
+    }
+
+    @Test
+    public void shouldNotifyOnlyParticipatorForWhomPopularityFactorIsAchieved() throws Exception {
+        //when
+        achieveOneFromPopularityFactor(challenge);
+        challengeService.participateInChallenge(challenge, "participatorOfFactorAchievement");
+        challengeService.participateInChallenge(challenge, "participatorAfterAchievement");
+
+        //then
+        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, "participatorOfFactorAchievement", Collections.<User>emptyList());
+    }
+
+    private void achieveOneFromPopularityFactor(Challenge challenge) {
+        for (int i = 0; i < ChallengeService.POPULARITY_INDICATOR - 1; i++) {
+            challengeService.participateInChallenge(challenge, "participator" + i);
+        }
     }
 
     private Challenge createChallenge(String user) {
@@ -98,23 +123,39 @@ public class ChallengeParticipationTest {
         public User getUser(String username) {
             return new User(username);
         }
+
     }
 
-    private static class ChallengesRepositoryStub extends ChallengesRepository {
+    private class ChallengesRepositoryStub extends ChallengesRepository {
 
         private Set<ChallengeNameAndCreatorTuple> challengesWithCreators = new HashSet<ChallengeNameAndCreatorTuple>();
         private Map<Challenge, Set<String>> challengeParticipators = new HashMap<Challenge, Set<String>>();
 
         @Override
-        public Challenge createChallenge(Challenge challenge) {
+        public Challenge createChallenge(Challenge challengeWithoutId) {
+            Challenge challenge = setIdFieldOf(challengeWithoutId);
             challengesWithCreators.add(new ChallengeNameAndCreatorTuple(challenge.getChallengeName(), challenge.getCreator().getUsername()));
             return challenge;
+        }
+
+        private Challenge setIdFieldOf(Challenge challenge) {
+            Field idField = null;
+            try {
+                idField = Challenge.class.getDeclaredField("id");
+                idField.setAccessible(true);
+                idField.set(challenge, Long.valueOf(1L));
+                return challenge;
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException("Exception was thrown during setting id field of challenge: " + challenge, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Exception was thrown during setting id field of challenge: " + challenge, e);
+            }
         }
 
         @Override
         public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
             Set<String> users = challengeParticipators.get(challengeParticipation.getChallenge());
-            if(users == null) {
+            if (users == null) {
                 users = new HashSet<String>();
             }
             users.add(challengeParticipation.getParticipator().getUsername());
@@ -133,7 +174,22 @@ public class ChallengeParticipationTest {
             return challengesWithCreators.contains(new ChallengeNameAndCreatorTuple(challengeName, creatorUsername));
         }
 
-        private static class ChallengeNameAndCreatorTuple {
+        @Override
+        public List<User> getAllParticipatorsOf(Challenge challenge) {
+            return Collections.<User>emptyList();
+        }
+
+        @Override
+        public long getNrOfParticipationsOf(Challenge challenge) {
+            return challengeParticipators.get(challenge).size();
+        }
+
+        @Override
+        public Challenge getChallenge(long id) {
+            return challenge;
+        }
+
+        private class ChallengeNameAndCreatorTuple {
             private final String challengeName;
             private final String challengeCreatorUsername;
 

@@ -1,0 +1,23 @@
+@(name: java.lang.String, bigProfilePicUrl: java.lang.String, createdChallengesNr: Long, joinedChallengesNr: Long, completedChallengesNr: Long)
+
+<div id="profile-wrapper" class="account-content">
+    <div id="profile-picture">
+        @if(bigProfilePicUrl != null) {
+            <img src="@bigProfilePicUrl"/>
+        } else {
+            <img src="@routes.Assets.at("images/avatar_big.png")"/>
+        }
+    </div>
+    <div id="profile-data">
+        <ul>
+            <li>@name</li>
+            <li><img src="@routes.Assets.at("images/trophy_small.png")"/>125 points</li>
+            <li>Some desription that will say a bit about an user</li>
+        </ul>
+    </div>
+    <div id="profile-stats">
+        <div class="stats-glyph"><div><img src="@routes.Assets.at("images/glyph_sandcastle.png")"/></div><div>Created : @createdChallengesNr</div></div>
+        <div class="stats-glyph"><div><img src="@routes.Assets.at("images/glyph_sandals.png")"/></div><div>Joined : @joinedChallengesNr</div></div>
+        <div class="stats-glyph"><div><img src="@routes.Assets.at("images/glyph_glasses.png")"/></div><div>Completed : @completedChallengesNr</div></div>
+    </div>
+</div>

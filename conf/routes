@@ -13,6 +13,8 @@ GET         /challenge/ajax/search                  controllers.Application.ajax
 
 POST        /challenge/ajax/participate             controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
 
+POST        /challenge/ajax/join                    controllers.Application.ajaxJoinChallenge(challengeId: Long)
+
 GET         /challenge/ajax/searchbycategory        controllers.Application.ajaxGetChallengesForCategory(category: String)
 
 GET         /challenge/ajax/latest                  controllers.Application.ajaxGetLatestChallenges()
@@ -23,21 +25,27 @@ POST        /challenge/ajax/close                   controllers.Application.ajax
 
 GET         /challenge/ajax/responses               controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
 
+GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
+
+GET         /challenge/ajax/completed               controllers.Application.ajaxGetCompletedChallenges()
+
+GET         /challenge/details                      controllers.Application.showChallenge(id: Long)
+
+GET         /challenge/responses                    controllers.Application.showChallengeResponses(id: Long)
+
+POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
+
+POST        /challenge/ajax/participants/remove     controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String)
+
+GET         /challenge/participators                controllers.Application.showParticipators(challengeId: Long)
+
 POST        /response/ajax/decline                  controllers.Application.ajaxDeclineResponse(id: String)
 
 POST        /response/ajax/accept                   controllers.Application.ajaxAcceptResponse(id: String)
 
 POST        /response/ajax/submit                   controllers.Application.ajaxSubmitChallengeResponse()
 
-GET         /response/ajax/video                    controllers.Application.ajaxGetVideo(videoId: String)
-
-GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
-
-GET         /challenge/ajax/completed               controllers.Application.ajaxGetCompletedChallenges()
-
-POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
-
-GET         /challenge/participators                controllers.Application.showParticipators(challengeId: String, challengeName: String)
+GET         /response/ajax/response                 controllers.Application.ajaxGetResponse(responseId: Long)
 
 GET         /javascriptRoutes                       controllers.Application.javascriptRoutes()
 
@@ -46,13 +54,21 @@ GET         /generate                               controllers.Application.gene
 
 GET         /currentprofile                         controllers.Application.showCurrentProfile()
 
-GET         /profile                                controllers.Application.showProfile(username: String)
+GET         /profile                                controllers.Application.showProfile(username: java.lang.String)
+
+GET         /profile/content                        controllers.Application.ajaxGetCurrentProfileContent()
 
 GET         /challenges                             controllers.Application.showMyChallenges()
+
+GET         /challenges/content                     controllers.Application.ajaxGetChallengesContent()
 
 GET         /notifications                          controllers.Application.showMyNotifications()
 
 GET         /notifications/follow                   controllers.Application.followNotification(notificationId: Long)
+
+GET         /participations                         controllers.Application.showMyParticipations()
+
+GET         /participations/content                 controllers.Application.ajaxGetParticipationsContent()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                           controllers.Assets.at(path="/public", file)

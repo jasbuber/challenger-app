@@ -1,105 +1,17 @@
-@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
     <div id="wrapper" class="account-wrapper">
         <div class="single-body-block" id="my-challenges-body">
-            <div class="top-block"><a href="/"><button class="btn btn-inverse">Back</button></a><br/><br/>
-                <div class="challenges-wrapper">
-                    <div class="challenge-tabs">
-                        <ul>
-                            <li id="created-tab"><button class="btn btn-primary selected challenge-tab-button">My Challenges</button></li>
-                            <li id="participating-tab"><button class="btn btn-info challenge-tab-button">Participations</button></li>
-                            <li id="completed-tab"><button class="btn btn-warning challenge-tab-button">Completed</button></li>
-                        </ul>
-                    </div>
-                    <div id="challenges-created" class="challenges-body created-tab-body">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Started</th>
-                                        <th><img src="@routes.Assets.at("images/members.png")"/></th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @challenges.map { challenge =>
-                                    <tr>
-                                        <td><a class="show-challenge-events" href="@challenge.apply(3).toString">@challenge.apply(0)</a></td>
-                                        <td>@challenge.apply(1).asInstanceOf[Date].format("dd-MM-yyyy")</td>
-                                        <td><b><a href="@routes.Application.showParticipators(challenge.apply(3).toString, challenge.apply(0).toString)">@challenge.apply(2)</a></b></td>
-                                        <td>
-                                            <div class="switch switch-square" data-on-label="OPEN" data-off-label="DONE"><input class="challenge-status" checked type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="@challenge.apply(3)"/>
-
-                                            </div></td>
-                                    </tr>
-                                    }
-                                </tbody>
-                            </table>
-                    </div>
-                    <div id="challenges-participating" class="challenges-body participating-tab-body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Joined</th>
-                                    <th>Time left</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="send-response-wrapper">
-                        <div class="upper-div"><div class="title-div"><h4>Respond to the challenge</h4></div><div class="close-window-upper-div"><a class="close-window" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
-                        <div class="form-wrapper">
-                        @helper.form(action = routes.Application.ajaxSubmitChallengeResponse(), 'method -> "POST", 'enctype ->"multipart/form-data", 'id -> "upload-response-form") {
-                            <div class="challenge-name-wrapper">
-                            @helper.inputText(responseForm("message"), 'placeholder -> "Care to attach a message ?", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
-                            </div>
-                            <div id="video-upload-wrapper">
-                                <div id="upload-response-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
-                                    Upload a video response...</button></div>
-                                <input name="video-description" type="file" accept="video/*"/>
-                            </div>
-                            <div>
-                                <input type="submit" class="btn btn-hg btn-primary" value="Respond!" />
-                            </div>
-                            <input type="hidden" name="challengeId" id="response-challenge-id" value="" />
-                        }
-                        </div>
-                    </div>
-                    <div id="challenges-completed" class="challenges-body completed-tab-body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Author</th>
-                                    <th>Name</th>
-                                    <th>Started</th>
-                                    <th>Ended</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div id="content-wrapper">
+                @challenges_content(bigProfilePicUrl, challenges)
             </div>
-            <div class="challenge-events">
-                <div class="upper-div"><div class="title-div"><span class="challenge-events-title"></span></div><div class="close-window-div"><a class="close-window stop-player" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
-                <div id="responses-div"></div>
-            </div>
-            <div id="video-panel">
-                <div class="upper-div"><div class="close-window-div"><a class="close-window stop-player" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
-                <div id="video-player-wrapper">
-                    <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="600" height="350" data-setup="{}">
-                        <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-                    </video>
-                </div>
-            </div>
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
+        </div>
+        <div class="challenge-events">
+            <div class="upper-div"><div class="title-div"><span class="challenge-events-title"></span></div><div class="close-window-div"><a class="close-window stop-player" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div></div>
+            <div id="responses-div"></div>
         </div>
     </div>
 

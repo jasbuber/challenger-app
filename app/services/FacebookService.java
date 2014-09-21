@@ -51,7 +51,7 @@ public class FacebookService {
     }
 
     public FacebookUser getFacebookUser() {
-        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, username"));
+        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, username, name"));
     }
 
     public String getProfilePictureUrl(){

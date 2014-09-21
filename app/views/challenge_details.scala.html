@@ -1,0 +1,93 @@
+@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long,
+        newestNotifications: java.util.List[domain.Notification], challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean, currentUsername: java.lang.String)
+
+@main("Welcome to Challenge Application") {
+    @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
+    <div id="wrapper" class="account-wrapper">
+        <div class="single-body-block" id="challenge-body">
+            <div id="content-wrapper">
+                <div id="challenge-wrapper" class="account-content">
+                    <div class="padded-glyphs-wrapper">
+                        <div class="padded-glyph-challenge-data-wrapper">
+                            <div>
+                                <div id="video-panel">
+                                    <div id="video-player-wrapper">
+                                        <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="650" height="360" data-setup="{}" poster="@videoDescription.getPicture">
+                                            <source src="@videoDescription.getSource" type="video/mp4"/>
+                                            <p class="vjs-no-js">
+                                                To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                supports HTML5 video</a></p>
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="challenge-lists">
+                                <div id="challenge-details">
+                                    <div class="challenge-details-name-wrapper">
+                                        <span class="challenge-details-name">@challenge.getChallengeName</span>
+                                        <span>
+                                            @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
+                                                @if(currentUserResponded == true) {
+                                                    <img src="@routes.Assets.at("images/correct.png")"/>
+                                                } else {
+                                                    @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)) {
+                                                        <input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>
+                                                    } else {
+                                                        <input type="button" class="btn btn-hg btn-success join-challenge-action" value="Join"/>
+                                                    }
+                                                }
+                                            }
+                                        </span>
+                                    </div>
+                                    <div><a href="@routes.Application.showProfile(challenge.getCreator.getUsername)">
+                                        @if(challenge.getCreator.getProfilePictureUrl != null) {
+                                            <img class="smallProfilePicture" src="@challenge.getCreator.getProfilePictureUrl"/>
+                                        } else {
+                                            <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                                        }
+                                        @challenge.getCreator.getUsername</a></div>
+                                    <div>time left</div>
+                                    <div>Created: @challenge.getCreationDate</div>
+                                    <div>Category: @challenge.getCategory</div>
+                                    @if(challengeResponsesNr > 0) {
+                                        <div class="show-responses-wrapper">
+                                            <a href="@routes.Application.showChallengeResponses(challenge.getId)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/>
+                                                Video responses </a>
+                                        </div>
+                                    }
+                                    <input type="hidden" class="challenge-id" value="@challenge.getId"/>
+                                </div>
+                                @if(!participants.isEmpty) {
+                                    <div class="participants-list-wrapper">
+                                        <div class="challenge-list-header">Participants (@participants.size())</div>
+                                        <div class="participants-list">
+                                        @participants.map { participation =>
+                                            <div class="glyph-challenge">
+                                                <a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
+                                                    @if(participation.getParticipator.getProfilePictureUrl != null) {
+                                                        <img class="smallProfilePicture" src="@participation.getParticipator.getProfilePictureUrl"/>
+                                                    } else {
+                                                        <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                                                    }
+                                                    @participation.getParticipator.getUsername</a>
+                                            </div>
+                                        }
+                                        </div>
+                                        @if(challenge.getCreator.getUsername.compareTo(currentUsername) == 0) {
+                                            <div class="glyph-show-more">
+                                                <a href="@routes.Application.showParticipators(challenge.getId)">show details</a>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
+                @send_response(responseForm, challenge.getId)
+        </div>
+    </div>
+
+}

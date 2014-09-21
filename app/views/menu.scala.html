@@ -37,14 +37,15 @@
                     <a href="#" data-toggle="dropdown">
                         @firstName
                         @if(profilePicUrl != null) {
-                            <img src="@profilePicUrl"/>
+                            <img class="smallProfilePicture" src="@profilePicUrl"/>
                         } else {
                             <img src="@routes.Assets.at("images/avatar_small.png")"/>
                         }
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="@routes.Application.showMyChallenges()">My Challenges</a></li>
-                        <li><a href="@routes.Application.showCurrentProfile()">View Profile</a></li>
+                        <li><a href="@routes.Application.showMyParticipations()">My Participations</a></li>
+                        <li><a href="@routes.Application.showCurrentProfile()">Profile</a></li>
                     </ul>
                 </div>
             </li>

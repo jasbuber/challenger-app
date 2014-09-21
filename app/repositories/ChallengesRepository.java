@@ -56,6 +56,17 @@ public class ChallengesRepository {
         return usernameUsersParticipatingNr > 0;
     }
 
+    public boolean isUserRespondedToChallenge(Challenge challenge, String participatorUsername) {
+        Query usernameUsersParticipatingNrQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "WHERE r.challengeParticipation.challenge = :challenge " +
+                "AND LOWER(r.challengeParticipation.participator.username) = LOWER(:participatorUsername)");
+        usernameUsersParticipatingNrQuery.setParameter("challenge", challenge);
+        usernameUsersParticipatingNrQuery.setParameter("participatorUsername", participatorUsername);
+        Long usernameUsersParticipatingNr = (Long) usernameUsersParticipatingNrQuery.getSingleResult();
+        return usernameUsersParticipatingNr > 0;
+    }
+
     public ChallengeResponse addChallengeResponse(ChallengeResponse challengeResponse) {
         JPA.em().persist(challengeResponse);
         return challengeResponse;
@@ -156,6 +167,41 @@ public class ChallengesRepository {
         return completedChallengesQuery.getResultList();
     }
 
+    public List getLatestChallengesWithParticipantsNrForUser(String creatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+                "FROM ChallengeParticipation p " +
+                "RIGHT OUTER JOIN p.challenge c " +
+                "WHERE c.active = true " +
+                "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
+                "GROUP BY c.challengeName");
+        completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
+        completedChallengesQuery.setMaxResults(3);
+        return completedChallengesQuery.getResultList();
+    }
+
+    public List getChallengeParticipationsWithParticipantsNrForUser(String participatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+                "FROM ChallengeParticipation p " +
+                "JOIN p.challenge c " +
+                "WHERE c.active = true " +
+                "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
+                "GROUP BY c.challengeName");
+        completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
+        return completedChallengesQuery.getResultList();
+    }
+
+    public List getLastestParticipationsWithParticipantsNrForUser(String participatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+                "FROM ChallengeParticipation p " +
+                "JOIN p.challenge c " +
+                "WHERE c.active = true " +
+                "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
+                "GROUP BY c.challengeName");
+        completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
+        completedChallengesQuery.setMaxResults(3);
+        return completedChallengesQuery.getResultList();
+    }
+
     public Challenge closeChallenge(long id){
         Challenge challenge = getChallenge(id);
         if( challenge.isActive() ){
@@ -171,6 +217,14 @@ public class ChallengesRepository {
                 "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)");
         completedChallengesQuery.setParameter("challengeId", challengeId);
         return completedChallengesQuery.getResultList();
+    }
+
+    public Long getResponsesNrForChallenge(long challengeId) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)");
+        completedChallengesQuery.setParameter("challengeId", challengeId);
+        return (Long) completedChallengesQuery.getSingleResult();
     }
 
     public ChallengeResponse getChallengeResponse(long id){ return JPA.em().find(ChallengeResponse.class, id); }
@@ -203,5 +257,31 @@ public class ChallengesRepository {
 
         participantsForChallengeQuery.setParameter("challengeId", challengeId);
         return participantsForChallengeQuery.getResultList();
+    }
+
+    public Long getCreatedChallengesNrForUser(String username) {
+        Query createdChallengesQuery = JPA.em().createQuery("SELECT count(c) " +
+                "FROM Challenge c " +
+                "WHERE LOWER(c.creator.username) = LOWER(:username)");
+        createdChallengesQuery.setParameter("username", username);
+        return (Long) createdChallengesQuery.getSingleResult();
+    }
+
+    public Long getJoinedChallengesNrForUser(String username) {
+        Query joinedChallengesQuery = JPA.em().createQuery("SELECT count(p) " +
+                "FROM ChallengeParticipation p " +
+                "WHERE LOWER(p.participator.username) = LOWER(:username)");
+        joinedChallengesQuery.setParameter("username", username);
+        return (Long) joinedChallengesQuery.getSingleResult();
+    }
+
+    public Long getCompletedChallengesNrForUser(String username) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "WHERE LOWER(r.challengeParticipation.participator.username) = LOWER(:username) " +
+                "AND r.isAccepted = 'Y' " +
+                "AND r.challengeParticipation.challenge.active = false");
+        completedChallengesQuery.setParameter("username", username);
+        return (Long) completedChallengesQuery.getSingleResult();
     }
 }

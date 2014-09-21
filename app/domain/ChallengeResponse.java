@@ -2,6 +2,8 @@ package domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name = "CHALLENGE_RESPONSES")
@@ -24,6 +26,11 @@ public class ChallengeResponse {
 
     @Column(name = "MESSAGE")
     private String message;
+
+    @Column(name = "SUBMITTED" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date submitted = new Date();
 
     @Transient
     private String thumbnailUrl;
@@ -79,6 +86,10 @@ public class ChallengeResponse {
         return videoResponseUrl;
     }
 
+    public void setVideoResponseUrl(String videoResponseUrl) {
+        this.videoResponseUrl = videoResponseUrl;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -90,4 +101,9 @@ public class ChallengeResponse {
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
+
+    public String getSubmitted() {
+        return new SimpleDateFormat("H:m dd-MM-yyyy").format(this.submitted);
+    }
+
 }

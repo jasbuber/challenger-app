@@ -1,0 +1,23 @@
+@(responseForm: Form[CreateChallengeResponseForm], challengeId: Long)
+
+<div id="send-response-wrapper" style="display: none">
+    <div class="upper-div"><div class="title-div"><h4>Respond to the challenge</h4></div>
+        <div class="close-window-upper-div"><a class="close-window" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div>
+    </div>
+    <div class="form-wrapper">
+    @helper.form(action = routes.Application.ajaxSubmitChallengeResponse(), 'method -> "POST", 'enctype -> "multipart/form-data", 'id -> "upload-response-form") {
+        <div class="challenge-name-wrapper">
+        @helper.inputText(responseForm("message"), 'placeholder -> "Care to attach a message ?", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
+        </div>
+        <div id="video-upload-wrapper">
+            <div id="upload-response-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
+                Upload a video response...</button></div>
+            <input name="video-description" type="file" accept="video/*"/>
+        </div>
+        <div>
+            <input type="submit" class="btn btn-hg btn-primary" value="Respond!" />
+        </div>
+        <input type="hidden" name="challengeId" id="response-challenge-id" value="@challengeId" />
+    }
+    </div>
+</div>

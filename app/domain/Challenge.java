@@ -146,4 +146,5 @@ public class Challenge {
     public Date getEndingDate() {
         return endingDate;
     }
+
 }

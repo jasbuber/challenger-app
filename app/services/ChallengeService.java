@@ -94,6 +94,15 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
+    public boolean isUserRespondedToChallenge(final Challenge challenge, final String user) {
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.isUserRespondedToChallenge(challenge, user);
+            }
+        });
+    }
+
     public boolean isUserCreatedChallengeWithName(final String challengeName, final String creator) {
         return withReadOnlyTransaction(new F.Function0<Boolean>() {
             @Override
@@ -222,12 +231,51 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
+    public List getChallengeParticipationsWithParticipantsNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<List>() {
+                @Override
+                public List apply() throws Throwable {
+                    return challengesRepository.getChallengeParticipationsWithParticipantsNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public List getLatestChallengeParticipationsWithParticipantsNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<List>() {
+                @Override
+                public List apply() throws Throwable {
+                    return challengesRepository.getLastestParticipationsWithParticipantsNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
     public List getChallengesWithParticipantsNrForUser(final String username){
         try {
             return withReadOnlyTransaction(new F.Function0<List>() {
                 @Override
                 public List apply() throws Throwable {
                     return challengesRepository.getChallengesWithParticipantsNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public List getLatestChallengesWithParticipantsNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<List>() {
+                @Override
+                public List apply() throws Throwable {
+                    return challengesRepository.getLatestChallengesWithParticipantsNrForUser(username);
                 }
             });
         } catch (Throwable throwable) {
@@ -254,6 +302,19 @@ public class ChallengeService extends TransactionalBase {
                 @Override
                 public List<ChallengeResponse> apply() throws Throwable {
                     return challengesRepository.getResponsesForChallenge(challengeId);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getResponsesNrForChallenge(final long challengeId){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getResponsesNrForChallenge(challengeId);
                 }
             });
         } catch (Throwable throwable) {
@@ -307,6 +368,45 @@ public class ChallengeService extends TransactionalBase {
                 @Override
                 public List<ChallengeParticipation> apply() throws Throwable {
                     return challengesRepository.getParticipantsForChallenge(challengeId);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getCreatedChallengesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getCreatedChallengesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getCompletedChallengesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getCompletedChallengesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getJoinedChallengesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getJoinedChallengesNrForUser(username);
                 }
             });
         } catch (Throwable throwable) {

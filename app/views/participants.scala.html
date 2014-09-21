@@ -1,42 +1,58 @@
-@(firstName: String, bigProfilePicUrl: String, challengeName: java.lang.String, participations: java.util.List[domain.ChallengeParticipation], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+@(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, participants: java.util.List[domain.ChallengeParticipation], challenges: java.util.List[Array[Object]],
+        latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
-    <div id="wrapper">
-    <div id="challenge-participant-block" class="single-body-block">
-        <div class="top-block"><a href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
-        <h2>@challengeName</h2>
-        <div class="form-wrapper">
-            <div class="common-table-wrapper challenge-participants-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><div>User</div></th>
-                            <th><div>Joined challenge</div></th>
-                            <th><div>Participates in</div></th>
-                            <th>Points</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @participations.map { participation =>
-                        <tr>
-                            <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
-                                @if(participation.getParticipator.getProfilePictureUrl != null) {
-                                    <img src="@participation.getParticipator.getProfilePictureUrl"/>
-                                } else {
-                                    <img src="@routes.Assets.at("images/avatar_small.png")"/>
-                                }
-                                @participation.getParticipator.getUsername</a></td>
-                            <td>@participation.getJoined</td>
-                            <td><b>6</b></td>
-                            <td>404</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
+    <div id="wrapper" class="video-block-wrapper">
+        <div class="single-body-block" id="challenge-body">
+            <div id="content-wrapper">
+                <div id="challenge-wrapper" class="account-content">
+                    <div class="padded-glyphs-wrapper">
+                        <div class="padded-glyphs-top-panel"><span><a href="@routes.Application.showChallenge(challenge.getId)">
+                            <button class="btn btn-inverse backAction">Back</button>
+                        </a></span><span class="padded-glyph-header">@challenge.getChallengeName participants</span>
+                        </div>
+                        <div class="padded-glyph-challenge-data-wrapper">
+                            <div class="common-table-wrapper challenge-participants-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th><div>Joined</div></th>
+                                            <th><div>User</div></th>
+                                            <th><div><img src="@routes.Assets.at("images/glyph_diver_small.png")"/></div></th>
+                                            <th><img src="@routes.Assets.at("images/trophy_small.png")"/></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @participants.map { participation =>
+                                        <tr>
+                                            <td>@participation.getJoined</td>
+                                            <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
+                                                @if(participation.getParticipator.getProfilePictureUrl != null) {
+                                                    <img src="@participation.getParticipator.getProfilePictureUrl"/>
+                                                } else {
+                                                    <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                                                }
+                                                @participation.getParticipator.getUsername</a></td>
+                                            <td><b>6</b></td>
+                                            <td>404</td>
+                                            <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
+                                                <a class="remove-participant" href="#"><img src="@routes.Assets.at("images/remove.png")"/></a>
+                                            }
+                                            </td>
+                                            <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                                <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
         </div>
-    </div>
     </div>
 }

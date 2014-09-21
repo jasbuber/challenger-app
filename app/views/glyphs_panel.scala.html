@@ -1,0 +1,64 @@
+@( challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], latestNotifications: java.util.List[domain.Notification])
+
+<div class="challenges-wrapper">
+    <div id="challenges-created" class="challenges-body created-tab-body">
+        <div class="glyph-header"><a class="show-challenges" href="#">Latest challenges</a></div>
+        <div class="glyph-challenges-wrapper">
+        @if(!challenges.isEmpty) {
+            @challenges.map { challenge =>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="@challenge.apply(3).asInstanceOf[Long]"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
+                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])"><img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_small.png")"/></a>
+                </div>
+            }
+        </div>
+        <div class="glyph-show-more"><a class="show-challenges" href="#">see more</a></div>
+        }else{
+            <div class="no-elements-wrapper"><a href="#">Create a new challenge!</a></div>
+        }
+    </div>
+    <div id="challenges-participating" class="challenges-body participating-tab-body">
+        <div class="glyph-header"><a class="show-participations" href="#">Latest participations</a></div>
+        @if(!latestParticipations.isEmpty) {
+            <div class="glyph-challenges-wrapper">
+            @latestParticipations.map { challenge =>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
+                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])"><img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_small.png")"/></a>
+                </div>
+            }
+            </div>
+
+            <div class="glyph-show-more"><a class="show-participations" href="show-glyph-data">see more</a></div>
+        } else {
+            <div class="no-elements-wrapper"><a href="#">Join a challenge!</a></div>
+        }
+    </div>
+    <div id="challenges-completed" class="challenges-body completed-tab-body">
+        <div class="glyph-header"><a class="show-glyph-data" href="@routes.Application.showMyNotifications()">Latest notifications</a></div>
+        @if(!latestNotifications.isEmpty) {
+            <div class="glyph-challenges-wrapper">
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_hat_small.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
+                        User left the challenge...</a></span>
+                </div>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_glasses_small.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
+                        Challenge completed!</a></span>
+                </div>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
+                        Someone joined...</a></span>
+                </div>
+            </div>
+            <div class="glyph-show-more"><a href="@routes.Application.showMyNotifications()" class="show-glyph-data">see more</a></div>
+        } else {
+            <div class="no-elements-wrapper">No notifications</div>
+        }
+    </div>
+</div>

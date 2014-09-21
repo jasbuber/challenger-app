@@ -1,29 +1,14 @@
-@(currentFirstName: java.lang.String, profileUsername: String, currentProfilePic: String, bigProfilePicUrl: java.lang.String, joined: java.lang.String,
-        created: Long, completed: Long, unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, latestChallenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification],
+        name: java.lang.String, viewedUserPicUrl: java.lang.String, createdChallengesNr: Long, joinedChallengesNr: Long, completedChallengesNr: Long)
 
 @main("Welcome to Challenge Application") {
-    @menu(currentFirstName, currentProfilePic, unreadNotificationsNr, newestNotifications)
+    @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
     <div id="wrapper" class="account-wrapper">
-        <div class="single-body-block" id="profile-body">
-            <div class="top-block"><a href="/"><button class="btn btn-inverse">Back</button></a></div>
-            <div id="profile-wrapper">
-                <h2>Profile</h2>
-                <div id="profile-data">
-                    @if(bigProfilePicUrl != null) {
-                        <img src="@bigProfilePicUrl"/>
-                    } else {
-                        <img src="@routes.Assets.at("images/avatar_big.png")"/>
-                    }
-                    @profileUsername
-                </div>
-                <div id="profile-stats">
-                    <ul>
-                        <li>Joined : @joined</li>
-                        <li>Challenges created : @created</li>
-                        <li>Challenges completed : @completed </li>
-                    </ul>
-                </div>
+        <div class="single-body-block" id="my-challenges-body">
+            <div id="content-wrapper">
+                @profile_content(name, viewedUserPicUrl, createdChallengesNr, joinedChallengesNr, completedChallengesNr)
             </div>
+            @glyphs_panel(latestChallenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
         </div>
     </div>
 

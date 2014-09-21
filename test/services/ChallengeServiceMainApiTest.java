@@ -29,7 +29,6 @@ public class ChallengeServiceMainApiTest {
 
     private final static String SOME_VIDEO_ID = "videoId";
     private final Boolean VISIBILITY_PRIVATE = false;
-    private final Boolean VISIBILITY_PUBLIC = true;
 
 
     private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
@@ -79,63 +78,13 @@ public class ChallengeServiceMainApiTest {
         assertFalse(userCreatedChallengeWithThisName);
     }
 
-    @Test
-    public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
-        //when
-        ChallengeParticipation challengeParticipation =
-                challengeService.participateInChallenge(challenge, user);
-
-        //then
-        assertTrue(challengeParticipation != null);
-    }
-
     private Challenge createChallenge(String user) {
         return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, SOME_VIDEO_ID, VISIBILITY_PRIVATE);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
 
-        //when
-        challengeService.participateInChallenge(challenge, user);
-        challengeService.participateInChallenge(challenge, user);
 
-        //then throw exception
-    }
 
-    @Test
-    public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
-        //when
-        challengeService.participateInChallenge(challenge, user);
-        boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
-
-        //
-        assertTrue(userParticipatingInChallenge);
-    }
-
-    @Test
-    public void shouldUserParticipationBeFalseIfUserIsNotParticipatingInChallengeYet() throws Exception {
-        //given
-        String user = "username";
-        Challenge challenge = createChallenge(user);
-
-        //when
-        boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
-
-        //
-        assertFalse(userParticipatingInChallenge);
-    }
 
     private final static class ChallengesRepositoryStub extends ChallengesRepository {
 

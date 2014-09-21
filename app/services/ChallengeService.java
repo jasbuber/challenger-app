@@ -10,6 +10,8 @@ import java.util.List;
 
 public class ChallengeService extends TransactionalBase {
 
+    public static final int POPULARITY_INDICATOR = 10;
+
     private final ChallengesRepository challengesRepository;
     private final UsersRepository usersRepository;
     private final ChallengeNotificationsService notificationService;
@@ -57,15 +59,29 @@ public class ChallengeService extends TransactionalBase {
             @Override
             public ChallengeParticipation apply() throws Throwable {
                 User participator = usersRepository.getUser(participatorUsername);
-                return challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participator));
+                Challenge refreshedChallenge = challengesRepository.getChallenge(challenge.getId());
+                return challengesRepository.persistChallengeParticipation(new ChallengeParticipation(refreshedChallenge, participator));
             }
         });
 
-        notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, findAllParticipatorsOf(challenge));
+        if(hasChallengeBecamePopular(challenge)) {
+            notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, findAllParticipatorsOf(challenge));
+        }
 
         return challengeParticipation;
     }
 
+    /**
+     * Less effective, because sql statement is called each time, even after
+     * limit has been reached. However it keeps logic to manage limit's
+     * exceeding in one place. To be changed if it won't be effective enough to
+     * more dynamic approach (keep it as a state, change the state, if necessary
+     * during creating/removing new challenge participation)
+     *
+     */
+    private boolean hasChallengeBecamePopular(Challenge challenge) {
+        return challengesRepository.getNrOfParticipationsOf(challenge) == POPULARITY_INDICATOR;
+    }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
 

@@ -1,0 +1,32 @@
+@(notification: domain.Notification)
+
+<div class="glyph-challenge">
+    @notification.getNotificationType match {
+        case domain.Notification.NotificationType.new_participant => {
+            <a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+        case domain.Notification.NotificationType.participant_left => {
+            <a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_hat_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+        case domain.Notification.NotificationType.new_response => {
+            <a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_duck_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+        case domain.Notification.NotificationType.response_accepted => {
+            <a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+        case domain.Notification.NotificationType.response_refused => {
+            <a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_crab_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+        case domain.Notification.NotificationType.challenge_completed => {
+            <a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_glasses_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
+
+    }
+
+</div>

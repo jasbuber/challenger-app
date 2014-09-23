@@ -561,6 +561,50 @@ public class Application extends Controller {
         return redirect(routes.Application.showMyChallenges());
     }
 
+    public static Result followNotificationToChallengeDetails(long notificationId, long challengeId) {
+        InternalNotificationService service = getNotificationService();
+        Notification notification = service.getNotification(notificationId);
+
+        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+            notification.read();
+            service.readNotification(notification);
+
+            return redirect(routes.Application.showChallenge(challengeId));
+
+        }
+        return redirect(routes.Application.showMyChallenges());
+    }
+
+    public static Result followNotificationToChallengeResponses(long notificationId, long challengeId) {
+        InternalNotificationService service = getNotificationService();
+        Notification notification = service.getNotification(notificationId);
+
+        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+            notification.read();
+            service.readNotification(notification);
+
+            return redirect(routes.Application.showChallengeResponses(challengeId));
+
+        }
+
+        return redirect(routes.Application.showMyChallenges());
+    }
+
+    public static Result followNotificationToUserProfile(long notificationId, String username) {
+        InternalNotificationService service = getNotificationService();
+        Notification notification = service.getNotification(notificationId);
+
+        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+            notification.read();
+            service.readNotification(notification);
+
+            return redirect(routes.Application.showProfile(username));
+
+        }
+
+        return redirect(routes.Application.showMyChallenges());
+    }
+
     @play.db.jpa.Transactional
     public static Result ajaxGetChallengesContent() {
 

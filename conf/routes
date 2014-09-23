@@ -66,6 +66,12 @@ GET         /notifications                          controllers.Application.show
 
 GET         /notifications/follow                   controllers.Application.followNotification(notificationId: Long)
 
+GET         /notifications/follow/challengedetails  controllers.Application.followNotificationToChallengeDetails(notificationId: Long, challengeId: Long)
+
+GET         /notifications/follow/responses         controllers.Application.followNotificationToChallengeResponses(notificationId: Long, challengeId: Long)
+
+GET         /notifications/follow/userprofile       controllers.Application.followNotificationToUserProfile(notificationId: Long, username: java.lang.String)
+
 GET         /participations                         controllers.Application.showMyParticipations()
 
 GET         /participations/content                 controllers.Application.ajaxGetParticipationsContent()

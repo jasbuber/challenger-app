@@ -1,0 +1,36 @@
+@(notification: domain.Notification)
+<tr class="@if(!notification.isRead){ notificationUnread }">
+    @notification.getNotificationType match {
+    case domain.Notification.NotificationType.new_participant => {
+            <td><a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/></a></td>
+            <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+            <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+    case domain.Notification.NotificationType.participant_left => {
+        <td><a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_hat_small.png")"/></a></td>
+        <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+        <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+    case domain.Notification.NotificationType.new_response => {
+        <td><a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_duck_small.png")"/></a></td>
+        <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+        <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+    case domain.Notification.NotificationType.response_accepted => {
+        <td><a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/></a></td>
+        <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+        <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+    case domain.Notification.NotificationType.response_refused => {
+        <td><a class="" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_crab_small.png")"/></a></td>
+        <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+        <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+    case domain.Notification.NotificationType.challenge_completed => {
+        <td><a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_glasses_small.png")"/></a></td>
+        <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
+        <td><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getNotificationMsg</a></td>
+    }
+
+    }
+</tr>

@@ -31,12 +31,42 @@ public class Notification {
     @Column(name = "MESSAGE")
     private String notificationMsg;
 
+    @Column(name = "SHORT_MESSAGE")
+    private String shortNotificationMsg;
+
+    @Column(name = "TYPE")
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private NotificationType notificationType;
+
+    @Column(name = "RELEVANT_OBJECT_ID")
+    private String relevantObjectId;
+
+    public enum NotificationType {
+        new_participant, participant_left, new_response, response_accepted, response_refused, challenge_completed
+    }
+
     protected Notification() {
     }
 
     public Notification(User user, String notificationMsg) {
         this.user = user;
         this.notificationMsg = notificationMsg;
+    }
+
+    public Notification(User user, NotificationType type, String notificationMsg, String shortNotificationMsg) {
+        this.user = user;
+        this.notificationMsg = notificationMsg;
+        this.shortNotificationMsg = shortNotificationMsg;
+        this.notificationType = type;
+    }
+
+    public Notification(User user, NotificationType type, String notificationMsg, String shortNotificationMsg, String relevantObjectId) {
+        this.user = user;
+        this.notificationMsg = notificationMsg;
+        this.shortNotificationMsg = shortNotificationMsg;
+        this.notificationType = type;
+        this.relevantObjectId = relevantObjectId;
     }
 
     public void read() {
@@ -81,5 +111,17 @@ public class Notification {
 
     public Long getId() {
         return id;
+    }
+
+    public String getShortNotificationMsg() {
+        return shortNotificationMsg;
+    }
+
+    public NotificationType getNotificationType() {
+        return notificationType;
+    }
+
+    public String getRelevantObjectId() {
+        return relevantObjectId;
     }
 }

@@ -79,8 +79,13 @@ public class ChallengeService extends TransactionalBase {
      * during creating/removing new challenge participation)
      *
      */
-    private boolean hasChallengeBecamePopular(Challenge challenge) {
-        return challengesRepository.getNrOfParticipationsOf(challenge) == POPULARITY_INDICATOR;
+    private boolean hasChallengeBecamePopular(final Challenge challenge) {
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.getNrOfParticipationsOf(challenge) == POPULARITY_INDICATOR;
+            }
+        });
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {

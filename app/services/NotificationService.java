@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface NotificationService {
 
-    void notifyUser(User user, String notificationMsg);
+    void notifyUser(User user, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId);
 
-    void notifyUsers(List<User> users, String notificationMsg);
+    void notifyUsers(List<User> users, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId);
 
     boolean hasUserAnyNotification(User user);
 

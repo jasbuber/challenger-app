@@ -24,19 +24,7 @@
                                     </thead>
                                     <tbody>
                                     @notifications.map { notification =>
-                                        @if(notification.getIsRead == 'N') {
-                                            <tr class="notificationUnread">
-                                                <td><img src="@routes.Assets.at("images/unread.png")"/></td>
-                                                <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
-                                                <td><a href="@routes.Application.followNotification(notification.getId)">@notification.getNotificationMsg</a></td>
-                                            </tr>
-                                        } else {
-                                            <tr>
-                                                <td></td>
-                                                <td>@notification.getCreationTimestamp.format("dd-MM-yyyy H:mm")</td>
-                                                <td><a href="@routes.Application.followNotification(notification.getId)">@notification.getNotificationMsg</a></td>
-                                            </tr>
-                                        }
+                                        @single_full_notification(notification)
                                     }
                                     </tbody>
                                 </table>

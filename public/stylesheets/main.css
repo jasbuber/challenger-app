@@ -8,12 +8,17 @@ div#menu-wrapper .navbar ul.nav li a{
 }
 div#menu-wrapper .navbar ul.nav li div.dropdown{ padding-top: 15px; padding-right: 10px; }
 
+div#menu-wrapper .navbar ul.nav ul.notification-dropdown-menu li a{ color: darkgray; }
+
+div#menu-wrapper .navbar ul.nav ul.notification-dropdown-menu li a.notificationUnread{ color: #34495e; }
 img.smallProfilePicture{ width: 32px; height: 32px; border-radius: 10px; border: 1px solid #bdc3c7;}
 img.medium-profile-picture{ width: 100px; height: 100px; border-radius: 10px; border: 1px solid #bdc3c7;}
 
 div.dropdown{ padding-bottom: 15px; }
 div.dropdown span.navbar-new{ top: 35%; right: 22px; }
-div.dropdown li.more-elements a{ text-align: right; }
+
+
+div#menu-wrapper .navbar ul.nav ul.dropdown-menu li.more-elements a{ text-align: right; color: #34495e; }
 
 
 div#wrapper{
@@ -224,7 +229,7 @@ div#wrapper div.single-body-block  .glyph-show-more a{ font-size: 20px; font-wei
 div#wrapper div.single-body-block .challenges-body div.no-elements-wrapper{ text-align: center; margin-top: 50px; }
 
 div#wrapper div.single-body-block #challenges-completed div.no-elements-wrapper{ color: darkgrey; }
-div#wrapper div.single-body-block #challenges-completed  .glyph-list-name{ width: 220px; }
+div#wrapper div.single-body-block #challenges-completed  .glyph-list-name{ width: 260px; }
 div#wrapper div.single-body-block #challenges-completed  .glyph-list-name a{ font-weight: 500; }
 
 div#wrapper div.single-body-block div.challenge-participants-wrapper table{
@@ -268,12 +273,16 @@ div#wrapper div.single-body-block#video-panel .close-window-div{ margin-bottom: 
 div#wrapper div.single-body-block#video-panel .video-js{ display: block; margin-left: auto; margin-right: auto; }
 
 div#wrapper div.user-notification-wrapper table thead tr th div.notification-date-header{ width: 160px; }
-div#wrapper div.user-notification-wrapper table tbody tr td{ vertical-align: text-top; }
+div#wrapper div.user-notification-wrapper table tbody tr td{ vertical-align: text-top; color: darkgray; }
+div#wrapper div.user-notification-wrapper table tbody tr td a{ color: darkgray; }
+div#wrapper div.user-notification-wrapper table tbody tr td a:hover{ color: lightgray; }
+div#wrapper div.user-notification-wrapper table tbody tr.notificationUnread td{ color: #34495e; }
+div#wrapper div.user-notification-wrapper table tbody tr.notificationUnread td a{ color: #34495e; }
+div#wrapper div.user-notification-wrapper table tbody tr.notificationUnread td a:hover{ color: #a3bad2; }
 
-div#menu-wrapper .navbar ul.nav li a.notificationUnread, a.notificationUnread{ padding-left: 10px; }
 div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px; }
 
-.notificationUnread{ font-weight: 800!important; }
+.notificationUnread{ font-weight: 800!important;}
 
 div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 375px; }
 

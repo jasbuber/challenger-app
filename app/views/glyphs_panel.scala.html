@@ -3,8 +3,8 @@
 <div class="challenges-wrapper">
     <div id="challenges-created" class="challenges-body created-tab-body">
         <div class="glyph-header"><a class="show-challenges" href="#">Latest challenges</a></div>
-        <div class="glyph-challenges-wrapper">
         @if(!challenges.isEmpty) {
+        <div class="glyph-challenges-wrapper">
             @challenges.map { challenge =>
                 <div class="glyph-challenge">
                     <a class="show-challenge" href="@challenge.apply(3).asInstanceOf[Long]"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
@@ -37,28 +37,16 @@
         }
     </div>
     <div id="challenges-completed" class="challenges-body completed-tab-body">
-        <div class="glyph-header"><a class="show-glyph-data" href="@routes.Application.showMyNotifications()">Latest notifications</a></div>
-        @if(!latestNotifications.isEmpty) {
+        <div class="glyph-header"><a class="show-glyph-data" href="@routes.Application.showMyNotifications()">New notifications</a></div>
+        @if(!latestNotifications.filter(n => n.getIsRead != 'Y').isEmpty) {
             <div class="glyph-challenges-wrapper">
-                <div class="glyph-challenge">
-                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_hat_small.png")"/></a>
-                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
-                        User left the challenge...</a></span>
-                </div>
-                <div class="glyph-challenge">
-                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_glasses_small.png")"/></a>
-                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
-                        Challenge completed!</a></span>
-                </div>
-                <div class="glyph-challenge">
-                    <a class="show-challenge" href="#"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/></a>
-                    <span class="glyph-list-name"><a class="show-challenge-events" href="#">
-                        Someone joined...</a></span>
-                </div>
+                @latestNotifications.filter(n => n.getIsRead != 'Y').take(3).map{ notification =>
+                    @single_notification(notification)
+                }
             </div>
             <div class="glyph-show-more"><a href="@routes.Application.showMyNotifications()" class="show-glyph-data">see more</a></div>
         } else {
-            <div class="no-elements-wrapper">No notifications</div>
+            <div class="no-elements-wrapper">No unread notifications</div>
         }
     </div>
 </div>

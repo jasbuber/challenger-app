@@ -17,8 +17,9 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public void notifyUser(User user, String notificationMsg) {
-        final Notification notification = new Notification(user, notificationMsg);
+    public void notifyUser(User user, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId) {
+
+        final Notification notification = new Notification(user, notificationType, notificationMsg, shortNotificationMsg, relevantObjectId);
         withTransaction(new F.Function0<Notification>() {
             @Override
             public Notification apply() throws Throwable {
@@ -28,8 +29,8 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public void notifyUsers(List<User> users, String notificationMsg) {
-        final List<Notification> notifications = createNotificationsFor(users, notificationMsg);
+    public void notifyUsers(List<User> users, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId) {
+        final List<Notification> notifications = createNotificationsFor(users, notificationType, notificationMsg, shortNotificationMsg, relevantObjectId);
 
         withTransaction(new F.Function0<List<Notification>>() {
             @Override
@@ -39,10 +40,10 @@ public class InternalNotificationService extends TransactionalBase implements No
         });
     }
 
-    private List<Notification> createNotificationsFor(List<User> users, String notificationMsg) {
+    private List<Notification> createNotificationsFor(List<User> users, Notification.NotificationType notificationType, String notificationMsg, String shortNotificationMsg, String relevantObjectId) {
         final List<Notification> notifications = new ArrayList<Notification>();
         for (User user : users) {
-            notifications.add(new Notification(user, notificationMsg));
+            notifications.add(new Notification(user, notificationType, notificationMsg, shortNotificationMsg, relevantObjectId));
         }
         return notifications;
     }

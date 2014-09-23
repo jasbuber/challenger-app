@@ -3,8 +3,8 @@
 <div id="my-challenges-wrapper" class="account-content">
     <div class="padded-glyphs-wrapper">
         <div class="padded-glyphs-top-panel"><span><a class="show-profile" href="#"><img class="smallProfilePicture" src="@bigProfilePicUrl"/></a></span><span class="padded-glyph-header">My challenges</span></div>
-        <div class="padded-glyph-challenges-wrapper">
         @if(!challenges.isEmpty) {
+            <div class="padded-glyph-challenges-wrapper">
             @challenges.map { challenge =>
                 <div class="padded-glyph-challenge">
                     <span><a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])"><img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_medium.png")"/></a></span>

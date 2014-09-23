@@ -10,12 +10,12 @@ public class FacebookNotificationService implements NotificationService {
 
 
     @Override
-    public void notifyUser(User user, String notificationMsg) {
+    public void notifyUser(User user, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId) {
 
     }
 
     @Override
-    public void notifyUsers(List<User> users, String notificationMsg) {
+    public void notifyUsers(List<User> users, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId) {
 
     }
 

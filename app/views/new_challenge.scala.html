@@ -1,54 +1,10 @@
-@(challengeForm: Form[controllers.CreateChallengeForm])
-<div id="challenge-block-body" class="ui-block-body">
-    <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
-    <h2>Publish a new challenge</h2>
-    <div class="form-wrapper">
-        @helper.form(action = routes.Application.ajaxCreateChallenge(), 'method -> "POST", 'enctype ->"multipart/form-data", 'id -> "create-challenge-form") {
-            <div class="challenge-name-wrapper">
-                @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Name your challenge...", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
+@(firstName: java.lang.String, profilePicUrl: java.lang.String, unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], challengeForm: Form[controllers.CreateChallengeForm])
+    @main("Welcome to Challenge Application") {
+        @menu(firstName, profilePicUrl, unreadNotificationsNr, newestNotifications)
+        <div id="wrapper" class="account-wrapper">
+            <div id="challenge-block-body" class="ui-block-body">
+            @new_challenge_content(challengeForm)
             </div>
-            <div id="video-upload-wrapper">
-                <div id="video-input-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
-                    Upload a video description...</button></div>
-                <input name="video-description" type="file" accept="video/*"/>
-            </div>
-            <div>
-                <select name="challengeCategory">
-                    <option value="@domain.ChallengeCategory.FOOD">Food related</option>
-                    <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
-                    <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
-                    <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
-                    <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
-                    <option value="@domain.ChallengeCategory.OTHER">Other</option>
-                </select>
-            </div>
-            <div>
-                <select id="challenge-visibility" name="challengeVisibility">
-                    <option value="1" selected>Public</option>
-                    <option value="0">Private</option>
+        </div>
 
-                </select>
-            </div>
-            <div>
-                <input type="submit" class="btn btn-hg btn-primary" value="Start!" />
-            </div>
-            <div id="challenge-participants-wrapper">
-                <div class="form-group" id="search-facebook-friends">
-                    <div class="input-group input-group-hg input-group-rounded">
-                        <input id="friends-filter-input" type="text" placeholder="Search" class="form-control input-lg"/>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn">
-                                <span class="fui-search"></span>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-                <div class="challenge-participants-div">
-                    <ul id="challenge-participants">
-
-                    </ul>
-                </div>
-            </div>
-        }
-    </div>
-</div>
+    }

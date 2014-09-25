@@ -3,78 +3,84 @@
 # ~~~~
 
 # Home page
-GET         /account                                controllers.Application.index()
+GET         /account                                      controllers.Application.index()
 
-GET         /                                       controllers.Application.start(code: String ?= "", error_reason: String ?= "")
+GET         /                                             controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 
-POST        /challenge/create                       controllers.Application.ajaxCreateChallenge()
+GET         /browse/:phrase                               controllers.Application.showBrowseChallengesWithData(phrase: java.lang.String)
 
-GET         /challenge/ajax/search                  controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
+GET         /browse                                       controllers.Application.showBrowseChallenges()
 
-POST        /challenge/ajax/participate             controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
+GET         /challenge/shownew                            controllers.Application.showCreateChallenge()
 
-POST        /challenge/ajax/join                    controllers.Application.ajaxJoinChallenge(challengeId: Long)
+POST        /challenge/create                             controllers.Application.ajaxCreateChallenge()
 
-GET         /challenge/ajax/searchbycategory        controllers.Application.ajaxGetChallengesForCategory(category: String)
+GET         /challenge/ajax/search                        controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
-GET         /challenge/ajax/latest                  controllers.Application.ajaxGetLatestChallenges()
+POST        /challenge/ajax/participate                   controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
 
-POST        /challenge/ajax/fbfriends               controllers.Application.ajaxGetFacebookFriends()
+POST        /challenge/ajax/join                          controllers.Application.ajaxJoinChallenge(challengeId: Long)
 
-POST        /challenge/ajax/close                   controllers.Application.ajaxCloseChallenge(id: String)
+GET         /challenge/ajax/searchbycategory              controllers.Application.ajaxGetChallengesForCategory(category: String)
 
-GET         /challenge/ajax/responses               controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
+GET         /challenge/ajax/latest                        controllers.Application.ajaxGetLatestChallenges()
 
-GET         /challenge/ajax/participations          controllers.Application.ajaxGetUserParticipations()
+POST        /challenge/ajax/fbfriends                     controllers.Application.ajaxGetFacebookFriends()
 
-GET         /challenge/ajax/completed               controllers.Application.ajaxGetCompletedChallenges()
+POST        /challenge/ajax/close                         controllers.Application.ajaxCloseChallenge(id: String)
 
-GET         /challenge/details                      controllers.Application.showChallenge(id: Long)
+GET         /challenge/ajax/responses                     controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
 
-GET         /challenge/responses                    controllers.Application.showChallengeResponses(id: Long)
+GET         /challenge/ajax/participations                controllers.Application.ajaxGetUserParticipations()
 
-POST        /challenge/ajax/leave                   controllers.Application.ajaxLeaveChallenge(challengeId: String)
+GET         /challenge/ajax/completed                     controllers.Application.ajaxGetCompletedChallenges()
 
-POST        /challenge/ajax/participants/remove     controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String)
+GET         /challenge/details                            controllers.Application.showChallenge(id: Long)
 
-GET         /challenge/participators                controllers.Application.showParticipators(challengeId: Long)
+GET         /challenge/responses                          controllers.Application.showChallengeResponses(id: Long)
 
-POST        /response/ajax/decline                  controllers.Application.ajaxDeclineResponse(id: String)
+POST        /challenge/ajax/leave                         controllers.Application.ajaxLeaveChallenge(challengeId: String)
 
-POST        /response/ajax/accept                   controllers.Application.ajaxAcceptResponse(id: String)
+POST        /challenge/ajax/participants/remove           controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String)
 
-POST        /response/ajax/submit                   controllers.Application.ajaxSubmitChallengeResponse()
+GET         /challenge/participators                      controllers.Application.showParticipators(challengeId: Long)
 
-GET         /response/ajax/response                 controllers.Application.ajaxGetResponse(responseId: Long)
+POST        /response/ajax/decline                        controllers.Application.ajaxDeclineResponse(id: String)
 
-GET         /javascriptRoutes                       controllers.Application.javascriptRoutes()
+POST        /response/ajax/accept                         controllers.Application.ajaxAcceptResponse(id: String)
+
+POST        /response/ajax/submit                         controllers.Application.ajaxSubmitChallengeResponse()
+
+GET         /response/ajax/response                       controllers.Application.ajaxGetResponse(responseId: Long)
+
+GET         /javascriptRoutes                             controllers.Application.javascriptRoutes()
 
 #to be removed very soon
-GET         /generate                               controllers.Application.generateData()
+GET         /generate                                     controllers.Application.generateData()
 
-GET         /currentprofile                         controllers.Application.showCurrentProfile()
+GET         /currentprofile                               controllers.Application.showCurrentProfile()
 
-GET         /profile                                controllers.Application.showProfile(username: java.lang.String)
+GET         /profile                                      controllers.Application.showProfile(username: java.lang.String)
 
-GET         /profile/content                        controllers.Application.ajaxGetCurrentProfileContent()
+GET         /profile/content                              controllers.Application.ajaxGetCurrentProfileContent()
 
-GET         /challenges                             controllers.Application.showMyChallenges()
+GET         /challenges                                   controllers.Application.showMyChallenges()
 
-GET         /challenges/content                     controllers.Application.ajaxGetChallengesContent()
+GET         /challenges/content                           controllers.Application.ajaxGetChallengesContent()
 
-GET         /notifications                          controllers.Application.showMyNotifications()
+GET         /notifications                                controllers.Application.showMyNotifications()
 
-GET         /notifications/follow                   controllers.Application.followNotification(notificationId: Long)
+GET         /notifications/follow                         controllers.Application.followNotification(notificationId: Long)
 
-GET         /notifications/follow/challengedetails  controllers.Application.followNotificationToChallengeDetails(notificationId: Long, challengeId: Long)
+GET         /notifications/follow/challengedetails        controllers.Application.followNotificationToChallengeDetails(notificationId: Long, challengeId: Long)
 
-GET         /notifications/follow/responses         controllers.Application.followNotificationToChallengeResponses(notificationId: Long, challengeId: Long)
+GET         /notifications/follow/responses               controllers.Application.followNotificationToChallengeResponses(notificationId: Long, challengeId: Long)
 
-GET         /notifications/follow/userprofile       controllers.Application.followNotificationToUserProfile(notificationId: Long, username: java.lang.String)
+GET         /notifications/follow/userprofile             controllers.Application.followNotificationToUserProfile(notificationId: Long, username: java.lang.String)
 
-GET         /participations                         controllers.Application.showMyParticipations()
+GET         /participations                               controllers.Application.showMyParticipations()
 
-GET         /participations/content                 controllers.Application.ajaxGetParticipationsContent()
+GET         /participations/content                       controllers.Application.ajaxGetParticipationsContent()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                           controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

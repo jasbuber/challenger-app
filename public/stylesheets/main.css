@@ -17,9 +17,12 @@ img.medium-profile-picture{ width: 100px; height: 100px; border-radius: 10px; bo
 div.dropdown{ padding-bottom: 15px; }
 div.dropdown span.navbar-new{ top: 35%; right: 22px; }
 
-
 div#menu-wrapper .navbar ul.nav ul.dropdown-menu li.more-elements a{ text-align: right; color: #34495e; }
 
+div#menu-wrapper .navbar div.quick-challenge-search{ display: inline-block; width: 15%; margin-bottom: 0px; margin-top: 10px; margin-left: 5%; }
+div#menu-wrapper .navbar div.quick-challenge-search input{ padding: 0px 10px; height: 40px; }
+div#menu-wrapper .navbar div.quick-challenge-search button{ height: 40px; }
+div#menu-wrapper .navbar div.quick-challenge-search button span.fui-search{ top: -5px; }
 
 div#wrapper{
     width: 80%;
@@ -58,16 +61,16 @@ div#wrapper div.ui-block span.ui-block-title{
 div#wrapper div.ui-block-body{
     width: 90%;
     height: 100%!important;
-    display: none;
-    background-image: url('../images/challenge_background.jpg');
     background-size: 100% 100%;
     text-align: center;
     padding-top: 2%;
     padding-left: 2%;
+    background: url('../images/challenges_search_bg.png') repeat;
 }
 
 div#wrapper div#browse-block-body{
     background-image: url('../images/browse_background.png');
+    padding-bottom: 120px;
 }
 
 div#wrapper div.ui-block-body div.form-wrapper{
@@ -105,20 +108,22 @@ div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(2) div{ width: 160px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(3) div{ width: 100px; }
 div#wrapper div.form-wrapper div.challenge-search-results table thead tr th:nth-of-type(4) div{ width: 100px; }
+div#wrapper div.form-wrapper div.challenge-search-results table tbody tr{ font-weight: 700; font-size: 19px; }
+div#wrapper div.form-wrapper div.challenge-search-results table tbody input.btn{ padding: 7px 15px; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
 
-div#wrapper div#challenge-block-body div.form-wrapper{ width: 75%; }
+div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 5px; }
-div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{ width: 80%; margin-left: auto; margin-right: auto; }
+div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{ width: 100%; margin-left: auto; margin-right: auto; }
 
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{  }
+div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{ margin-bottom: 30px;  }
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
 
-div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper, div#wrapper div.single-body-block #send-response-wrapper{
+div#wrapper div.single-body-block #send-response-wrapper{
     position: absolute;
     top: 100px;
     right: 20px;
@@ -132,16 +137,9 @@ div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants
     overflow: auto;
     z-index: 100;
 }
+
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants{ list-style-type: none; text-align: left; padding-left: 10px; }
-div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants li img{
-    width: 32px;
-    height: 32px;
-    margin-right: 15px;
-}
-div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper div.challenge-participants-div ul#challenge-participants li .switch{
-    vertical-align: middle;
-    margin-left: 15px;
-}
+
 div#wrapper div.single-body-block div.challenge-participants-wrapper table th:nth-of-type(2){ padding-left: 50px; text-align: left; }
 div#wrapper div.single-body-block div.challenge-participants-wrapper table td:nth-of-type(2){ text-align: left; }
 
@@ -200,7 +198,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge{
 
 div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-color: #f6fbff; cursor: pointer;}
 div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
-div#wrapper div.single-body-block .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; }
+div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span img{ vertical-align: top;}
@@ -297,7 +295,8 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details di
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper a{ font-size: 20px; }
 
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; padding-bottom: 5%; }
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper{
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper,
+    div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
     padding: 1% 2% 2% 2%;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
@@ -309,6 +308,26 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.
 }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper div.challenge-list-header{ text-align: center; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper .participants-list{ height: 210px; overflow-x: hidden; overflow-y: auto;}
+
+div#wrapper div#challenge-block-body div.form-wrapper{ width: 70%; margin-top: 20px;}
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block{
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #bdc3c7;
+    background-color: #f6fbff;
+}
+div#wrapper div#challenge-block-body div.form-wrapper div.form-arrow-block{ padding: 10px 0px; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper{ width: 50%; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dl{ margin-bottom: 0px; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dt{ line-height: 0px;}
+
+div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block{ margin-bottom: 20px; }
+div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block .select{ vertical-align: top; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{ width: 50%; margin-left: 3%; min-height: 350px; max-height: 500px; background: url('../images/challenges_search_bg.png') repeat; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper .friend-item{ font-size: 20px; font-weight: 700; padding-left: 30px; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper .friend-item img.smallProfilePicture{ margin-right: 20px; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper label.checkbox{ padding: 0px; display: inline; margin-left: 20px; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper label.checkbox .icons span{ font-size: 30px }
 
 div.video-block-wrapper{ width: 100%!important; }
 

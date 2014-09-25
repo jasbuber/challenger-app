@@ -24,7 +24,9 @@
                             <div id="challenge-lists">
                                 <div id="challenge-details">
                                     <div class="challenge-details-name-wrapper">
-                                        <span class="challenge-details-name">@challenge.getChallengeName</span>
+                                        <span class="challenge-details-name">
+                                            @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)){ <a class="challenge-details-leave-action" href="#"><img src="@routes.Assets.at("images/trash_small.png")"/></a> }
+                                            @challenge.getChallengeName</span>
                                         <span>
                                             @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
                                                 @if(currentUserResponded == true) {

@@ -30,7 +30,7 @@
                                             <td>@participation.getJoined</td>
                                             <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
                                                 @if(participation.getParticipator.getProfilePictureUrl != null) {
-                                                    <img src="@participation.getParticipator.getProfilePictureUrl"/>
+                                                    <img class="smallProfilePicture" src="@participation.getParticipator.getProfilePictureUrl"/>
                                                 } else {
                                                     <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                                 }

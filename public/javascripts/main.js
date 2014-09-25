@@ -3,6 +3,8 @@
  */
 $(document).ready(function () {
 
+    $(':checkbox').checkbox();
+
     $(".ui-block").css("height", $(".ui-block").width() / 1.6);
     $(".ui-block").show();
 
@@ -19,6 +21,7 @@ $(document).ready(function () {
             $("#" + $(this).attr("id") + "-body").removeClass('hide');
             $("#" + $(this).attr("id") + "-body").fadeIn(1000);
 
+            $(this).parents("#wrapper").removeAttr("style");
         });
     });
 
@@ -35,6 +38,8 @@ $(document).ready(function () {
         $(".ui-block-body").hide();
         $(".ui-block").removeClass('hide');
         $(".ui-block").fadeIn(1000);
+
+        e.preventDefault();
     });
 
     var formChallengesRows = function (challenges) {
@@ -42,11 +47,17 @@ $(document).ready(function () {
 
 
         $.each(challenges, function (i) {
-            $body += '<tr>' +
-                '<td class="profilePicTd"><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '"><img src="' + ((challenges[i].creator.profilePictureUrl != null) ? challenges[i].creator.profilePictureUrl : "/assets/images/avatar_small.png") + '"/>' + challenges[i].creator.username + '</a></td>' +
-                '<td>' + challenges[i].challengeName + '</td><td>' + challenges[i].category + '</td><td>time left</td>' +
-                '<td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="' + challenges[i].id + '"/></div></td></tr>';
+            $body += '<tr><td class="profilePicTd"><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '">';
+            if(challenges[i].creator.profilePictureUrl != undefined) {
+                $body += '<img class="smallProfilePicture" src="' + challenges[i].creator.profilePictureUrl + '"/>';
+            } else {
+                $body += '<img src="/assets/images/avatar_small.png"/>';
+            }
+            $body += challenges[i].creator.username + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
+                '</a></td><td>' + challenges[i].category + '</td><td>time left</td><td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>' +
+                '<input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/></td></tr>';
         });
+
         return $body;
     };
 
@@ -86,22 +97,45 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $(document).on("change", ".challenge-search-results .switch input[type=checkbox]", function () {
+    $(document).on("click", ".browse-challenge-join-action", function(){
 
-        var $this = $(this), id = $(this).parents(".switch").find(".challenge-id").val(), state = $(this).is(":checked");
-        $(".challenge-search-results").spin();
-
-        jsRoutes.controllers.Application.ajaxChangeChallengeParticipation(id, state).ajax({
+        var $this = $(this), $parent = $this.parents("td"), challengeId = $parent.find(".challenge-id").val();
+        jsRoutes.controllers.Application.ajaxJoinChallenge(challengeId).ajax({
             success: function (response) {
-                if (response === "success" && $this.is(":checked")) {
-                    alertify.success("You joined the competition!");
-                }
-                else {
-                    alertify.error("You left the competition...");
-                }
-                $(".challenge-search-results").spin(false);
+                $this.remove();
+                $parent.append('<input type="button" class="btn btn-hg btn-danger browse-challenge-leave-action" value="Leave"/>');
+                alertify.success("You joined the competition!");
             }
         });
+
+    });
+
+    $(document).on("click", ".browse-challenge-leave-action", function(){
+
+        var $this = $(this), $parent = $this.parents("td"), challengeId = $parent.find(".challenge-id").val();
+        jsRoutes.controllers.Application.ajaxLeaveChallenge(challengeId).ajax({
+            success: function (response) {
+                $this.remove();
+                $parent.append('<input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>');
+                alertify.error("You left the competition...");
+            }
+        });
+
+    });
+
+    $(document).on("click", ".challenge-details-leave-action", function(){
+
+        var challengeId = $("#content-wrapper").find(".challenge-id").val();
+        alertify.confirm("Are you sure you want to leave this challenge ?", function (e) {
+            if (e) {
+                jsRoutes.controllers.Application.ajaxLeaveChallenge(challengeId).ajax({
+                    success: function (response) {
+                        window.location.href = jsRoutes.controllers.Application.showMyParticipations().url;
+                    }
+                });
+            }
+        });
+
     });
 
     var wrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'});
@@ -110,7 +144,7 @@ $(document).ready(function () {
     fileInput.change(function () {
         var $this = $(this);
         if ($this.val() != '') {
-            $('#video-input-wrapper').html(' <div id="video-screenshot"><img src="/assets/images/video.png"/>' + $this.val().replace(/.*(\/|\\)/, '') + "</div>");
+            $('#video-input-wrapper').html('<div id="video-screenshot">' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
         }
         else {
             $('#video-input-wrapper').html('<button id="upload-video-action" type="button" class="btn btn-warning btn-hg">Upload a video description...</button>');
@@ -126,7 +160,7 @@ $(document).ready(function () {
     uploadResponse.change(function () {
         var $this = $(this);
         if ($this.val() != '') {
-            $('#upload-response-wrapper').html(' <div><img src="/assets/images/video.png"/>' + $this.val().replace(/.*(\/|\\)/, '') + "</div>");
+            $('#upload-response-wrapper').html(' <div>' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
         }
         else {
             $('#upload-response-wrapper').html('<button type="button" class="btn btn-warning">Submit a response.</button>');
@@ -181,11 +215,11 @@ $(document).ready(function () {
 
                         var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
                         $body +=
-                            '<li class="friend-item"><a href="#"><img src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
-                            '</span></a><div class="switch switch-square"><input type="checkbox" value="' + participants[i].username + '" name="participants[]" unchecked data-toggle="switch" /></div></li>';
+                            '<div class="friend-item"><a href="#"><img class="smallProfilePicture" src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
+                            '</span></a><label class="checkbox" for="checkbox"><input type="checkbox" name="participants[]" value="' + participants[i].username + '" data-toggle="checkbox"></label></div>';
                     });
-                    $("#challenge-participants").html($body);
-                    $(".switch").bootstrapSwitch();
+                    $(".challenge-participants-div").html($body);
+                    $(':checkbox').checkbox();
                 }
             });
         }
@@ -252,38 +286,6 @@ $(document).ready(function () {
 
     });
 
-    /*
-    $(".challenge-tab-button").click(function () {
-        var $parentId = $(this).parent().attr("id"), $tab = $("." + $parentId + "-body"), $tbody = $tab.find("table tbody");
-
-        $(".challenge-tab-button").removeClass("selected");
-        $(this).addClass("selected");
-        $(".challenges-body").hide();
-        $tab.fadeIn(300);
-
-        if (!$.trim($tbody.html())) {
-            $tab.spin();
-
-            if ($parentId == "participating-tab") {
-                jsRoutes.controllers.Application.ajaxGetUserParticipations().ajax({
-                    success: function (data) {
-                        $tab.spin(false);
-                        $tbody.html(formParticipationsRows(jQuery.parseJSON(data)));
-                    }
-                });
-            }
-            else if ($parentId == "completed-tab") {
-                jsRoutes.controllers.Application.ajaxGetCompletedChallenges().ajax({
-                    success: function (data) {
-                        $tab.spin(false);
-                        $tbody.html(formCompletedChallengeRows(jQuery.parseJSON(data)));
-                    }
-                });
-            }
-        }
-
-    });
-*/
     $(document).on("change", ".challenge-status", function () {
         var $this = $(this), id = $this.parents(".switch").find(".challenge-id").val();
 
@@ -321,27 +323,6 @@ $(document).ready(function () {
 
         return $body;
     }
-
-    /*
-    $(".show-challenge-events").click(function (e) {
-
-        var $this = $(this), challengeId = $this.attr("href");
-
-        $("#challenges-created").spin();
-
-        jsRoutes.controllers.Application.ajaxGetResponsesForChallenge(challengeId).ajax({
-            success: function (response) {
-                var responses = jQuery.parseJSON(response);
-                $("#challenges-created").spin(false);
-
-                $("#responses-div").html(formResponses(responses));
-                $(".challenge-events").show();
-                $(".challenge-events").find(".challenge-events-title").text($this.text());
-            }
-        });
-
-        e.preventDefault();
-    });*/
 
     $(".close-window").click(function (e) {
         e.preventDefault();
@@ -440,23 +421,6 @@ $(document).ready(function () {
         $(".response-id[value='" + $id +"']").parents(".rate-response").fadeOut(1200);
     });
 
-    /*
-    var formParticipationsRows = function (participations) {
-        var $body = "";
-
-        $.each(participations, function (i) {
-            $body += '<tr><td>' + participations[i][0].challenge.challengeName + '</td><td>' + $.formatDateTime('mm/dd/y g:ii a', new Date(participations[i][0].joined)) +
-                '</td><td>time left</td>';
-            if (participations[i][1] != null) {
-                $body += '<td><img src="/assets/images/done.png"/></td><td></td>';
-            } else {
-                $body += '<td><button type="button" class="btn btn-warning show-upload-response">Submit a response</button></td>' +
-                    '<td><button type="button" class="btn btn-danger leave-challenge">Forfeit</button><input type="hidden" class="challenge-id" value="' + participations[i][0].challenge.id + '"/></div></td></tr>';
-            }
-        });
-        return $body;
-    };*/
-
     $(document).on("click", ".leave-challenge", function () {
         var challengeId = $(this).siblings(".challenge-id").val(), parent = $(this).parents("tr");
 
@@ -519,17 +483,6 @@ $(document).ready(function () {
 
     });
 
-    /*
-    var formCompletedChallengeRows = function (completedChallenges) {
-        var $body = "";
-
-        $.each(completedChallenges, function (i) {
-            $body += '<tr><td>' + completedChallenges[i].creator.username + '</td><td>' + completedChallenges[i].challengeName + '</td><td>' +
-                $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].creationDate)) + '</td><td>' + $.formatDateTime('mm/dd/y g:ii a', new Date(completedChallenges[i].endingDate)) + '</td><tr/>';
-        });
-        return $body;
-    };*/
-
     $(document).on("click", ".stop-player", function (e) {
         var $vid_obj = _V_("video-response-player");
         $vid_obj.pause();
@@ -542,7 +495,6 @@ $(document).ready(function () {
         $parent.effect("bounce", 300);
 
         if ($("#my-challenges-wrapper").size() == 0) {
-            console.log("ble1");
             $(".account-content:visible").effect("drop", 600, function () {
                 $("#content-wrapper").spin(options);
                 $("#my-challenges-wrapper").effect("slide", 500);
@@ -629,26 +581,6 @@ $(document).ready(function () {
         });
 
     });
-/*
-    $(document).on("click", ".show-challenge", function (e) {
-        var $parent = $(this).parent(), options = {top: "40%", left: "36%"}, id = $(this).attr("href");
-
-        $(".account-content:visible").effect("drop", 600, function () {
-            $("#challenge-wrapper").remove();
-            $("#content-wrapper").spin(options);
-            $("#challenge-wrapper").effect("slide", 500);
-            jsRoutes.controllers.Application.ajaxGetChallengeContent(id).ajax({
-                success: function (data) {
-                    $("#content-wrapper").spin(false);
-                    $("#content-wrapper").append(data);
-                }
-            });
-
-        });
-
-        e.preventDefault();
-        e.stopPropagation();
-    });*/
 
     $(document).on("click", ".remove-participant", function () {
         var $parent = $(this).parents("tr"), participantUsername = $parent.find(".participant-username").val(), challengeId = $(".current-challenge-id").val();
@@ -667,6 +599,28 @@ $(document).ready(function () {
             }
         });
 
+    });
+
+    $(".quick-search-action").click(function(e){
+        var $phrase = $(".challenge-search-phrase").val();
+
+        if(!$phrase.trim()){
+            window.location.href = jsRoutes.controllers.Application.showBrowseChallenges().url;
+        }else {
+            window.location.href = jsRoutes.controllers.Application.showBrowseChallengesWithData($phrase).url;
+        }
+    });
+
+    $(".go-to-step-two").click(function(){
+        $( ".step-one-arrow" ).show("blind", 500, function(){
+            $( ".step-two-block" ).show("blind", 500);
+        });
+    });
+
+    $(".go-to-step-three").click(function(){
+        $( ".step-two-arrow" ).show("blind", 500, function(){
+            $( ".step-three-block" ).show("blind", 500);
+        });
     });
 
 });

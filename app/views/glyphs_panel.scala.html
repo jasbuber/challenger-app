@@ -5,7 +5,7 @@
         <div class="glyph-header"><a class="show-challenges" href="#">Latest challenges</a></div>
         @if(!challenges.isEmpty) {
         <div class="glyph-challenges-wrapper">
-            @challenges.map { challenge =>
+            @challenges.take(3).map { challenge =>
                 <div class="glyph-challenge">
                     <a class="show-challenge" href="@challenge.apply(3).asInstanceOf[Long]"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
                     <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
@@ -15,14 +15,14 @@
         </div>
         <div class="glyph-show-more"><a class="show-challenges" href="#">see more</a></div>
         }else{
-            <div class="no-elements-wrapper"><a href="#">Create a new challenge!</a></div>
+            <div class="no-elements-wrapper"><a href="@routes.Application.showCreateChallenge()">Create a new challenge!</a></div>
         }
     </div>
     <div id="challenges-participating" class="challenges-body participating-tab-body">
         <div class="glyph-header"><a class="show-participations" href="#">Latest participations</a></div>
         @if(!latestParticipations.isEmpty) {
             <div class="glyph-challenges-wrapper">
-            @latestParticipations.map { challenge =>
+            @latestParticipations.take(3).map { challenge =>
                 <div class="glyph-challenge">
                     <a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
                     <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
@@ -33,7 +33,7 @@
 
             <div class="glyph-show-more"><a class="show-participations" href="show-glyph-data">see more</a></div>
         } else {
-            <div class="no-elements-wrapper"><a href="#">Join a challenge!</a></div>
+            <div class="no-elements-wrapper"><a href="@routes.Application.showBrowseChallenges()">Join a challenge!</a></div>
         }
     </div>
     <div id="challenges-completed" class="challenges-body completed-tab-body">

@@ -7,7 +7,10 @@
         @if(!participations.isEmpty) {
             @participations.map { participation =>
                 <div class="padded-glyph-challenge timer-parent">
-                    <span><a href="@routes.Application.showParticipators(participation.apply(3).asInstanceOf[Long]).toString)"><img title="@participation.apply(2) participants" alt="@participation.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_medium.png")"/></a></span>
+                    <span><a href="@routes.Application.showParticipators(participation.apply(3).asInstanceOf[Long]).toString)">
+                        <img title="@participation.apply(2) participants" alt="@participation.apply(2) participants"
+                            src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(participation.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
+                    </a></span>
                     <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(participation.apply(3).asInstanceOf[Long])">@participation.apply(0)</a></span>
                     <div class="counter"></div>
                     <input class="time-left" type="hidden" value="@((participation.apply(4).asInstanceOf[Date].getTime - System.currentTimeMillis)/1000)"/>

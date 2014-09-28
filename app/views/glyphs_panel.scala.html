@@ -9,7 +9,10 @@
                 <div class="glyph-challenge">
                     <a class="show-challenge" href="@challenge.apply(3).asInstanceOf[Long]"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
                     <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
-                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])"><img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_small.png")"/></a>
+                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])">
+                        <img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants"
+                            src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.apply(2).asInstanceOf[Long])) + "_small.png")"/>
+                    </a>
                 </div>
             }
         </div>
@@ -26,7 +29,10 @@
                 <div class="glyph-challenge">
                     <a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
                     <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
-                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])"><img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants" src="@routes.Assets.at("images/speedometer/speedometer_1_small.png")"/></a>
+                    <a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])">
+                        <img title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants"
+                        src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.apply(2).asInstanceOf[Long])) + "_small.png")"/>
+                    </a>
                 </div>
             }
             </div>

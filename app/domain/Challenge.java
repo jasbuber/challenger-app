@@ -52,6 +52,11 @@ public class Challenge {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endingDate;
 
+    public static final int POPULARITY_LEVEL_1 = 3;
+    public static final int POPULARITY_LEVEL_2 = 8;
+    public static final int POPULARITY_LEVEL_3 = 15;
+    public static final int POPULARITY_LEVEL_4 = 25;
+
     protected Challenge(){}
 
     public Challenge(User creator, String challengeName, ChallengeCategory category) {
@@ -145,6 +150,22 @@ public class Challenge {
 
     public Date getEndingDate() {
         return endingDate;
+    }
+
+    public static Integer getPopularityLevel(Long participantsNr){
+
+        if(participantsNr < POPULARITY_LEVEL_1){
+            return 1;
+        }else if(participantsNr < POPULARITY_LEVEL_2){
+            return 2;
+        }else if(participantsNr < POPULARITY_LEVEL_3){
+            return 3;
+        }else if(participantsNr < POPULARITY_LEVEL_4){
+            return 4;
+        }else{
+            return 5;
+        }
+
     }
 
 }

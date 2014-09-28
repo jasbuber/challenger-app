@@ -5,6 +5,8 @@ package domain;
     needed in code.
  */
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
@@ -35,15 +37,20 @@ public class ChallengeParticipation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date joined;
 
+    @Column(name = "ENDING_DATE" )
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endingDate;
+
     protected ChallengeParticipation() {
         //for jpa purposes...
+        this.endingDate = DateUtils.addHours(new Date(), 24);
     }
-
 
     public ChallengeParticipation(Challenge challenge, User participator) {
         this.challenge = challenge;
         this.participator = participator;
         this.joined = new Date();
+        this.endingDate = DateUtils.addHours(new Date(), 24);
     }
 
     public Challenge getChallenge() {
@@ -86,4 +93,11 @@ public class ChallengeParticipation {
         return new SimpleDateFormat("dd-MM-yyyy").format(this.joined);
     }
 
+    public Date getEndingDate() {
+        return endingDate;
+    }
+
+    public Boolean isOverdue(){
+        return endingDate.getTime() <= new Date().getTime();
+    }
 }

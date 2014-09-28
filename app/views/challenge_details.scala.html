@@ -33,7 +33,11 @@
                                                     <img src="@routes.Assets.at("images/correct.png")"/>
                                                 } else {
                                                     @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)) {
-                                                        <input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>
+                                                        @if(participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime > System.currentTimeMillis) {
+                                                            <input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>
+                                                        }else{
+                                                            <img src="@routes.Assets.at("images/glyph_crab_medium.png")"/>
+                                                        }
                                                     } else {
                                                         <input type="button" class="btn btn-hg btn-success join-challenge-action" value="Join"/>
                                                     }

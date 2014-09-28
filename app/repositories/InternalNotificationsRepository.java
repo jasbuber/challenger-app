@@ -42,7 +42,8 @@ public class InternalNotificationsRepository {
     public List<Notification> getAllNotificationsFor(User user) {
         Query getAllNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
                 "FROM Notification n " +
-                "WHERE n.user = :user");
+                "WHERE n.user = :user " +
+                "ORDER BY n.creationTimestamp DESC");
 
         getAllNotificationsForUserQuery.setParameter("user", user);
         return getAllNotificationsForUserQuery.getResultList();

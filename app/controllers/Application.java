@@ -84,6 +84,9 @@ public class Application extends Controller {
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
 
         if (challengeForm.hasErrors()) {
+            if( request().body().asMultipartFormData().getFile("video-description") == null) {
+                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
+            }
             return ok(new Gson().toJson(challengeForm.errors()));
         } else {
             CreateChallengeForm challenge = challengeForm.get();
@@ -96,18 +99,22 @@ public class Application extends Controller {
 
                 } catch (FileNotFoundException e) {
                 }
-            }
 
-            Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
 
-            if (!challenge.getChallengeVisibility() && challenge.getParticipants() != null) {
-                for (String p : challenge.getParticipants()) {
-                    getUsersService().createNewOrGetExistingUser(p);
-                    getChallengeService().participateInChallenge(newChallenge, p);
+                Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
+
+                if (!challenge.getChallengeVisibility() && challenge.getParticipants() != null) {
+                    for (String p : challenge.getParticipants()) {
+                        getUsersService().createNewOrGetExistingUser(p);
+                        getChallengeService().participateInChallenge(newChallenge, p);
+                    }
                 }
-            }
 
-            return ok("success");
+                return ok("success");
+            }else{
+                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
+                return ok(new Gson().toJson(challengeForm.errors()));
+            }
         }
 
     }

@@ -162,7 +162,8 @@ public class ChallengesRepository {
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
-                "GROUP BY c.challengeName");
+                "GROUP BY c.challengeName " +
+                "ORDER BY c.creationDate DESC");
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         return completedChallengesQuery.getResultList();
     }
@@ -173,19 +174,21 @@ public class ChallengesRepository {
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
-                "GROUP BY c.challengeName");
+                "GROUP BY c.challengeName " +
+                "ORDER BY c.creationDate DESC");
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         completedChallengesQuery.setMaxResults(3);
         return completedChallengesQuery.getResultList();
     }
 
     public List getChallengeParticipationsWithParticipantsNrForUser(String participatorUsername) {
-        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id, p.endingDate, p.joined " +
                 "FROM ChallengeParticipation p " +
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
-                "GROUP BY c.challengeName");
+                "GROUP BY c.challengeName " +
+                "ORDER BY p.endingDate ASC");
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         return completedChallengesQuery.getResultList();
     }
@@ -196,7 +199,8 @@ public class ChallengesRepository {
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
-                "GROUP BY c.challengeName");
+                "GROUP BY c.challengeName " +
+                "ORDER BY p.joined DESC");
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         completedChallengesQuery.setMaxResults(3);
         return completedChallengesQuery.getResultList();
@@ -214,7 +218,8 @@ public class ChallengesRepository {
     public List<ChallengeResponse> getResponsesForChallenge(long challengeId) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT r " +
                 "FROM ChallengeResponse r " +
-                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)");
+                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)" +
+                "ORDER BY r.submitted DESC");
         completedChallengesQuery.setParameter("challengeId", challengeId);
         return completedChallengesQuery.getResultList();
     }
@@ -234,7 +239,8 @@ public class ChallengesRepository {
                 "FROM ChallengeResponse r " +
                 "RIGHT OUTER JOIN r.challengeParticipation p " +
                 "WHERE p.challenge.active = true " +
-                "AND LOWER(p.participator.username) = LOWER(:creatorUsername)");
+                "AND LOWER(p.participator.username) = LOWER(:creatorUsername) " +
+                "ORDER BY p.endingDate ASC");
         challengeParticipationsQuery.setParameter("creatorUsername", creatorUsername);
         return challengeParticipationsQuery.getResultList();
     }

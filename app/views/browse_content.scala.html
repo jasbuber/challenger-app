@@ -33,13 +33,12 @@
                         <th><div>Started By</div></th>
                         <th><div>Name</div></th>
                         <th><div>Category</div></th>
-                        <th><div>Time left</div></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @challenges.map { challenge =>
-                        <tr>
+                        <tr class="timer-parent">
                             <td class="profilePicTd"><a href="@routes.Application.showProfile(challenge.getCreator.getUsername)">
                                 @if(challenge.getCreator.getProfilePictureUrl != null) {
                                     <img class="smallProfilePicture" src="@challenge.getCreator.getProfilePictureUrl"/>
@@ -49,7 +48,6 @@
                                 @challenge.getCreator.getUsername</a></td>
                             <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
                             <td>@challenge.getCategory</td>
-                            <td>time left</td>
                             <td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>
                                 <input class="challenge-id" type="hidden" value="@challenge.getId"/>
                             </td>

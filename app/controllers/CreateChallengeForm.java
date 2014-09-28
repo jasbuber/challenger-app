@@ -15,7 +15,6 @@ public class CreateChallengeForm {
 
     private String creatorUsername;
 
-    @Constraints.Required(message = "Upload the video description...")
     private String videoDescriptionUrl;
 
     private Boolean challengeVisibility;

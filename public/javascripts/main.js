@@ -54,7 +54,7 @@ $(document).ready(function () {
                 $body += '<img src="/assets/images/avatar_small.png"/>';
             }
             $body += challenges[i].creator.username + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
-                '</a></td><td>' + challenges[i].category + '</td><td>time left</td><td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>' +
+                '</a></td><td>' + challenges[i].category + '</td><td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>' +
                 '<input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/></td></tr>';
         });
 
@@ -63,7 +63,7 @@ $(document).ready(function () {
 
     $("#browse-block-body .form-wrapper form").submit(function (e) {
 
-        var phrase = $(".challenge-search-phrase").val(), category = $(".challenge-category").val();
+        var phrase = $(this).find(".challenge-search-phrase").val(), category = $(".challenge-category").val();
 
         $(".challenge-search-results").spin();
 
@@ -72,7 +72,6 @@ $(document).ready(function () {
                 var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
 
                 $(".challenge-search-results table tbody").html(body);
-                $(".switch").bootstrapSwitch();
                 $(".challenge-search-results").spin(false);
             }
         });
@@ -504,7 +503,6 @@ $(document).ready(function () {
                         $("#content-wrapper").append(data);
                     }
                 });
-
             });
         }else if ($("#my-challenges-wrapper:visible").size() == 0){
             $(".account-content:visible").effect("drop", 600, function () {
@@ -529,6 +527,12 @@ $(document).ready(function () {
                     success: function (data) {
                         $("#content-wrapper").spin(false);
                         $("#content-wrapper").append(data);
+                        $('.counter').each( function(e) {
+                            var $timeLeft = $(this).parents(".padded-glyph-challenge").find(".time-left").val();
+                            $(this).FlipClock($timeLeft, {
+                                countdown: true
+                            });
+                        });
                     }
                 });
 
@@ -620,6 +624,21 @@ $(document).ready(function () {
     $(".go-to-step-three").click(function(){
         $( ".step-two-arrow" ).show("blind", 500, function(){
             $( ".step-three-block" ).show("blind", 500);
+        });
+    });
+
+
+    $('.counter').each( function(e) {
+        var $timeLeft = $(this).parents(".timer-parent").find(".time-left").val();
+        $(this).FlipClock($timeLeft, {
+            countdown: true
+        });
+    });
+
+    $('.small-counter').each( function(e) {
+        var $timeLeft = $(this).parents(".timer-parent").find(".time-left").val();
+        $(this).FlipClock($timeLeft, {
+            countdown: true
         });
     });
 

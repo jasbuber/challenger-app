@@ -13,16 +13,18 @@ $(document).ready(function () {
     });
 
     $(".ui-block").click(function () {
-        $(this).parents("#wrapper").height($(this).parents("#wrapper").height());
-        $(this).toggleClass('active');
-        $(this).siblings().not(this).toggleClass('hide');
-        $(this).fadeOut(1500, function () {
-            $(this).removeClass("active");
-            $("#" + $(this).attr("id") + "-body").removeClass('hide');
-            $("#" + $(this).attr("id") + "-body").fadeIn(1000);
+        if($(this).attr("id") != "share-block") {
+            $(this).parents("#wrapper").height($(this).parents("#wrapper").height());
+            $(this).toggleClass('active');
+            $(this).siblings().not(this).toggleClass('hide');
+            $(this).fadeOut(1500, function () {
+                $(this).removeClass("active");
+                $("#" + $(this).attr("id") + "-body").removeClass('hide');
+                $("#" + $(this).attr("id") + "-body").fadeIn(1000);
 
-            $(this).parents("#wrapper").removeAttr("style");
-        });
+                $(this).parents("#wrapper").removeAttr("style");
+            });
+        }
     });
 
     $("select").selectpicker({style: 'btn-hg btn-info', menuStyle: 'dropdown-inverse'});

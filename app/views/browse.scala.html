@@ -1,10 +1,10 @@
-@(firstName: java.lang.String, profilePicUrl: java.lang.String, challenges: java.util.List[domain.Challenge], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+@(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, challenges: java.util.List[domain.Challenge], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, profilePicUrl, unreadNotificationsNr, newestNotifications)
     <div id="wrapper">
         <div id="browse-block-body" class="ui-block-body">
-        @browse_content(challenges)
+        @browse_content(challenges, username)
         </div>
     </div>
 

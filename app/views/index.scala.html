@@ -1,4 +1,4 @@
-@(firstName: java.lang.String, profilePicUrl: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], searchChallenges: java.util.List[domain.Challenge])
+@(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, challengeForm: Form[controllers.CreateChallengeForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], searchChallenges: java.util.List[domain.Challenge])
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, profilePicUrl, unreadNotificationsNr, newestNotifications)
@@ -11,7 +11,7 @@
         @new_challenge_content(challengeForm: Form[controllers.CreateChallengeForm])
         </div>
         <div id="browse-block-body" class="ui-block-body" style="display: none;">
-        @browse_content(searchChallenges)
+        @browse_content(searchChallenges, username)
         </div>
     </div>
 

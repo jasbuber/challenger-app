@@ -44,9 +44,8 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    var formChallengesRows = function (challenges) {
+    var formChallengesRows = function (challenges, username) {
         var $body = "";
-
 
         $.each(challenges, function (i) {
             $body += '<tr><td class="profilePicTd"><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '">';
@@ -56,8 +55,9 @@ $(document).ready(function () {
                 $body += '<img src="/assets/images/avatar_small.png"/>';
             }
             $body += challenges[i].creator.username + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
-                '</a></td><td>' + challenges[i].category + '</td><td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>' +
-                '<input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/></td></tr>';
+                '</a></td><td>' + challenges[i].category + '</td><td>';
+                if(challenges[i].creator.username != username){ $body += '<input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/><input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/>'; }
+            $body += '</td></tr>';
         });
 
         return $body;
@@ -65,13 +65,13 @@ $(document).ready(function () {
 
     $("#browse-block-body .form-wrapper form").submit(function (e) {
 
-        var phrase = $(this).find(".challenge-search-phrase").val(), category = $(".challenge-category").val();
+        var phrase = $(this).find(".challenge-search-phrase").val(), category = $(".challenge-category").val(), username = $(".current-username").val();
 
         $(".challenge-search-results").spin();
 
         jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category).ajax({
             success: function (response) {
-                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
 
                 $(".challenge-search-results table tbody").html(body);
                 $(".challenge-search-results").spin(false);
@@ -83,11 +83,12 @@ $(document).ready(function () {
 
     $("#browse-block").click(function (e) {
 
+        var username = $(".current-username").val();
         $(".challenge-search-results").spin();
 
         jsRoutes.controllers.Application.ajaxGetLatestChallenges().ajax({
             success: function (response) {
-                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
 
                 $(".challenge-search-results table tbody").html(body);
                 $(".switch").bootstrapSwitch();
@@ -231,27 +232,13 @@ $(document).ready(function () {
 
     $(".challenge-category").change(function (e) {
 
-        var category = $(".challenge-category").val();
+        var category = $(".challenge-category").val(), username = $(".current-username").val();
 
         $(".challenge-search-results").spin();
 
-        $.ajax({
-            url: "/challenge/ajax/searchbycategory",
-            data: {
-                category: $(".challenge-category").val()
-            },
-            method: "get"
-        }).done(function (response) {
-            var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
-
-            $(".challenge-search-results table tbody").html(body);
-            $(".switch").bootstrapSwitch();
-            $(".challenge-search-results").spin(false);
-        });
-
         jsRoutes.controllers.Application.ajaxGetChallengesForCategory(category).ajax({
             success: function (response) {
-                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges);
+                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
 
                 $(".challenge-search-results table tbody").html(body);
                 $(".switch").bootstrapSwitch();

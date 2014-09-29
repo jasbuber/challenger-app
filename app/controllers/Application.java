@@ -52,7 +52,7 @@ public class Application extends Controller {
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
 
-        return ok(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challengeForm, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser()), new ArrayList<Challenge>()));
+        return ok(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challengeForm, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser()), new ArrayList<Challenge>()));
     }
 
     @play.db.jpa.Transactional
@@ -60,7 +60,7 @@ public class Application extends Controller {
 
         List<Challenge> challenges = prepareChallengesForCriteria("", ChallengeCategory.ALL.name());
 
-        return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
+        return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
     }
 
     @play.db.jpa.Transactional
@@ -68,7 +68,7 @@ public class Application extends Controller {
 
         List<Challenge> challenges = prepareChallengesForCriteria(phrase, ChallengeCategory.ALL.name());
 
-        return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
+        return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
     }
 
     @play.db.jpa.Transactional
@@ -171,7 +171,6 @@ public class Application extends Controller {
         Expression<String> challengeNameField = filter.getField("challengeName");
 
         filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase + "%"));
-        filter.andCond(filter.excludeUser(currentUser));
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
 
@@ -194,7 +193,6 @@ public class Application extends Controller {
 
         filter.orderDescBy("creationDate");
 
-        filter.andCond(filter.excludeUser(currentUser));
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
 
@@ -218,7 +216,6 @@ public class Application extends Controller {
 
         filter.orderDescBy("creationDate");
 
-        filter.andCond(filter.excludeUser(currentUser));
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
         filter.prepareWhere();

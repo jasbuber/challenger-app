@@ -1,4 +1,4 @@
-@(challenges: java.util.List[domain.Challenge])
+@(challenges: java.util.List[domain.Challenge], currentUsername: java.lang.String)
 
 <div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
     <h2>Browse challenges</h2>
@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                     @challenges.map { challenge =>
-                        <tr class="timer-parent">
+                        <tr>
                             <td class="profilePicTd"><a href="@routes.Application.showProfile(challenge.getCreator.getUsername)">
                                 @if(challenge.getCreator.getProfilePictureUrl != null) {
                                     <img class="smallProfilePicture" src="@challenge.getCreator.getProfilePictureUrl"/>
@@ -48,12 +48,16 @@
                                 @challenge.getCreator.getUsername</a></td>
                             <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
                             <td>@challenge.getCategory</td>
-                            <td><input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>
+                            <td>
+                                @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
+                                    <input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>
+                                }
                                 <input class="challenge-id" type="hidden" value="@challenge.getId"/>
                             </td>
                         </tr>
                     }
                </tbody>
             </table>
+            <input class="current-username" type="hidden" value="@currentUsername"/>
         </div>
     </div>

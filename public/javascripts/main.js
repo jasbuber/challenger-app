@@ -134,10 +134,11 @@ $(document).ready(function () {
     $(document).on("click", ".challenge-details-leave-action", function(){
 
         var challengeId = $("#content-wrapper").find(".challenge-id").val();
-        NProgress.start();
 
         alertify.confirm("Are you sure you want to leave this challenge ?", function (e) {
             if (e) {
+                NProgress.start();
+
                 jsRoutes.controllers.Application.ajaxLeaveChallenge(challengeId).ajax({
                     success: function (response) {
                         window.location.href = jsRoutes.controllers.Application.showMyParticipations().url;
@@ -582,7 +583,7 @@ $(document).ready(function () {
         jsRoutes.controllers.Application.ajaxJoinChallenge(challengeId).ajax({
             success: function (response) {
                 $this.remove();
-                $parent.html('<a class="respond-challenge-action" href="' + challengeId + '"><input type="button" class="btn btn-hg btn-warning" value="Respond"/></a>');
+                $parent.html('<input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>');
                 NProgress.done();
                 alertify.success("You joined the competition!");
             }

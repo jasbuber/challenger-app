@@ -8,6 +8,11 @@
             <div id="content-wrapper">
                 <div id="challenge-wrapper" class="account-content">
                     <div class="padded-glyphs-wrapper">
+                        <div class="timer-parent">
+                        @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)) {
+                            <div class="small-counter"></div>
+                            <input class="time-left" type="hidden" value="@((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000)"/>
+                        }</div>
                         <div class="padded-glyph-challenge-data-wrapper">
                             <div>
                                 <div id="video-panel">
@@ -52,7 +57,7 @@
                                             <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                         }
                                         @challenge.getCreator.getUsername</a></div>
-                                    <div>time left</div>
+
                                     <div>Created: @challenge.getCreationDate</div>
                                     <div>Category: @challenge.getCategory</div>
                                     @if(challengeResponsesNr > 0) {

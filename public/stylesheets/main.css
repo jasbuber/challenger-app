@@ -69,10 +69,10 @@ div#wrapper div.ui-block-body{
 }
 
 div#wrapper div#browse-block-body{
-    background-image: url('../images/browse_background.png');
     padding-bottom: 120px;
-    margin-left: auto;
-    margin-right: auto;
+    border-radius: 20px;
+    border: 2px solid #bdc3c7;
+    margin: 1% auto 0px auto;
 }
 
 div#wrapper div.ui-block-body div.form-wrapper{
@@ -102,7 +102,7 @@ div#wrapper div.common-table-wrapper table td img{ margin-right: 10px; }
 div#wrapper div.common-table-wrapper table td.profilePicTd img{ width: 32px; height: 32px;}
 
 div#wrapper div.form-wrapper div.challenge-search-results{
-    background: url('../images/challenges_search_bg.png') repeat;
+    background-color: #eef8ff;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
 }
@@ -207,6 +207,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge img{ margin-right: 4%;
 div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; width: 52%; display: inline-block; line-height: 48px; font-size: 23px; font-weight: 700; color: #34495e; margin-right: 1%; }
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
+div#wrapper div.single-body-block .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
 
 div#wrapper div.single-body-block .challenges-body{
     overflow: hidden;
@@ -257,7 +258,7 @@ div#wrapper div.single-body-block #challenge-responses > div img{ display: block
 div#wrapper div.single-body-block #challenge-responses > div.current-response{ background-color: #cfe3f3; }
 div#wrapper div.single-body-block #challenge-responses div div.challenge-response-author{ width: 170px; height: 30px; margin-left: auto; margin-right: auto; }
 
-div#wrapper div.single-body-block #video-panel{ margin: 5% auto 5% auto; width: 655px; position: relative; }
+div#wrapper div.single-body-block #video-panel{ margin: 2% auto 5% auto; width: 655px; position: relative; }
 div#wrapper div.single-body-block #send-response-wrapper{ right: 30%; width: 42%; height: 450px; margin-top: 10%; padding: 25px; text-align: center; }
 div#wrapper div.single-body-block #send-response-wrapper form > div{ padding: 15px; }
 div#wrapper div.single-body-block #send-response-wrapper form dt, div#wrapper div.single-body-block #send-response-wrapper form dd{ height: 20px; }

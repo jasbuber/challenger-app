@@ -207,7 +207,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge img{ margin-right: 4%;
 div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; width: 52%; display: inline-block; line-height: 48px; font-size: 23px; font-weight: 700; color: #34495e; margin-right: 1%; }
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
-div#wrapper div.single-body-block .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
+div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
 
 div#wrapper div.single-body-block .challenges-body{
     overflow: hidden;

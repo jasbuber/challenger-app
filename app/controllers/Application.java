@@ -283,10 +283,10 @@ public class Application extends Controller {
         service.createChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "543763142406586", true);
 
         service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"), "fsfdsdss", "543763142406586");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsfdsdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser3"), "fsfdsdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser4"), "fsfdsdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser5"), "fsfdsdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser3"), "fsfdshhjhjjhjdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser4"), "fsfdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser5"), "fsfddfgfdgfddgfdgfgfgfsdss", "544923992290501");
 
         service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "543763142406586", true);
         service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "543763142406586", false);

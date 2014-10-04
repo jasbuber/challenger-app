@@ -296,7 +296,7 @@ div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px;
 
 .notificationUnread{ font-weight: 800!important;}
 
-div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 375px; }
+div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 375px; white-space: normal; }
 
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu{ padding: 10px 0px 30px 10px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu span{ display: inline-block; margin-right: 20px; }

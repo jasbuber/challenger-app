@@ -8,7 +8,7 @@
             @participations.map { participation =>
                 <div class="padded-glyph-challenge timer-parent">
                     <span><a href="@routes.Application.showParticipators(participation.apply(3).asInstanceOf[Long]).toString)">
-                        <img title="@participation.apply(2) participants" alt="@participation.apply(2) participants"
+                        <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@participation.apply(2) participants" alt="@participation.apply(2) participants"
                             src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(participation.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
                     </a></span>
                     <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(participation.apply(3).asInstanceOf[Long])">@participation.apply(0)</a></span>

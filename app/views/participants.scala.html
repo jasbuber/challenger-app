@@ -38,7 +38,7 @@
                                             <td><b>6</b></td>
                                             <td>404</td>
                                             <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
-                                                <a class="remove-participant" href="#"><img src="@routes.Assets.at("images/remove.png")"/></a>
+                                                <a class="remove-participant" href="#"><img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/remove.png")"/></a>
                                             }
                                             </td>
                                             <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>

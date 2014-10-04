@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     $(':checkbox').checkbox();
     NProgress.configure({ parent: '#wrapper' });
+    $(".has-tooltip").tooltip();
 
     $(".ui-block").css("height", $(".ui-block").width() / 1.6);
     $(".ui-block").show();
@@ -379,6 +380,7 @@ $(document).ready(function () {
                 responseDetails.find(".current-response-submitted").html(challengeResponse.submitted);
                 responseDetails.find(".response-id").val(challengeResponse.id);
                 responseDetails.find(".current-response-author").html('<a href="' + jsRoutes.controllers.Application.showProfile(challengeResponse.challengeParticipation.participator.username).url + '">' + challengeResponse.challengeParticipation.participator.username+ '</a>');
+                responseDetails.find(".current-response-description").html(challengeResponse.message);
 
                 if(challengeResponse.isAccepted != 'Y' && challengeResponse.isAccepted != 'N' ){
                     responseDetails.find(".rate-current-response").show();
@@ -502,6 +504,7 @@ $(document).ready(function () {
                     success: function (data) {
                         NProgress.done();
                         $("#content-wrapper").append(data);
+                        $(".has-tooltip").tooltip();
                     }
                 });
             });
@@ -535,6 +538,7 @@ $(document).ready(function () {
                                 countdown: true
                             });
                         });
+                        $(".has-tooltip").tooltip();
                     }
                 });
 

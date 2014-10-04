@@ -2,7 +2,8 @@
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, profilePicUrl, unreadNotificationsNr, newestNotifications)
-    <div id="wrapper">
+    <div id="wrapper" class="account-wrapper">
+        <div class="main-blocks-wrapper">
         <div id="challenge-block" class="ui-block palette-nephritis"><span class="ui-block-title">Create a challenge</span></div>
         <div id="browse-block" class="ui-block palette-belize-hole"><span class="ui-block-title">Browse challenges</span></div>
         <div id="rank-block" class="ui-block palette-pumpkin"><span class="ui-block-title">Show rankings</span></div>
@@ -13,6 +14,7 @@
         <div id="browse-block-body" class="ui-block-body" style="display: none;">
         @browse_content(searchChallenges, username)
         </div>
+            </div>
     </div>
 
 }

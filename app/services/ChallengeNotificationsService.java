@@ -23,13 +23,13 @@ public class ChallengeNotificationsService {
         notificationService.notifyUsers(participators, notificationMsg, shortNotificationMsg, notificationType, relevantObjectId);
     }
 
-    public void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorUsername, List<User> participators) {
+    public void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorId, String participatorName, List<User> participators) {
         String challengeCreatorMsg = "New participation was added to your challenge " + challenge.getChallengeName() + "." +
-                " Participator username is " + participatorUsername;
+                " Participator username is " + participatorName;
         String shortChallengeCreatorMsg = "User joined a challenge";
 
         String challengeParticipatorsMsg = "New participation was added to the challenge " + challenge.getChallengeName() + ". " +
-                "Participator username is " + participatorUsername + "." +
+                "Participator username is " + participatorName + "." +
                 " Challenge creator is " + challenge.getCreator().getUsername();
         String shortChallengeParticipatorsMsg = "User is also participating.";
 
@@ -37,11 +37,11 @@ public class ChallengeNotificationsService {
         notifyAllParticipators(participators, challenge, challengeParticipatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.new_participant, String.valueOf(challenge.getId()));
     }
 
-    public void notifyAboutChallengeLeaving(Challenge challenge, String participatorUsername, List<User> participators) {
-        String challengeCreatorMsg = "Participator " + participatorUsername + " has left your challenge " + challenge.getChallengeName();
+    public void notifyAboutChallengeLeaving(Challenge challenge, String participatorId, String participatorName, List<User> participators) {
+        String challengeCreatorMsg = "Participator " + participatorName + " has left your challenge " + challenge.getChallengeName();
         String shortChallengeCreatorMsg = "User left a challenge";
 
-        String challengeParticipatorsMsg = "Participator " + participatorUsername + " has left challenge " + challenge.getChallengeName()
+        String challengeParticipatorsMsg = "Participator " + participatorName + " has left challenge " + challenge.getChallengeName()
                 + " of user " + challenge.getCreator().getUsername();
         String shortChallengeParticipatorsMsg = "User is no longer participating.";
 
@@ -52,11 +52,11 @@ public class ChallengeNotificationsService {
     public void notifyAboutSubmittingChallengeResponse(ChallengeParticipation challengeParticipation, List<User> participators) {
         Challenge challenge = challengeParticipation.getChallenge();
 
-        String challengeCreatorMsg = "User " + challengeParticipation.getParticipator() + " has just submitted response to your challenge " + challenge.getChallengeName();
+        String challengeCreatorMsg = "User " + challengeParticipation.getParticipator().getFormattedName() + " has just submitted response to your challenge " + challenge.getChallengeName();
         String shortChallengeCreatorMsg = "New response available";
 
-        String challengeParticipatorsMsg = "User " + challengeParticipation.getParticipator() + " has just submitted response to the challenge " + challenge.getChallengeName()
-                + " of user " + challenge.getCreator().getUsername();
+        String challengeParticipatorsMsg = "User " + challengeParticipation.getParticipator().getFormattedName() + " has just submitted response to the challenge " + challenge.getChallengeName()
+                + " of user " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorsMsg = "User added a response";
 
         notifyChallengeCreator(challenge, challengeCreatorMsg, shortChallengeCreatorMsg, Notification.NotificationType.new_response, String.valueOf(challenge.getId()));
@@ -67,11 +67,11 @@ public class ChallengeNotificationsService {
         Challenge challenge = challengeParticipation.getChallenge();
 
         String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
-                " has been accepted by " + challenge.getCreator().getUsername();
+                " has been accepted by " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorMsg = "Response accepted!";
 
         String participatorsMsg = "Challenge participation in challenge " + challenge.getChallengeName() +
-                " has been accepted by " + challenge.getCreator().getUsername();
+                " has been accepted by " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorsMsg = "User response accepted...";
 
         participators.remove(challengeParticipation.getParticipator());
@@ -83,15 +83,24 @@ public class ChallengeNotificationsService {
         Challenge challenge = challengeParticipation.getChallenge();
 
         String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
-                " has been refused by " + challenge.getCreator().getUsername();
+                " has been refused by " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorMsg = "Response refused.";
 
         String participatorsMsg = "Challenge participation in challenge " + challenge.getChallengeName() +
-                " has been refused by " + challenge.getCreator().getUsername();
+                " has been refused by " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorsMsg = "User response refused...";
 
         participators.remove(challengeParticipation.getParticipator());
         notificationService.notifyUser(challengeParticipation.getParticipator(), challengeParticipatorMsg, shortChallengeParticipatorMsg, Notification.NotificationType.response_refused, String.valueOf(challenge.getId()));
         notifyAllParticipators(participators, challenge, participatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.response_refused, String.valueOf(challenge.getId()));
+    }
+
+    public void notifyAboutNewPrivateChallenge(Challenge challenge, List<User> participators) {
+
+        String participatorsMsg = "You have been invited to challenge: " + challenge.getChallengeName() +
+                " by " + challenge.getCreator().getFormattedName();
+        String shortChallengeParticipatorsMsg = "New challenge invitation...";
+
+        notifyAllParticipators(participators, challenge, participatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.challenge_invitation, String.valueOf(challenge.getId()));
     }
 }

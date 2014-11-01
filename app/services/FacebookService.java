@@ -5,6 +5,8 @@ import com.restfb.batch.BatchRequest;
 import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
+import com.restfb.types.Message;
+import com.restfb.types.User;
 import com.restfb.types.Video;
 import domain.ChallengeResponse;
 import domain.FacebookUser;
@@ -25,11 +27,13 @@ public class FacebookService {
 
     private final static String applicationId = "471463259622297";
 
+    private final static String appUrl = "https://apps.facebook.com/471463259622297";
+
     private final DefaultFacebookClient client;
 
     public FacebookService(String token){
 
-        this.client = new DefaultFacebookClient(token, this.secret);
+        this.client = new DefaultFacebookClient(token, this.secret, Version.VERSION_2_1);
 
     }
 
@@ -51,7 +55,7 @@ public class FacebookService {
     }
 
     public FacebookUser getFacebookUser() {
-        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, username, name"));
+        return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, name"));
     }
 
     public String getProfilePictureUrl(){
@@ -67,9 +71,32 @@ public class FacebookService {
         return video.getId();
     }
 
+    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName){
+
+        FacebookType video = this.client.publish("me/videos", FacebookType.class,
+                BinaryAttachment.with(fileName, videoPath),
+                Parameter.with("message", challengeName),
+                Parameter.with("privacy", "{'value': 'ALL_FRIENDS'}"));
+
+        return video.getId();
+    }
+
     public List<FacebookUser> getFacebookFriends(){
-        Connection<FacebookUser> facebookFriends = this.client.fetchConnection("me/friends", FacebookUser.class,  Parameter.with("fields", "id, first_name, last_name, username, picture.url, name"));
-        return facebookFriends.getData();
+        Connection<FacebookUser> facebookFriends = this.client.fetchConnection("me/friends", FacebookUser.class,  Parameter.with("fields", "id, picture{url}, name"));
+
+        Connection<FacebookUser> invitableFacebookFriends = this.client.fetchConnection("me/invitable_friends", FacebookUser.class,  Parameter.with("fields", "id, name, picture{url}"));
+
+        List<FacebookUser> friends = new ArrayList<FacebookUser>();
+
+        for (FacebookUser p : invitableFacebookFriends.getData()) {
+            friends.add(p);
+        }
+        for (FacebookUser p : facebookFriends.getData()) {
+            friends.add(p);
+        }
+
+        return friends;
+
     }
 
     public Video getVideo(String videoId){
@@ -101,4 +128,53 @@ public class FacebookService {
         return responses;
 
     }
+
+    public String publishNewChallengeMessage(){
+        return this.client.publish("me/feed", FacebookType.class, Parameter.with("message", "I have just created a new challenge! Join it, I dare you ! ;]"),Parameter.with("link", appUrl)).getId();
+    }
+
+    public String inviteFriends(List<String> friends){
+
+        List<BatchRequest> requests = new ArrayList<BatchRequest>();
+
+        JsonMapper jsonMapper = new DefaultJsonMapper();
+
+        for ( String friendId : friends) {
+            BatchRequest request = new BatchRequest.BatchRequestBuilder(friendId + "/apprequests").method("POST").body(Parameter.with("message", "Testing!")).build();
+            requests.add(request);
+
+        }
+        return this.client.executeBatch(requests).toString();
+
+    }
+
+    public List<FacebookUser> getFacebookUsers(List<String> userIds){
+
+        List<BatchRequest> requests = new ArrayList<BatchRequest>();
+
+        JsonMapper jsonMapper = new DefaultJsonMapper();
+
+        for ( String friendId : userIds) {
+            BatchRequest request = new BatchRequest.BatchRequestBuilder(friendId).body(Parameter.with("fields", "id, name")).build();
+            requests.add(request);
+
+            BatchRequest pictureRequest = new BatchRequest.BatchRequestBuilder(friendId + "/picture?width=150&height=150").body().build();
+            requests.add(pictureRequest);
+        }
+
+        List<BatchResponse> batchResponses = this.client.executeBatch(requests);
+
+        List<FacebookUser> users = new ArrayList<>();
+
+        for (int i = 0; i < batchResponses.size(); i +=2) {
+
+            users.add(jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class));
+
+            users.get(i).setPicture(batchResponses.get(i+1).getHeaders().get(6).getValue());
+        }
+
+        return users;
+
+    }
+
 }

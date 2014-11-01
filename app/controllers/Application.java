@@ -1,16 +1,10 @@
 package controllers;
 
-import com.restfb.*;
-import com.restfb.batch.BatchResponse;
-import com.restfb.json.JsonObject;
-import com.restfb.types.FacebookType;
 import com.restfb.types.Video;
 import domain.*;
 import com.google.gson.Gson;
 import play.Routes;
 import play.data.Form;
-import play.api.mvc.Request;
-import play.db.jpa.Transactional;
 import play.mvc.*;
 
 import repositories.ChallengeFilter;
@@ -22,8 +16,6 @@ import views.html.*;
 
 import java.io.*;
 import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Application extends Controller {
@@ -39,9 +31,10 @@ public class Application extends Controller {
 
             session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
-            Application.getUsersService().createNewOrGetExistingUser(user.getUsername(), Application.getFacebookService().getProfilePictureUrl());
+            Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
 
-            session("username", user.getUsername());
+            session("username", user.getId());
+            session("name", user.getFormattedName());
             session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
 
             return redirect(routes.Application.index());
@@ -95,7 +88,12 @@ public class Application extends Controller {
                 try {
                     Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
                     InputStream stream = new FileInputStream(resourceFile.getFile());
-                    videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+
+                    if(!challenge.getChallengeVisibility()){
+                        videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+                    }else{
+                        videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+                    }
 
                 } catch (FileNotFoundException e) {
                 }
@@ -103,11 +101,27 @@ public class Application extends Controller {
 
                 Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
 
-                if (!challenge.getChallengeVisibility() && challenge.getParticipants() != null) {
-                    for (String p : challenge.getParticipants()) {
-                        getUsersService().createNewOrGetExistingUser(p);
-                        getChallengeService().participateInChallenge(newChallenge, p);
+                List<User> participants = new ArrayList<User>();
+
+                if (!challenge.getChallengeVisibility()) {
+                    if(challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
+                        for (String p : challenge.getParticipants()) {
+
+                            List<String> items = Arrays.asList(p.split("\\s*,\\s*"));
+
+                            String id = items.get(0);
+
+                            User user = getUsersService().createNewOrGetExistingUser(id, items.get(1), items.get(2), items.get(3));
+                            participants.add(user);
+                            getChallengeService().participateInChallenge(newChallenge, id, user.getFormattedName());
+                        }
+
+
+                    }else{
+                        challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
+                        return ok(new Gson().toJson(challengeForm.errors()));
                     }
+                    getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
                 }
 
                 return ok("success");
@@ -150,8 +164,16 @@ public class Application extends Controller {
         return session("fb_user_token");
     }
 
+    private static String getLoggedInName() {
+        return session("name");
+    }
+
     private static InternalNotificationService getNotificationService() {
         return new InternalNotificationService(new InternalNotificationsRepository());
+    }
+
+    private static ChallengeNotificationsService getChallengeNotificationService() {
+        return new ChallengeNotificationsService(getNotificationService());
     }
 
     @play.db.jpa.Transactional
@@ -232,9 +254,9 @@ public class Application extends Controller {
         Challenge challenge = service.getChallenge(Long.parseLong(id));
 
         if (state == true) {
-            service.participateInChallenge(challenge, Application.getLoggedInUsername());
+            service.participateInChallenge(challenge, getLoggedInUsername(), getLoggedInName());
         } else {
-            service.leaveChallenge(challenge, Application.getLoggedInUsername());
+            service.leaveChallenge(challenge, getLoggedInUsername(), getLoggedInName());
         }
 
         return ok("success");
@@ -246,7 +268,7 @@ public class Application extends Controller {
         ChallengeService service = Application.getChallengeService();
         Challenge challenge = service.getChallenge(challengeId);
 
-        service.participateInChallenge(challenge, Application.getLoggedInUsername());
+        service.participateInChallenge(challenge, getLoggedInUsername(), getLoggedInName());
 
         return ok("success");
     }
@@ -261,6 +283,17 @@ public class Application extends Controller {
         return ok(new Gson().toJson(facebookFriends));
     }
 
+    @play.db.jpa.Transactional
+    public static Result ajaxGetFacebookUsers(String ids) {
+
+        FacebookService service = Application.getFacebookService();
+
+        List<String> userIds = Arrays.asList(ids.split("\\s*,\\s*"));
+
+        return ok(new Gson().toJson(service.getFacebookUsers(userIds)));
+
+    }
+
     /**
      * Will be removed after filling data is not necessary anymore.
      */
@@ -272,21 +305,21 @@ public class Application extends Controller {
         InternalNotificationService notificationService = new InternalNotificationService(new InternalNotificationsRepository());
 
         User testUser = userService.createNewOrGetExistingUser(getLoggedInUsername());
-        User otherUser = userService.createNewOrGetExistingUser("otherUser");
-        User otherUser2 = userService.createNewOrGetExistingUser("otherUser2");
-        User otherUser3 = userService.createNewOrGetExistingUser("otherUser3");
-        User otherUser4 = userService.createNewOrGetExistingUser("otherUser4");
-        User otherUser5 = userService.createNewOrGetExistingUser("otherUser5");
+        User otherUser = userService.createNewOrGetExistingUser("12122112");
+        User otherUser2 = userService.createNewOrGetExistingUser("12122113");
+        User otherUser3 = userService.createNewOrGetExistingUser("12122114");
+        User otherUser4 = userService.createNewOrGetExistingUser("12122115");
+        User otherUser5 = userService.createNewOrGetExistingUser("12122116");
 
         Challenge challenge = service.createChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "543763142406586", true);
         service.createChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "543758585740375", true);
         service.createChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "543763142406586", true);
 
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser"), "fsfdsdss", "543763142406586");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser2"), "fsdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser3"), "fsfdshhjhjjhjdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser4"), "fsfdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "otherUser5"), "fsfddfgfdgfddgfdgfgfgfsdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122112", "otherUser"), "fsfdsdss", "543763142406586");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122113", "otherUser2"), "fsdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122114", "otherUser3"), "fsfdshhjhjjhjdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122115", "otherUser4"), "fsfdss", "544923992290501");
+        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122116", "otherUser5"), "fsfddfgfdgfddgfdgfgfgfsdss", "544923992290501");
 
         service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "543763142406586", true);
         service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "543763142406586", false);
@@ -305,6 +338,7 @@ public class Application extends Controller {
         User currentUser = getLoggedInUser();
 
         ChallengeService service = Application.getChallengeService();
+        FacebookService fbService = Application.getFacebookService();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
         List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
@@ -317,8 +351,10 @@ public class Application extends Controller {
         Long joinedChallengesNr = service.getJoinedChallengesNrForUser(currentUser.getUsername());
         Long createdChallengesNr = service.getCreatedChallengesNrForUser(currentUser.getUsername());
 
-        String currentFirstName = Application.getFacebookService().getFacebookUser().getFirstName();
-        String currentName = Application.getFacebookService().getFacebookUser().getName();
+        FacebookUser fbUser =  fbService.getFacebookUser();
+
+        String currentFirstName = fbUser.getFirstName();
+        String currentName = fbUser.getFormattedName();
         String currentPicture = Application.getProfilePictureUrl();
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
@@ -403,6 +439,7 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetLatestChallenges(),
                         routes.javascript.Application.ajaxGetResponsesForChallenge(),
                         routes.javascript.Application.ajaxGetFacebookFriends(),
+                        routes.javascript.Application.ajaxGetFacebookUsers(),
                         routes.javascript.Application.ajaxGetCompletedChallenges(),
                         routes.javascript.Application.ajaxGetResponse(),
                         routes.javascript.Application.showProfile(),
@@ -436,13 +473,13 @@ public class Application extends Controller {
 
         Challenge challenge = service.getChallenge(Long.parseLong(challengeId));
 
-        service.leaveChallenge(challenge, getLoggedInUsername());
+        service.leaveChallenge(challenge, getLoggedInUsername(), getLoggedInName());
 
         return ok("success");
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxRemoveParticipantFromChallenge(String challengeId, String username) {
+    public static Result ajaxRemoveParticipantFromChallenge(String challengeId, String username, String name) {
 
         ChallengeService service = Application.getChallengeService();
 
@@ -450,7 +487,7 @@ public class Application extends Controller {
 
         if(challenge.getCreator().getUsername().compareTo(getLoggedInUsername()) == 0) {
 
-            service.leaveChallenge(challenge, username);
+            service.leaveChallenge(challenge, username, name);
         }
 
         return ok("success");
@@ -561,7 +598,7 @@ public class Application extends Controller {
         Long joinedChallengesNr = service.getJoinedChallengesNrForUser(username);
         Long createdChallengesNr = service.getCreatedChallengesNrForUser(username);
 
-        String viewedUserName = viewedUser.getUsername();
+        String viewedUserName = viewedUser.getFormattedName();
         String viewedUserPicture = viewedUser.getProfilePictureUrl();
 
         return ok(profile.render(currentFirstName, currentPicture, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, viewedUserName, viewedUserPicture, createdChallengesNr, joinedChallengesNr, completedChallengesNr));

@@ -43,7 +43,7 @@ public class Notification {
     private String relevantObjectId;
 
     public enum NotificationType {
-        new_participant, participant_left, new_response, response_accepted, response_refused, challenge_completed
+        new_participant, participant_left, new_response, response_accepted, response_refused, challenge_completed, challenge_invitation
     }
 
     protected Notification() {

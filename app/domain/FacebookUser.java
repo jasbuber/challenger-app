@@ -1,12 +1,16 @@
 package domain;
 
+import com.google.gson.annotations.Expose;
 import com.restfb.Facebook;
+import com.restfb.types.Photo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by jasbuber on 2014-04-10.
  */
 public class FacebookUser {
 
+    @Facebook("id")
     private String id;
 
     //private String email;
@@ -25,6 +29,9 @@ public class FacebookUser {
 
     @Facebook("name")
     private String name;
+
+    @Facebook("url")
+    private String url;
 
     private String gender;
 
@@ -50,14 +57,6 @@ public class FacebookUser {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getLastName() {
@@ -106,5 +105,21 @@ public class FacebookUser {
     @Override
     public int hashCode() {
         return this.id.hashCode();
+    }
+
+    public String getFormattedName(){
+        if(StringUtils.isBlank(this.firstName) || StringUtils.isBlank(this.lastName)) {
+            return this.id;
+        }else {
+            return this.firstName + " " + lastName.substring(0, 3);
+        }
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

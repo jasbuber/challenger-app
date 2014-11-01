@@ -45,7 +45,7 @@
                                 } else {
                                     <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                 }
-                                @challenge.getCreator.getUsername</a></td>
+                                @challenge.getCreator.getFormattedName</a></td>
                             <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
                             <td>@challenge.getCategory</td>
                             <td>

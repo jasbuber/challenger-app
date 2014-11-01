@@ -1,7 +1,5 @@
 package controllers;
 
-import play.data.validation.Constraints;
-
 /**
  * Created by jasbuber on 2014-06-02.
  */

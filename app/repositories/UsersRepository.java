@@ -1,6 +1,7 @@
 package repositories;
 
 import domain.Challenge;
+import domain.FacebookUser;
 import domain.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -20,8 +21,14 @@ public class UsersRepository {
         return user;
     }
 
-    public User createUser(String username, String profilePictureUrl) {
-        User user = new User(username, profilePictureUrl);
+    public User createUser(FacebookUser fbUser, String profilePictureUrl) {
+        User user = new User(fbUser, profilePictureUrl);
+        JPA.em().persist(user);
+        return user;
+    }
+
+    public User createUser(String username, String firstName, String lastName, String profilePictureUrl) {
+        User user = new User(username, profilePictureUrl, firstName, lastName);
         JPA.em().persist(user);
         return user;
     }

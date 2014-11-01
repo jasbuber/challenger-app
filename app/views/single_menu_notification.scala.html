@@ -44,6 +44,13 @@
                 }else{ @notification.getNotificationMsg.substring(0, 50)...}
             </a>
         }
+        case domain.Notification.NotificationType.challenge_invitation => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_sandals_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
 
     }
     </li>

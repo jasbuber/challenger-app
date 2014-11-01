@@ -1,5 +1,6 @@
 package services;
 
+import domain.FacebookUser;
 import domain.User;
 import play.libs.F;
 import repositories.UsersRepository;
@@ -26,7 +27,21 @@ public class UserService extends TransactionalBase {
         });
     }
 
-    public User createNewOrGetExistingUser(final String username, final String profilePictureUrl) {
+    public User createNewOrGetExistingUser(final FacebookUser user, final String profilePictureUrl) {
+        return withTransaction(new F.Function0<User>() {
+            @Override
+            public User apply() throws Throwable {
+
+                if (usersRepository.isUserExist(user.getId())) {
+                    return usersRepository.getUser(user.getId());
+                }
+
+                return usersRepository.createUser(user, profilePictureUrl);
+            }
+        });
+    }
+
+    public User createNewOrGetExistingUser(final String username, final String firstName, final String lastName, final String profilePictureUrl) {
         return withTransaction(new F.Function0<User>() {
             @Override
             public User apply() throws Throwable {
@@ -35,7 +50,7 @@ public class UserService extends TransactionalBase {
                     return usersRepository.getUser(username);
                 }
 
-                return usersRepository.createUser(username, profilePictureUrl);
+                return usersRepository.createUser(username, firstName, lastName, profilePictureUrl);
             }
         });
     }

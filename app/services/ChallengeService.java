@@ -50,7 +50,7 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
-    public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername) {
+    public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername, final String participatorName) {
         if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
             throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
         }
@@ -65,7 +65,7 @@ public class ChallengeService extends TransactionalBase {
         });
 
         if(hasChallengeBecamePopular(challenge)) {
-            notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, findAllParticipatorsOf(challenge));
+            notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
         }
 
         return challengeParticipation;
@@ -88,7 +88,7 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
-    public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername) {
+    public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername, String participatorName) {
 
         if (!isUserParticipatingInChallenge(challenge, participatorUsername)) {
             throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
@@ -101,7 +101,7 @@ public class ChallengeService extends TransactionalBase {
             }
         });
 
-        notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, findAllParticipatorsOf(challenge));
+        notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
 
         return challengeRemovalResult;
     }

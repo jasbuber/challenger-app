@@ -60,7 +60,7 @@
                                         } else {
                                             <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                         }
-                                        @challenge.getCreator.getUsername</a></div>
+                                        @challenge.getCreator.getFormattedName</a></div>
 
                                     <div>Created: @challenge.getCreationDate</div>
                                     <div>Category: @challenge.getCategory</div>
@@ -84,7 +84,7 @@
                                                     } else {
                                                         <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                                     }
-                                                    @participation.getParticipator.getUsername</a>
+                                                    @participation.getParticipator.getFormattedName</a>
                                             </div>
                                         }
                                         </div>

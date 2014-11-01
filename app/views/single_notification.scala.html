@@ -26,6 +26,10 @@
             <a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_glasses_small.png")"/></a>
             <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
         }
+        case domain.Notification.NotificationType.challenge_invitation => {
+            <a class="" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/></a>
+            <span class="glyph-list-name"><a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">@notification.getShortNotificationMsg</a></span>
+        }
 
     }
 

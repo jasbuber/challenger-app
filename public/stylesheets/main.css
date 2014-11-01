@@ -357,6 +357,12 @@ div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challe
 
 .inline-block{ display: inline-block; }
 
+label.fb-feed-label{ width: 180px; margin-left: auto; margin-right: auto; font-size: 20px; font-weight: 700; }
+label.fb-feed-label > span{ line-height: 1.5!important; }
+
+.remove-selected{ margin-left: 15px; }
+.visibility-select-wrapper{ vertical-align: top;}
+
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }
 .palette-pumpkin:hover{ background-color: #E67E22;}

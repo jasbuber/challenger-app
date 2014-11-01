@@ -1,10 +1,8 @@
 package controllers;
 
 import domain.ChallengeCategory;
-import domain.User;
 import play.data.validation.Constraints;
 
-import java.util.Collection;
 import java.util.List;
 
 public class CreateChallengeForm {
@@ -22,6 +20,8 @@ public class CreateChallengeForm {
     private List<String> participants;
 
     private ChallengeCategory challengeCategory;
+
+    private Boolean isInviteFriends;
 
     public void setCreator(String creatorUsername) {
         this.creatorUsername = creatorUsername;
@@ -73,5 +73,13 @@ public class CreateChallengeForm {
 
     public void setChallengeVisibility(Boolean challengeVisibility) {
         this.challengeVisibility = challengeVisibility;
+    }
+
+    public Boolean getIsInviteFriends() {
+        return isInviteFriends;
+    }
+
+    public void setIsInviteFriends(Boolean isInviteFriends) {
+        this.isInviteFriends = isInviteFriends;
     }
 }

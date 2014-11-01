@@ -27,6 +27,8 @@ GET         /challenge/ajax/latest                        controllers.Applicatio
 
 POST        /challenge/ajax/fbfriends                     controllers.Application.ajaxGetFacebookFriends()
 
+POST        /challenge/ajax/fbusers                       controllers.Application.ajaxGetFacebookUsers(ids: String)
+
 POST        /challenge/ajax/close                         controllers.Application.ajaxCloseChallenge(id: String)
 
 GET         /challenge/ajax/responses                     controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)

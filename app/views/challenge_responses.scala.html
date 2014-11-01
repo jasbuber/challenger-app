@@ -28,9 +28,9 @@
                                         <div>
                                             <div class="inline-block">
                                             @if(currentChallenge.getCreator.getProfilePictureUrl != null) {
-                                                <a href="@routes.Application.showProfile(currentChallenge.getCreator.getUsername)"><img class="medium-profile-picture" src="@currentChallenge.getCreator.getProfilePictureUrl"/></a>
+                                                <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@responses.get(0).getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
                                             } else {
-                                                <a href="@routes.Application.showProfile(currentChallenge.getCreator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
+                                                <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
                                             }
                                             </div>
                                             <div class="inline-block">
@@ -50,7 +50,7 @@
                                             </div>
                                             <div>
                                                 <div class="current-response-author">
-                                                    <a href="@routes.Application.showProfile(currentChallenge.getCreator.getUsername)">@currentChallenge.getCreator.getUsername</a>
+                                                    <a href="@routes.Application.showProfile(currentChallenge.getCreator.getUsername)">@responses.get(0).getChallengeParticipation.getParticipator.getFormattedName</a>
                                                 </div>
                                             @if(!responses.isEmpty) {
                                                 <div class="challenge-response-submitted">Submitted: @responses.get(0).getSubmitted</div>
@@ -62,7 +62,7 @@
                                 <div id="challenge-responses">
                                 @responses.map { response =>
                                     <div class="challenge-response-wrapper @if(responses.get(0) == response) {current-response}">
-                                        <div class="challenge-response-author"><a href="@routes.Application.showProfile(response.getChallengeParticipation.getParticipator.getUsername).url">@response.getChallengeParticipation.getParticipator.getUsername</a></div>
+                                        <div class="challenge-response-author"><a href="@routes.Application.showProfile(response.getChallengeParticipation.getParticipator.getUsername).url">@response.getChallengeParticipation.getParticipator.getFormattedName</a></div>
                                         <div><a class="play-video-response" href="@response.getId"><img src="@response.getThumbnailUrl"/></a></div>
                                         <div>
                                         @if(!response.isDecided && currentChallenge.getCreator.getUsername.compareTo(currentUsername) == 0) {

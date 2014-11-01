@@ -32,6 +32,15 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date joined;
 
+    @Column(name = "FIRST_NAME")
+    private String firstName;
+
+    @Column(name = "LAST_NAME")
+    private String lastName;
+
+    @Column(name = "FULL_NAME")
+    private String fullName;
+
     protected User() {
         //for jpa purposes...
         this.joined = new Date();
@@ -43,11 +52,23 @@ public class User {
         this.joined = new Date();
     }
 
-    public User(String username, String profilePictureUrl) {
+    public User(String username, String profilePictureUrl, String firstName, String lastName) {
         assertUsername(username);
         this.username = username.toLowerCase();
         this.profilePictureUrl = profilePictureUrl;
         this.joined = new Date();
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public User(FacebookUser user, String profilePictureUrl) {
+        assertUsername(user.getId());
+        this.username = user.getId().toLowerCase();
+        this.profilePictureUrl = profilePictureUrl;
+        this.joined = new Date();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.fullName = user.getName();
     }
 
     private void assertUsername(String username) {
@@ -59,7 +80,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "username='" + getFormattedName() + '\'' +
                 '}';
     }
 
@@ -90,5 +111,25 @@ public class User {
 
     public String getJoined() {
         return new SimpleDateFormat("dd-MM-yyyy").format(this.joined);
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getFormattedName(){
+        if(StringUtils.isBlank(this.firstName) || StringUtils.isBlank(this.lastName)) {
+            return this.username;
+        }else {
+            return this.firstName + " " + lastName.substring(0, 3);
+        }
     }
 }

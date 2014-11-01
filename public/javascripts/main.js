@@ -217,29 +217,47 @@ $(document).ready(function () {
     $("#challenge-visibility").change(function (e) {
 
         if ($(this).val() == 0) {
-            $("#challenge-participants-wrapper").show();
             NProgress.start();
 
-            jsRoutes.controllers.Application.ajaxGetFacebookFriends().ajax({
-                success: function (response) {
-                    var participants = jQuery.parseJSON(response), $body = "";
+            var ids = [];
+            $(".friend-item").each(function(){
+                var $arr = $(this).find(".selected-user-data").val().split(",");
+                ids.push($arr[0]);
+            });
+            FB.ui({method: 'apprequests',
+                message: 'I created a challenge! Will you be able to complete it ? ;]',
+                exclude_ids: ids
+            }, function(fbresponse){
+                if(fbresponse != undefined && !jQuery.isEmptyObject(fbresponse)) {
+                    jsRoutes.controllers.Application.ajaxGetFacebookUsers(fbresponse.to.join()).ajax({
+                        success: function (response) {
 
-                    $.each(participants, function (i) {
+                            var participants = jQuery.parseJSON(response), $body = "";
 
-                        var pictureUrl = jQuery.parseJSON(participants[i].picture).data.url;
-                        $body +=
-                            '<div class="friend-item"><a href="#"><img class="smallProfilePicture" src="' + pictureUrl + '"/><span class="friends-name">' + participants[i].name +
-                            '</span></a><label class="checkbox" for="checkbox"><input type="checkbox" name="participants[]" value="' + participants[i].username + '" data-toggle="checkbox"></label></div>';
+                            $.each(participants, function (i) {
+                                $body +=
+                                    '<div class="friend-item"><a href="#"><img class="smallProfilePicture" src="' + participants[i].picture + '"/><span class="friends-name">' + participants[i].name +
+                                    '</span></a><input class="selected-user-data" type="hidden" name="participants[]" value="' + participants[i].id + ',' + participants[i].firstName + ',' + participants[i].lastName + ',' + participants[i].picture + '"/>' +
+                                        '<a class="remove-selected" href="#"><img src="/assets/images/close.png"/></a></div>';
+                            });
+                            $(".challenge-participants-div").html($body);
+                            $(':checkbox').checkbox();
+                            $("#challenge-participants-wrapper").show();
+                            NProgress.done();
+                        }
                     });
-                    $(".challenge-participants-div").html($body);
-                    $(':checkbox').checkbox();
-                    NProgress.done();
                 }
             });
         }
         else {
             $("#challenge-participants-wrapper").hide();
         }
+    });
+
+    $(document).on("click", ".remove-selected", function (e) {
+        $(this).parents(".friend-item").remove();
+
+        e.preventDefault();
     });
 
     $(".challenge-category").change(function (e) {
@@ -368,7 +386,7 @@ $(document).ready(function () {
                 $(".current-response").removeClass("current-response");
                 $parent.addClass("current-response");
 
-                var responseDetails = $(".challenge-response-details");
+                var responseDetails = $(".challenge-response-details"), $username = challengeResponse.challengeParticipation.participator.firstName + ' ' + challengeResponse.challengeParticipation.participator.lastName.substring(0,3);
 
                 if(challengeResponse.challengeParticipation.participator.profilePictureUrl != null){
                     responseDetails.find(".medium-profile-picture").attr("src", challengeResponse.challengeParticipation.participator.profilePictureUrl);
@@ -379,7 +397,7 @@ $(document).ready(function () {
 
                 responseDetails.find(".current-response-submitted").html(challengeResponse.submitted);
                 responseDetails.find(".response-id").val(challengeResponse.id);
-                responseDetails.find(".current-response-author").html('<a href="' + jsRoutes.controllers.Application.showProfile(challengeResponse.challengeParticipation.participator.username).url + '">' + challengeResponse.challengeParticipation.participator.username+ '</a>');
+                responseDetails.find(".current-response-author").html('<a href="' + jsRoutes.controllers.Application.showProfile(challengeResponse.challengeParticipation.participator.username).url + '">' + $username + '</a>');
                 responseDetails.find(".current-response-description").html(challengeResponse.message);
 
                 if(challengeResponse.isAccepted != 'Y' && challengeResponse.isAccepted != 'N' ){
@@ -596,17 +614,17 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".remove-participant", function () {
-        var $parent = $(this).parents("tr"), participantUsername = $parent.find(".participant-username").val(), challengeId = $(".current-challenge-id").val();
+        var $parent = $(this).parents("tr"), participantUsername = $parent.find(".participant-username").val(), challengeId = $(".current-challenge-id").val(), $name = $(this).parents("tr").find(".profilePicTd").find("a").text();
 
-        alertify.confirm("Are you sure you want to remove " + participantUsername + " from this challenge ?", function (e) {
+        alertify.confirm("Are you sure you want to remove " + $name + " from this challenge ?", function (e) {
             if (e) {
                 NProgress.start();
 
-                jsRoutes.controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId, participantUsername).ajax({
+                jsRoutes.controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId, participantUsername, $name).ajax({
                     success: function (response) {
                         $parent.remove();
                         NProgress.done();
-                        alertify.success(participantUsername + " was dismissed from the challenge.");
+                        alertify.success($name + " was dismissed from the challenge.");
                     }
                 });
             }

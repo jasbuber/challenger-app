@@ -59,6 +59,7 @@ public class ChallengeNotificationsService {
                 + " of user " + challenge.getCreator().getFormattedName();
         String shortChallengeParticipatorsMsg = "User added a response";
 
+        participators.remove(challengeParticipation.getParticipator());
         notifyChallengeCreator(challenge, challengeCreatorMsg, shortChallengeCreatorMsg, Notification.NotificationType.new_response, String.valueOf(challenge.getId()));
         notifyAllParticipators(participators, challenge, challengeParticipatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.new_response, String.valueOf(challenge.getId()));
     }

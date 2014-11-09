@@ -118,6 +118,7 @@ div#wrapper div.form-wrapper div.challenge-search-results table tbody input.btn{
 div#wrapper div.form-wrapper div.challenge-search-results table tbody td:nth-of-type(1){ white-space: nowrap; overflow: hidden; padding-right: 10px; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
+div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ word-break: break-all;}
 
 div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0px 5px 5px 5px; vertical-align: top; }
@@ -125,7 +126,7 @@ div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{
 
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{ margin-bottom: 30px;  }
-div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
+div#wrapper div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
 
@@ -172,6 +173,7 @@ div#wrapper div#content-wrapper, div.video-block-wrapper .video-content-wrapper{
     border: 2px solid #bdc3c7;
     min-height: 660px;
     min-width: 350px;
+    padding-bottom: 20px;
 }
 div#wrapper #challenge-body div#content-wrapper{ min-width: 678px; }
 
@@ -304,7 +306,7 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details > 
 
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span { display: inline-block; font-size: 30px; font-weight: 700; line-height: 52px; overflow: hidden; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span input{ vertical-align: top; margin-left: 20px;}
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span.challenge-details-name{ max-width: 250px; height: 52px;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span.challenge-details-name{ max-width: 250px; word-wrap: break-word; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper{ padding: 3%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper a{ font-size: 20px; }
 

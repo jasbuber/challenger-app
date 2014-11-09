@@ -179,7 +179,7 @@ $(document).ready(function () {
     uploadResponse.change(function () {
         var $this = $(this);
         if ($this.val() != '') {
-            $('#upload-response-wrapper').html(' <div>' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
+            $('#upload-response-wrapper').html('<div id="video-screenshot">' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
         }
         else {
             $('#upload-response-wrapper').html('<button type="button" class="btn btn-warning">Submit a response.</button>');

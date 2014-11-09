@@ -3,6 +3,7 @@ package controllers;
 import com.restfb.types.Video;
 import domain.*;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import play.Routes;
 import play.data.Form;
 import play.mvc.*;
@@ -84,7 +85,15 @@ public class Application extends Controller {
         } else {
             CreateChallengeForm challenge = challengeForm.get();
             String videoId = "";
-            if (request().body().asMultipartFormData().getFile("video-description") != null) {
+
+            if (request().body().asMultipartFormData().getFile("video-description") == null) {
+                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
+            }
+            if(getChallengeService().isUserCreatedChallengeWithName(challengeForm.get().getChallengeName(), getLoggedInUsername())){
+                challengeForm.reject("challengeName", "You already created a challenge with that name. Pick another name, please.");
+            }
+
+            if (!challengeForm.hasErrors()) {
                 try {
                     Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
                     InputStream stream = new FileInputStream(resourceFile.getFile());
@@ -97,7 +106,6 @@ public class Application extends Controller {
 
                 } catch (FileNotFoundException e) {
                 }
-
 
                 Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
 
@@ -126,7 +134,6 @@ public class Application extends Controller {
 
                 return ok("success");
             }else{
-                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
                 return ok(new Gson().toJson(challengeForm.errors()));
             }
         }
@@ -247,6 +254,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
+    /*
     @play.db.jpa.Transactional
     public static Result ajaxChangeChallengeParticipation(String id, Boolean state) {
 
@@ -260,7 +268,7 @@ public class Application extends Controller {
         }
 
         return ok("success");
-    }
+    }*/
 
     @play.db.jpa.Transactional
     public static Result ajaxJoinChallenge(Long challengeId) {
@@ -347,6 +355,8 @@ public class Application extends Controller {
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
 
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+
         Long completedChallengesNr = service.getCompletedChallengesNrForUser(currentUser.getUsername());
         Long joinedChallengesNr = service.getJoinedChallengesNrForUser(currentUser.getUsername());
         Long createdChallengesNr = service.getCreatedChallengesNrForUser(currentUser.getUsername());
@@ -359,7 +369,7 @@ public class Application extends Controller {
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
 
-        return ok(profile.render(currentFirstName, currentPicture, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, currentName, currentPicture, createdChallengesNr, joinedChallengesNr, completedChallengesNr));
+        return ok(profile.render(currentFirstName, currentPicture, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, currentName, currentPicture, createdChallengesNr, joinedChallengesNr, completedChallengesNr));
 
     }
 
@@ -374,25 +384,33 @@ public class Application extends Controller {
 
         List<Object[]> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
-        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, participations, responseForm, getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
+        List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+        Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
+
+        return ok(my_challenges.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, participations, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications));
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxCloseChallenge(String id) {
+    public static Result ajaxCloseChallenge(long id) {
 
         ChallengeService service = Application.getChallengeService();
 
-        service.closeChallenge(Long.parseLong(id));
+        if(service.isUserCreatedAChallenge(id, getLoggedInUsername())) {
+            service.closeChallenge(id);
+        }else{
+            return ok("false");
+        }
 
         return ok("success");
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxGetResponsesForChallenge(String challengeId) {
+    public static Result ajaxGetResponsesForChallenge(long challengeId) {
 
         ChallengeService service = Application.getChallengeService();
 
-        List<ChallengeResponse> responses = service.getResponsesForChallenge(Long.parseLong(challengeId));
+        List<ChallengeResponse> responses = service.getResponsesForChallenge(challengeId);
 
         if (responses.isEmpty()) {
             return ok(new Gson().toJson(responses));
@@ -403,25 +421,36 @@ public class Application extends Controller {
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxDeclineResponse(String responseId) {
+    public static Result ajaxDeclineResponse(long responseId) {
 
         ChallengeService service = Application.getChallengeService();
 
-        ChallengeResponse response = service.getChallengeResponse(Long.parseLong(responseId));
-        service.refuseChallengeResponse(response);
+        ChallengeResponse response = service.getChallengeResponse(responseId);
+
+        if(service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
+            service.refuseChallengeResponse(response);
+        }else{
+            return ok("false");
+        }
 
         return ok("success");
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxAcceptResponse(String responseId) {
+    public static Result ajaxAcceptResponse(long responseId) {
 
         ChallengeService service = Application.getChallengeService();
 
-        ChallengeResponse response = service.getChallengeResponse(Long.parseLong(responseId));
-        service.acceptChallengeResponse(response);
+        ChallengeResponse response = service.getChallengeResponse(responseId);
+
+        if(service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
+            service.acceptChallengeResponse(response);
+        }else{
+            return ok("false");
+        }
 
         return ok("success");
+
     }
 
     public static Result javascriptRoutes() {
@@ -432,7 +461,6 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxAcceptResponse(),
                         routes.javascript.Application.ajaxGetUserParticipations(),
                         routes.javascript.Application.ajaxLeaveChallenge(),
-                        routes.javascript.Application.ajaxChangeChallengeParticipation(),
                         routes.javascript.Application.ajaxCloseChallenge(),
                         routes.javascript.Application.ajaxGetChallengesForCriteria(),
                         routes.javascript.Application.ajaxGetChallengesForCategory(),
@@ -566,13 +594,15 @@ public class Application extends Controller {
             List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
             List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
             List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+            List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+            Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
             String currentFirstName = Application.getFacebookService().getFacebookUser().getFirstName();
             String currentUsername = Application.getLoggedInUsername();
             String currentPicture = Application.getProfilePictureUrl();
-            Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-            return ok(participants.render(currentFirstName, currentUsername, currentPicture, challengeParticipants, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, challenge));
+
+            return ok(participants.render(currentFirstName, currentUsername, currentPicture, challengeParticipants, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, challenge));
         } else {
             return redirect(routes.Application.index());
         }
@@ -589,6 +619,7 @@ public class Application extends Controller {
         List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
         List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
 
         String currentFirstName = Application.getFacebookService().getFacebookUser().getFirstName();
         String currentPicture = Application.getProfilePictureUrl();
@@ -601,7 +632,7 @@ public class Application extends Controller {
         String viewedUserName = viewedUser.getFormattedName();
         String viewedUserPicture = viewedUser.getProfilePictureUrl();
 
-        return ok(profile.render(currentFirstName, currentPicture, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, viewedUserName, viewedUserPicture, createdChallengesNr, joinedChallengesNr, completedChallengesNr));
+        return ok(profile.render(currentFirstName, currentPicture, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, viewedUserName, viewedUserPicture, createdChallengesNr, joinedChallengesNr, completedChallengesNr));
 
     }
 
@@ -714,7 +745,11 @@ public class Application extends Controller {
 
         List<Object[]> myParticipations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
-        return ok(participations.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), myParticipations, challenges, responseForm, getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
+        List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+        Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
+
+        return ok(participations.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), myParticipations, challenges, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications));
     }
 
     @play.db.jpa.Transactional
@@ -750,8 +785,12 @@ public class Application extends Controller {
 
         List<ChallengeParticipation> participants = service.getParticipantsForChallenge(id);
 
-        return ok(challenge_details.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, participations, responseForm, getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()),
-                getNotificationService().getNewestNotifications(getLoggedInUser()), currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername()));
+        List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+        Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
+
+        return ok(challenge_details.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), challenges, participations, responseForm, currentUnreadNotificationsNr,
+                latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername()));
     }
 
     @play.db.jpa.Transactional
@@ -780,8 +819,11 @@ public class Application extends Controller {
             video = fbService.getVideo(responses.get(0).getVideoResponseUrl());
         }
 
+        List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
+        List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
+        Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        return ok(challenge_responses.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, participations, responseForm, getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser()), responses, currentChallenge, video));
+        return ok(challenge_responses.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, participations, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, responses, currentChallenge, video));
     }
 
 }

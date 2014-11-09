@@ -299,4 +299,16 @@ public class ChallengesRepository {
         nrOfParticipationsOfChallengeQuery.setParameter("challenge", challenge);
         return (Long) nrOfParticipationsOfChallengeQuery.getSingleResult();
     }
+
+    public boolean isUserCreatedAChallenge(Long id, String creatorUsername) {
+
+        Challenge challenge = getChallenge(id);
+
+        if(challenge.getCreator().getUsername().compareTo(creatorUsername) == 0){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

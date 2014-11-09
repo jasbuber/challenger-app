@@ -1,5 +1,5 @@
 @(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, participants: java.util.List[domain.ChallengeParticipation], challenges: java.util.List[Array[Object]],
-        latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
+        latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
@@ -34,7 +34,7 @@
                                                 } else {
                                                     <img src="@routes.Assets.at("images/avatar_small.png")"/>
                                                 }
-                                                @participation.getParticipator.getFormattedName</a></td>
+                                                <span class="participant-name-span">@participation.getParticipator.getFormattedName</span></a></td>
                                             <td><b>6</b></td>
                                             <td>404</td>
                                             <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
         </div>
     </div>
 }

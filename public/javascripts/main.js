@@ -4,7 +4,6 @@
 $(document).ready(function () {
 
     $(':checkbox').checkbox();
-    NProgress.configure({ parent: '#wrapper' });
     $(".has-tooltip").tooltip();
 
     $(".ui-block").css("height", $(".ui-block").width() / 1.6);
@@ -50,13 +49,20 @@ $(document).ready(function () {
         var $body = "";
 
         $.each(challenges, function (i) {
+
+            var $formattedName = challenges[i].creator.username;
+
+            if(challenges[i].creator.firstName) {
+                $formattedName = challenges[i].creator.firstName + ' ' + challenges[i].creator.lastName.substring(0, 3);
+            }
+
             $body += '<tr><td class="profilePicTd"><a href="' + jsRoutes.controllers.Application.showProfile(challenges[i].creator.username).url + '">';
             if(challenges[i].creator.profilePictureUrl != undefined) {
                 $body += '<img class="smallProfilePicture" src="' + challenges[i].creator.profilePictureUrl + '"/>';
             } else {
                 $body += '<img src="/assets/images/avatar_small.png"/>';
             }
-            $body += challenges[i].creator.username + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
+            $body += $formattedName + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
                 '</a></td><td>' + challenges[i].category + '</td><td>';
                 if(challenges[i].creator.username != username){ $body += '<input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/><input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/>'; }
             $body += '</td></tr>';
@@ -217,7 +223,6 @@ $(document).ready(function () {
     $("#challenge-visibility").change(function (e) {
 
         if ($(this).val() == 0) {
-            NProgress.start();
 
             var ids = [];
             $(".friend-item").each(function(){
@@ -228,7 +233,10 @@ $(document).ready(function () {
                 message: 'I created a challenge! Will you be able to complete it ? ;]',
                 exclude_ids: ids
             }, function(fbresponse){
+
+
                 if(fbresponse != undefined && !jQuery.isEmptyObject(fbresponse)) {
+                    NProgress.start();
                     jsRoutes.controllers.Application.ajaxGetFacebookUsers(fbresponse.to.join()).ajax({
                         success: function (response) {
 
@@ -243,7 +251,7 @@ $(document).ready(function () {
                             $(".challenge-participants-div").html($body);
                             $(':checkbox').checkbox();
                             $("#challenge-participants-wrapper").show();
-                            NProgress.done();
+                            NProgress.done()
                         }
                     });
                 }
@@ -386,7 +394,11 @@ $(document).ready(function () {
                 $(".current-response").removeClass("current-response");
                 $parent.addClass("current-response");
 
-                var responseDetails = $(".challenge-response-details"), $username = challengeResponse.challengeParticipation.participator.firstName + ' ' + challengeResponse.challengeParticipation.participator.lastName.substring(0,3);
+                var responseDetails = $(".challenge-response-details"), $username = challengeResponse.challengeParticipation.participator.username;
+
+                if(challengeResponse.challengeParticipation.participator.firstName) {
+                    $username = challengeResponse.challengeParticipation.participator.firstName + ' ' + challengeResponse.challengeParticipation.participator.lastName.substring(0, 3);
+                }
 
                 if(challengeResponse.challengeParticipation.participator.profilePictureUrl != null){
                     responseDetails.find(".medium-profile-picture").attr("src", challengeResponse.challengeParticipation.participator.profilePictureUrl);
@@ -614,7 +626,7 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".remove-participant", function () {
-        var $parent = $(this).parents("tr"), participantUsername = $parent.find(".participant-username").val(), challengeId = $(".current-challenge-id").val(), $name = $(this).parents("tr").find(".profilePicTd").find("a").text();
+        var $parent = $(this).parents("tr"), participantUsername = $parent.find(".participant-username").val(), challengeId = $(".current-challenge-id").val(), $name = $(this).parents("tr").find(".participant-name-span").text();
 
         alertify.confirm("Are you sure you want to remove " + $name + " from this challenge ?", function (e) {
             if (e) {

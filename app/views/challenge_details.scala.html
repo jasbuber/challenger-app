@@ -1,5 +1,5 @@
 @(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long,
-        newestNotifications: java.util.List[domain.Notification], challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean, currentUsername: java.lang.String)
+        newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean, currentUsername: java.lang.String)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
@@ -48,7 +48,9 @@
                                                             <img src="@routes.Assets.at("images/glyph_crab_medium.png")"/>
                                                         }
                                                     } else {
-                                                        <input type="button" class="btn btn-hg btn-success join-challenge-action" value="Join"/>
+                                                        @if(challenge.getVisibility == true) {
+                                                            <input type="button" class="btn btn-hg btn-success join-challenge-action" value="Join"/>
+                                                        }
                                                     }
                                                 }
                                             }
@@ -100,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
                 @send_response(responseForm, challenge.getId)
         </div>
     </div>

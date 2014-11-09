@@ -133,6 +133,15 @@ public class ChallengeService extends TransactionalBase {
         });
     }
 
+    public boolean isUserCreatedAChallenge(final Long challengeId, final String creator) {
+        return withReadOnlyTransaction(new F.Function0<Boolean>() {
+            @Override
+            public Boolean apply() throws Throwable {
+                return challengesRepository.isUserCreatedAChallenge(challengeId, creator);
+            }
+        });
+    }
+
     public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation, final String message, final String videoDescriptionUrl) {
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
         ChallengeResponse challengeResponse = withTransaction(new F.Function0<ChallengeResponse>() {

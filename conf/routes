@@ -17,8 +17,6 @@ POST        /challenge/create                             controllers.Applicatio
 
 GET         /challenge/ajax/search                        controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
-POST        /challenge/ajax/participate                   controllers.Application.ajaxChangeChallengeParticipation(id: String, state: Boolean)
-
 POST        /challenge/ajax/join                          controllers.Application.ajaxJoinChallenge(challengeId: Long)
 
 GET         /challenge/ajax/searchbycategory              controllers.Application.ajaxGetChallengesForCategory(category: String)
@@ -29,9 +27,9 @@ POST        /challenge/ajax/fbfriends                     controllers.Applicatio
 
 POST        /challenge/ajax/fbusers                       controllers.Application.ajaxGetFacebookUsers(ids: String)
 
-POST        /challenge/ajax/close                         controllers.Application.ajaxCloseChallenge(id: String)
+POST        /challenge/ajax/close                         controllers.Application.ajaxCloseChallenge(id: Long)
 
-GET         /challenge/ajax/responses                     controllers.Application.ajaxGetResponsesForChallenge(challengeId: String)
+GET         /challenge/ajax/responses                     controllers.Application.ajaxGetResponsesForChallenge(challengeId: Long)
 
 GET         /challenge/ajax/participations                controllers.Application.ajaxGetUserParticipations()
 
@@ -43,13 +41,13 @@ GET         /challenge/responses                          controllers.Applicatio
 
 POST        /challenge/ajax/leave                         controllers.Application.ajaxLeaveChallenge(challengeId: String)
 
-POST        /challenge/ajax/participants/remove           controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String)
+POST        /challenge/ajax/participants/remove           controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String, name: String)
 
 GET         /challenge/participators                      controllers.Application.showParticipators(challengeId: Long)
 
-POST        /response/ajax/decline                        controllers.Application.ajaxDeclineResponse(id: String)
+POST        /response/ajax/decline                        controllers.Application.ajaxDeclineResponse(id: Long)
 
-POST        /response/ajax/accept                         controllers.Application.ajaxAcceptResponse(id: String)
+POST        /response/ajax/accept                         controllers.Application.ajaxAcceptResponse(id: Long)
 
 POST        /response/ajax/submit                         controllers.Application.ajaxSubmitChallengeResponse()
 

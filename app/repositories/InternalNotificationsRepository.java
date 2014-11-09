@@ -65,6 +65,18 @@ public class InternalNotificationsRepository {
         return getNewestNotificationsForUserQuery.getResultList();
     }
 
+    public List<Notification> getNewestUnreadNotificationsForUser(User user) {
+        Query getNewestNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
+                        "FROM Notification n " +
+                        "WHERE n.user = :user AND n.isRead='N' " +
+                        "ORDER BY n.creationTimestamp DESC"
+        );
+
+        getNewestNotificationsForUserQuery.setParameter("user", user);
+        getNewestNotificationsForUserQuery.setMaxResults(5);
+        return getNewestNotificationsForUserQuery.getResultList();
+    }
+
     public Notification getNotification(long id){ return JPA.em().find(Notification.class, id); }
 
 }

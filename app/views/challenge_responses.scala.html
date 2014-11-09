@@ -1,4 +1,5 @@
-@(firstName: java.lang.String, currentUsername: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video)
+@(firstName: java.lang.String, currentUsername: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm],
+        unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
@@ -27,7 +28,7 @@
                                     <div class="challenge-response-details">
                                         <div>
                                             <div class="inline-block">
-                                            @if(currentChallenge.getCreator.getProfilePictureUrl != null) {
+                                            @if(responses.get(0).getChallengeParticipation.getParticipator.getProfilePictureUrl != null) {
                                                 <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@responses.get(0).getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
                                             } else {
                                                 <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
@@ -39,18 +40,17 @@
                                                     <div>@responses.get(0).getMessage</div>
                                                 }
                                                 </div>
+                                                <div class="inline-block rate-response rate-current-response">
                                                 @if(!responses.isEmpty && !responses.get(0).isDecided && currentChallenge.getCreator.getUsername.compareTo(currentUsername) == 0) {
-                                                    <div class="inline-block rate-response rate-current-response" @if(!responses.isEmpty && responses.get(0).isDecided) {
-                                                        style="display: none;"}>
                                                         <button class="btn btn-danger decline-response">Decline</button>
                                                         <button class="btn btn-success accept-response">Accept</button>
                                                         <input class="response-id" type="hidden" value="@responses.get(0).getId"/>
-                                                    </div>
                                                 }
+                                                </div>
                                             </div>
                                             <div>
                                                 <div class="current-response-author">
-                                                    <a href="@routes.Application.showProfile(currentChallenge.getCreator.getUsername)">@responses.get(0).getChallengeParticipation.getParticipator.getFormattedName</a>
+                                                    <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)">@responses.get(0).getChallengeParticipation.getParticipator.getFormattedName</a>
                                                 </div>
                                             @if(!responses.isEmpty) {
                                                 <div class="challenge-response-submitted">Submitted: @responses.get(0).getSubmitted</div>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestNotifications: java.util.List[domain.Notification])
+            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
         </div>
     </div>
 

@@ -212,7 +212,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge{
 
 div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-color: #f6fbff; cursor: pointer;}
 div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
-div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; }
+div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; word-break: break-all; white-space: normal; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span img{ vertical-align: top;}
@@ -364,6 +364,7 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
 
 .remove-selected{ margin-left: 15px; }
 .visibility-select-wrapper{ vertical-align: top;}
+.back-action-wrapper{ vertical-align: top; display: inline-block; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

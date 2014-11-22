@@ -1,13 +1,14 @@
 package controllers;
 
+import com.google.gson.Gson;
 import com.restfb.types.Video;
 import domain.*;
-import com.google.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
+import play.Logger;
 import play.Routes;
 import play.data.Form;
-import play.mvc.*;
-
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.InternalNotificationsRepository;
@@ -15,9 +16,14 @@ import repositories.UsersRepository;
 import services.*;
 import views.html.*;
 
-import java.io.*;
 import javax.persistence.criteria.Expression;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Application extends Controller {
 
@@ -78,66 +84,94 @@ public class Application extends Controller {
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
 
         if (challengeForm.hasErrors()) {
-            if( request().body().asMultipartFormData().getFile("video-description") == null) {
-                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
-            }
+            return handleChallengeFormErrors(challengeForm);
+        }
+
+        CreateChallengeForm challenge = challengeForm.get();
+        String videoId = "";
+
+        validateChallengeFormData(challengeForm);
+
+        if (challengeForm.hasErrors()) {
             return ok(new Gson().toJson(challengeForm.errors()));
-        } else {
-            CreateChallengeForm challenge = challengeForm.get();
-            String videoId = "";
+        }
 
-            if (request().body().asMultipartFormData().getFile("video-description") == null) {
-                challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
-            }
-            if(getChallengeService().isUserCreatedChallengeWithName(challengeForm.get().getChallengeName(), getLoggedInUsername())){
-                challengeForm.reject("challengeName", "You already created a challenge with that name. Pick another name, please.");
-            }
 
-            if (!challengeForm.hasErrors()) {
+        Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(resourceFile.getFile());
+            if (!challenge.getChallengeVisibility()) {
+                videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+            } else {
+                videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+            }
+        } catch (IOException e) {
+            return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, e);
+        } finally {
+            if(stream != null) {
                 try {
-                    Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
-                    InputStream stream = new FileInputStream(resourceFile.getFile());
-
-                    if(!challenge.getChallengeVisibility()){
-                        videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
-                    }else{
-                        videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
-                    }
-
-                } catch (FileNotFoundException e) {
+                    stream.close();
+                } catch (IOException e) {
+                    return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, e);
                 }
-
-                Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
-
-                List<User> participants = new ArrayList<User>();
-
-                if (!challenge.getChallengeVisibility()) {
-                    if(challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
-                        for (String p : challenge.getParticipants()) {
-
-                            List<String> items = Arrays.asList(p.split("\\s*,\\s*"));
-
-                            String id = items.get(0);
-
-                            User user = getUsersService().createNewOrGetExistingUser(id, items.get(1), items.get(2), items.get(3));
-                            participants.add(user);
-                            getChallengeService().participateInChallenge(newChallenge, id, user.getFormattedName());
-                        }
-
-
-                    }else{
-                        challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
-                        return ok(new Gson().toJson(challengeForm.errors()));
-                    }
-                    getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
-                }
-
-                return ok("success");
-            }else{
-                return ok(new Gson().toJson(challengeForm.errors()));
             }
         }
 
+        Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
+
+
+        if (!challenge.getChallengeVisibility()) {
+            List<User> participants = new ArrayList<User>();
+
+            if (challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
+                addParicipantToChallenge(challenge, newChallenge, participants);
+            } else {
+                challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
+                return ok(new Gson().toJson(challengeForm.errors()));
+            }
+
+            getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
+        }
+
+        return ok("success");
+
+    }
+
+    private static Result handleErrorMsgDuringFileUploading(Form<CreateChallengeForm> challengeForm, Http.MultipartFormData.FilePart resourceFile, IOException e) {
+        Logger.error("Error has occurred during uploading file: " + resourceFile.getFilename(), e);
+        challengeForm.reject("participants", "An internal error occurred during file uploading");
+        return ok(new Gson().toJson(challengeForm.errors()));
+    }
+
+    private static void addParicipantToChallenge(CreateChallengeForm challenge, Challenge newChallenge, List<User> participants) {
+        for (String p : challenge.getParticipants()) {
+
+            List<String> items = Arrays.asList(p.split("\\s*,\\s*"));
+
+            String id = items.get(0);
+
+            //TODO batch?
+            User user = getUsersService().createNewOrGetExistingUser(id, items.get(1), items.get(2), items.get(3));
+            participants.add(user);
+            getChallengeService().participateInChallenge(newChallenge, id, user.getFormattedName());
+        }
+    }
+
+    private static void validateChallengeFormData(Form<CreateChallengeForm> challengeForm) {
+        if (request().body().asMultipartFormData().getFile("video-description") == null) {
+            challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
+        }
+        if (getChallengeService().isUserCreatedChallengeWithName(challengeForm.get().getChallengeName(), getLoggedInUsername())) {
+            challengeForm.reject("challengeName", "You already created a challenge with that name. Pick another name, please.");
+        }
+    }
+
+    private static Result handleChallengeFormErrors(Form<CreateChallengeForm> challengeForm) {
+        if (request().body().asMultipartFormData().getFile("video-description") == null) {
+            challengeForm.reject("videoDescriptionUrl", "Upload a video description...");
+        }
+        return ok(new Gson().toJson(challengeForm.errors()));
     }
 
     //need to exist until dependency injection framework is added
@@ -191,7 +225,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
-    private static List<Challenge> prepareChallengesForCriteria(String phrase, String category){
+    private static List<Challenge> prepareChallengesForCriteria(String phrase, String category) {
         ChallengeService service = Application.getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(20);
         User currentUser = Application.getLoggedInUser();
@@ -282,16 +316,6 @@ public class Application extends Controller {
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxGetFacebookFriends() {
-
-        FacebookService service = Application.getFacebookService();
-
-        List<FacebookUser> facebookFriends = service.getFacebookFriends();
-
-        return ok(new Gson().toJson(facebookFriends));
-    }
-
-    @play.db.jpa.Transactional
     public static Result ajaxGetFacebookUsers(String ids) {
 
         FacebookService service = Application.getFacebookService();
@@ -361,7 +385,7 @@ public class Application extends Controller {
         Long joinedChallengesNr = service.getJoinedChallengesNrForUser(currentUser.getUsername());
         Long createdChallengesNr = service.getCreatedChallengesNrForUser(currentUser.getUsername());
 
-        FacebookUser fbUser =  fbService.getFacebookUser();
+        FacebookUser fbUser = fbService.getFacebookUser();
 
         String currentFirstName = fbUser.getFirstName();
         String currentName = fbUser.getFormattedName();
@@ -396,9 +420,9 @@ public class Application extends Controller {
 
         ChallengeService service = Application.getChallengeService();
 
-        if(service.isUserCreatedAChallenge(id, getLoggedInUsername())) {
+        if (service.isUserCreatedAChallenge(id, getLoggedInUsername())) {
             service.closeChallenge(id);
-        }else{
+        } else {
             return ok("false");
         }
 
@@ -427,9 +451,9 @@ public class Application extends Controller {
 
         ChallengeResponse response = service.getChallengeResponse(responseId);
 
-        if(service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
+        if (service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
             service.refuseChallengeResponse(response);
-        }else{
+        } else {
             return ok("false");
         }
 
@@ -443,9 +467,9 @@ public class Application extends Controller {
 
         ChallengeResponse response = service.getChallengeResponse(responseId);
 
-        if(service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
+        if (service.isUserCreatedAChallenge(response.getChallengeParticipation().getChallenge().getId(), getLoggedInUsername())) {
             service.acceptChallengeResponse(response);
-        }else{
+        } else {
             return ok("false");
         }
 
@@ -466,7 +490,6 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxGetChallengesForCategory(),
                         routes.javascript.Application.ajaxGetLatestChallenges(),
                         routes.javascript.Application.ajaxGetResponsesForChallenge(),
-                        routes.javascript.Application.ajaxGetFacebookFriends(),
                         routes.javascript.Application.ajaxGetFacebookUsers(),
                         routes.javascript.Application.ajaxGetCompletedChallenges(),
                         routes.javascript.Application.ajaxGetResponse(),
@@ -513,7 +536,7 @@ public class Application extends Controller {
 
         Challenge challenge = service.getChallenge(Long.parseLong(challengeId));
 
-        if(challenge.getCreator().getUsername().compareTo(getLoggedInUsername()) == 0) {
+        if (challenge.getCreator().getUsername().compareTo(getLoggedInUsername()) == 0) {
 
             service.leaveChallenge(challenge, username, name);
         }
@@ -670,7 +693,7 @@ public class Application extends Controller {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
 
-        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+        if (notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
             notification.read();
             service.readNotification(notification);
 
@@ -684,7 +707,7 @@ public class Application extends Controller {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
 
-        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+        if (notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
             notification.read();
             service.readNotification(notification);
 
@@ -699,7 +722,7 @@ public class Application extends Controller {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
 
-        if(notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
+        if (notification.getUser().getUsername().compareTo(getLoggedInUsername()) == 0) {
             notification.read();
             service.readNotification(notification);
 

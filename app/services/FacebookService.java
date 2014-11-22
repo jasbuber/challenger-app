@@ -81,24 +81,6 @@ public class FacebookService {
         return video.getId();
     }
 
-    public List<FacebookUser> getFacebookFriends(){
-        Connection<FacebookUser> facebookFriends = this.client.fetchConnection("me/friends", FacebookUser.class,  Parameter.with("fields", "id, picture{url}, name"));
-
-        Connection<FacebookUser> invitableFacebookFriends = this.client.fetchConnection("me/invitable_friends", FacebookUser.class,  Parameter.with("fields", "id, name, picture{url}"));
-
-        List<FacebookUser> friends = new ArrayList<FacebookUser>();
-
-        for (FacebookUser p : invitableFacebookFriends.getData()) {
-            friends.add(p);
-        }
-        for (FacebookUser p : facebookFriends.getData()) {
-            friends.add(p);
-        }
-
-        return friends;
-
-    }
-
     public Video getVideo(String videoId){
 
         Video video = this.client.fetchObject(videoId, Video.class, Parameter.with("fields", "source, picture"));
@@ -164,7 +146,7 @@ public class FacebookService {
 
         List<BatchResponse> batchResponses = this.client.executeBatch(requests);
 
-        List<FacebookUser> users = new ArrayList<>();
+        List<FacebookUser> users = new ArrayList<FacebookUser>();
 
         for (int i = 0; i < batchResponses.size(); i +=2) {
 

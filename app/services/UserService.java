@@ -55,12 +55,4 @@ public class UserService extends TransactionalBase {
         });
     }
 
-
-    /**
-     * TO_DO This method has not been implemented yet.
-     */
-    public static User getCurrentUser() {
-        return new User("currentUser");
-    }
-
 }

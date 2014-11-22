@@ -115,21 +115,6 @@ public class FacebookService {
         return this.client.publish("me/feed", FacebookType.class, Parameter.with("message", "I have just created a new challenge! Join it, I dare you ! ;]"),Parameter.with("link", appUrl)).getId();
     }
 
-    public String inviteFriends(List<String> friends){
-
-        List<BatchRequest> requests = new ArrayList<BatchRequest>();
-
-        JsonMapper jsonMapper = new DefaultJsonMapper();
-
-        for ( String friendId : friends) {
-            BatchRequest request = new BatchRequest.BatchRequestBuilder(friendId + "/apprequests").method("POST").body(Parameter.with("message", "Testing!")).build();
-            requests.add(request);
-
-        }
-        return this.client.executeBatch(requests).toString();
-
-    }
-
     public List<FacebookUser> getFacebookUsers(List<String> userIds){
 
         List<BatchRequest> requests = new ArrayList<BatchRequest>();

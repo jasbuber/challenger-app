@@ -11,8 +11,6 @@ public interface NotificationService {
 
     void notifyUsers(List<User> users, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId);
 
-    boolean hasUserAnyNotification(User user);
-
     boolean hasUserUnreadNotification(User user);
 
     List<Notification> getAllNotifications(User user);

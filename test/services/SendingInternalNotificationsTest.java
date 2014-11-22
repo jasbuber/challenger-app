@@ -18,13 +18,17 @@ public class SendingInternalNotificationsTest {
     private final NotificationService notificationService =
             new InternalNotificationServiceWithoutTransactionMgmt(internalNotificationsRepository);
 
+    private boolean hasUserAnyNotification(User user) {
+        return notificationService.getAllNotifications(user).size() > 0;
+    }
+
     @Test
     public void shouldUserHaveNoNotificationsIfNoneWasSentToHim() throws Exception {
         //given
         User user = new User("username");
 
         //then
-        assertFalse(notificationService.hasUserAnyNotification(user));
+        assertFalse(hasUserAnyNotification(user));
     }
 
     @Test
@@ -33,10 +37,14 @@ public class SendingInternalNotificationsTest {
         User userToNotify = new User("username");
 
         //when
-        notificationService.notifyUser(userToNotify, SOME_NOTIFICATION_MSG);
+        notifyUser(userToNotify);
 
         //then
-        assertTrue(notificationService.hasUserAnyNotification(userToNotify));
+        assertTrue(hasUserAnyNotification(userToNotify));
+    }
+
+    private void notifyUser(User userToNotify) {
+        notificationService.notifyUser(userToNotify, SOME_NOTIFICATION_MSG, null, null, null);
     }
 
     @Test
@@ -45,7 +53,7 @@ public class SendingInternalNotificationsTest {
         User userToNotify = new User("username");
 
         //when
-        notificationService.notifyUser(userToNotify, SOME_NOTIFICATION_MSG);
+        notifyUser(userToNotify);
 
         //then
         assertTrue(notificationService.hasUserUnreadNotification(userToNotify));
@@ -55,7 +63,7 @@ public class SendingInternalNotificationsTest {
     public void shouldStoreNoUnreadNotificationsInRepositoryIfOneIsAlreadyRead() throws Exception {
         //given
         User user = new User("username");
-        notificationService.notifyUser(user, SOME_NOTIFICATION_MSG);
+        notifyUser(user);
 
         //when
         List<Notification> notifications = notificationService.getAllNotifications(user);
@@ -64,19 +72,13 @@ public class SendingInternalNotificationsTest {
 
         //then
         assertFalse(notificationService.hasUserUnreadNotification(user));
-        assertTrue(notificationService.hasUserAnyNotification(user));
+        assertTrue(hasUserAnyNotification(user));
     }
 
 
     private static class InternalNotificationsRepositoryStub extends InternalNotificationsRepository {
 
         private Map<User, List<Notification>> usersNotifications = new HashMap<User, List<Notification>>();
-
-        @Override
-        public boolean hasUserAnyNotification(User user) {
-            List<Notification> userNotifications = usersNotifications.get(user);
-            return userNotifications != null && !userNotifications.isEmpty();
-        }
 
         @Override
         public boolean hasUserUnreadNotification(User user) {

@@ -22,10 +22,6 @@ public class InternalNotificationsRepository {
         return (Long) getUnreadNotificationsForUserQuery.getSingleResult();
     }
 
-    public boolean hasUserAnyNotification(User user) {
-        return !getAllNotificationsFor(user).isEmpty();
-    }
-
     public Notification addNotification(Notification notification) {
         JPA.em().persist(notification);
         return notification;

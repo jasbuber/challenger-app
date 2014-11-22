@@ -111,10 +111,6 @@ public class FacebookService {
 
     }
 
-    public String publishNewChallengeMessage(){
-        return this.client.publish("me/feed", FacebookType.class, Parameter.with("message", "I have just created a new challenge! Join it, I dare you ! ;]"),Parameter.with("link", appUrl)).getId();
-    }
-
     public List<FacebookUser> getFacebookUsers(List<String> userIds){
 
         List<BatchRequest> requests = new ArrayList<BatchRequest>();
@@ -131,13 +127,16 @@ public class FacebookService {
 
         List<BatchResponse> batchResponses = this.client.executeBatch(requests);
 
-        List<FacebookUser> users = new ArrayList<FacebookUser>();
+        List<FacebookUser> users = new ArrayList<FacebookUser>(batchResponses.size());
 
         for (int i = 0; i < batchResponses.size(); i +=2) {
 
-            users.add(jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class));
+            if(batchResponses.get(i).getBody() != null) {
 
-            users.get(i).setPicture(batchResponses.get(i+1).getHeaders().get(6).getValue());
+                users.add(jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class));
+
+                users.get(i).setPicture(batchResponses.get(i + 1).getHeaders().get(6).getValue());
+            }
         }
 
         return users;

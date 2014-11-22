@@ -190,7 +190,7 @@ public class Application extends Controller {
     }
 
     private static User getLoggedInUser() {
-        return Application.getUsersService().createNewOrGetExistingUser(Application.getLoggedInUsername());
+        return Application.getUsersService().getExistingUser(Application.getLoggedInUsername());
     }
 
     private static FacebookService getFacebookService() {
@@ -336,12 +336,12 @@ public class Application extends Controller {
         ChallengeService service = new ChallengeService(new ChallengesRepository(), new UsersRepository(), createNotificationService());
         InternalNotificationService notificationService = new InternalNotificationService(new InternalNotificationsRepository());
 
-        User testUser = userService.createNewOrGetExistingUser(getLoggedInUsername());
-        User otherUser = userService.createNewOrGetExistingUser("12122112");
-        User otherUser2 = userService.createNewOrGetExistingUser("12122113");
-        User otherUser3 = userService.createNewOrGetExistingUser("12122114");
-        User otherUser4 = userService.createNewOrGetExistingUser("12122115");
-        User otherUser5 = userService.createNewOrGetExistingUser("12122116");
+        User testUser = creteTestUser(userService, getLoggedInUsername());
+        User otherUser = creteTestUser(userService, "12122112");
+        User otherUser2 = creteTestUser(userService, "12122113");
+        User otherUser3 = creteTestUser(userService, "12122114");
+        User otherUser4 = creteTestUser(userService, "12122115");
+        User otherUser5 = creteTestUser(userService, "12122116");
 
         Challenge challenge = service.createChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "543763142406586", true);
         service.createChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "543758585740375", true);
@@ -359,6 +359,10 @@ public class Application extends Controller {
         service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "543763142406586", true);
 
         return redirect(routes.Application.index());
+    }
+
+    private static User creteTestUser(UserService userService, String id) {
+        return userService.createNewOrGetExistingUser(id, null, null, null);
     }
 
     private static ChallengeNotificationsService createNotificationService() {
@@ -633,7 +637,7 @@ public class Application extends Controller {
 
     public static Result showProfile(String username) {
 
-        User viewedUser = getUsersService().createNewOrGetExistingUser(username);
+        User viewedUser = getUsersService().getExistingUser(username);
 
         User currentUser = getLoggedInUser();
 

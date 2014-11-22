@@ -25,7 +25,7 @@ public class ChallengeFilter {
 
     public ChallengeFilter(int limit){
 
-        this.entityManager = JPA.em();
+        this.entityManager = getEntityManager();
         this.builder = entityManager.getCriteriaBuilder();
         this.criteriaQuery = builder.createQuery(Challenge.class);
         this.root = criteriaQuery.from(Challenge.class);
@@ -34,6 +34,10 @@ public class ChallengeFilter {
         this.predicate = null;
     }
 
+    @play.db.jpa.Transactional
+    private EntityManager getEntityManager() {
+        return JPA.em();
+    }
 
     public CriteriaQuery<Challenge> getCriteriaQuery() {
         return criteriaQuery;

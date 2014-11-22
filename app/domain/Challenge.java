@@ -39,8 +39,8 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     public ChallengeCategory category;
 
-    @Column(name = "VIDEO_DESCRIPTION_URL")
-    private String videoDescriptionUrl;
+    @Column(name = "VIDEO_ID")
+    private String videoId;
 
     @Column(name = "VISIBILITY")
     private Boolean visibility;
@@ -68,13 +68,13 @@ public class Challenge {
         this.active = true;
     }
 
-    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoDescriptionUrl, Boolean visibility) {
+    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
-        this.videoDescriptionUrl = videoDescriptionUrl;
+        this.videoId = videoId;
         this.visibility = visibility;
         this.active = true;
     }
@@ -131,8 +131,8 @@ public class Challenge {
         return new SimpleDateFormat("dd-MM-yyyy").format(this.creationDate);
     }
 
-    public String getVideoDescriptionUrl() {
-        return videoDescriptionUrl;
+    public String getVideoId() {
+        return videoId;
     }
 
     public Boolean getVisibility() {
@@ -168,4 +168,7 @@ public class Challenge {
 
     }
 
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
 }

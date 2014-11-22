@@ -55,7 +55,7 @@ public class Application extends Controller {
         return ok(index.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challengeForm, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser()), new ArrayList<Challenge>()));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showBrowseChallenges() {
 
         List<Challenge> challenges = prepareChallengesForCriteria("", ChallengeCategory.ALL.name());
@@ -63,7 +63,7 @@ public class Application extends Controller {
         return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showBrowseChallengesWithData(String phrase) {
 
         List<Challenge> challenges = prepareChallengesForCriteria(phrase, ChallengeCategory.ALL.name());
@@ -71,7 +71,7 @@ public class Application extends Controller {
         return ok(browse.render(Application.getFacebookService().getFacebookUser().getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), challenges, (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser())));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showCreateChallenge() {
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
@@ -79,6 +79,7 @@ public class Application extends Controller {
         return ok(new_challenge.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), (long) getNotificationService().getNumberOfUnreadNotifications(getLoggedInUser()), getNotificationService().getNewestNotifications(getLoggedInUser()), challengeForm));
     }
 
+    @play.db.jpa.Transactional
     public static Result ajaxCreateChallenge() {
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class).bindFromRequest();
@@ -88,7 +89,7 @@ public class Application extends Controller {
         }
 
         CreateChallengeForm challenge = challengeForm.get();
-        String videoId = "";
+        String videoId = null;
 
         validateChallengeFormData(challengeForm);
 
@@ -96,7 +97,23 @@ public class Application extends Controller {
             return ok(new Gson().toJson(challengeForm.errors()));
         }
 
+        Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
 
+
+        if (!isChallengePrivate(challenge)) {
+            List<User> participants = new ArrayList<User>();
+
+            if (challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
+                addParicipantToChallenge(challenge, newChallenge, participants);
+            } else {
+                challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
+                return ok(new Gson().toJson(challengeForm.errors()));
+            }
+
+            getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
+        }
+
+        //upload video to fb
         Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
         InputStream stream = null;
         try {
@@ -118,24 +135,15 @@ public class Application extends Controller {
             }
         }
 
-        Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
-
-
-        if (!challenge.getChallengeVisibility()) {
-            List<User> participants = new ArrayList<User>();
-
-            if (challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
-                addParicipantToChallenge(challenge, newChallenge, participants);
-            } else {
-                challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
-                return ok(new Gson().toJson(challengeForm.errors()));
-            }
-
-            getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
-        }
+        newChallenge.setVideoId(videoId);
+        getChallengeService().updateChallenge(newChallenge);
 
         return ok("success");
 
+    }
+
+    private static Boolean isChallengePrivate(CreateChallengeForm challenge) {
+        return challenge.getChallengeVisibility();
     }
 
     private static Result handleErrorMsgDuringFileUploading(Form<CreateChallengeForm> challengeForm, Http.MultipartFormData.FilePart resourceFile, IOException e) {
@@ -217,7 +225,7 @@ public class Application extends Controller {
         return new ChallengeNotificationsService(getNotificationService());
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetChallengesForCriteria(String phrase, String category) {
 
         List<Challenge> challenges = prepareChallengesForCriteria(phrase, category);
@@ -225,7 +233,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
-    private static List<Challenge> prepareChallengesForCriteria(String phrase, String category) {
+    public static List<Challenge> prepareChallengesForCriteria(String phrase, String category) {
         ChallengeService service = Application.getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(20);
         User currentUser = Application.getLoggedInUser();
@@ -247,7 +255,7 @@ public class Application extends Controller {
 
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetChallengesForCategory(String category) {
 
         ChallengeService service = Application.getChallengeService();
@@ -270,7 +278,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetLatestChallenges() {
 
         ChallengeService service = Application.getChallengeService();
@@ -315,7 +323,7 @@ public class Application extends Controller {
         return ok("success");
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetFacebookUsers(String ids) {
 
         FacebookService service = Application.getFacebookService();
@@ -369,6 +377,7 @@ public class Application extends Controller {
         return new ChallengeNotificationsService(new InternalNotificationService(new InternalNotificationsRepository()));
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showCurrentProfile() {
 
         User currentUser = getLoggedInUser();
@@ -401,7 +410,7 @@ public class Application extends Controller {
 
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showMyChallenges() {
 
         ChallengeService service = Application.getChallengeService();
@@ -433,7 +442,7 @@ public class Application extends Controller {
         return ok("success");
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetResponsesForChallenge(long challengeId) {
 
         ChallengeService service = Application.getChallengeService();
@@ -511,7 +520,7 @@ public class Application extends Controller {
         );
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetUserParticipations() {
 
         ChallengeService service = Application.getChallengeService();
@@ -583,7 +592,7 @@ public class Application extends Controller {
         }
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetCompletedChallenges() {
 
         ChallengeService service = Application.getChallengeService();
@@ -593,7 +602,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(completedChallenges));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetResponse(Long responseId) {
 
         ChallengeService service = getChallengeService();
@@ -608,6 +617,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(response));
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showParticipators(Long challengeId) {
 
         ChallengeService service = getChallengeService();
@@ -635,6 +645,7 @@ public class Application extends Controller {
         }
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showProfile(String username) {
 
         User viewedUser = getUsersService().getExistingUser(username);
@@ -663,6 +674,7 @@ public class Application extends Controller {
 
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showMyNotifications() {
 
         InternalNotificationService notificationService = getNotificationService();
@@ -683,6 +695,7 @@ public class Application extends Controller {
 
     }
 
+    @play.db.jpa.Transactional
     public static Result followNotification(long notificationId) {
         InternalNotificationService service = getNotificationService();
 
@@ -693,6 +706,7 @@ public class Application extends Controller {
         return redirect(routes.Application.showMyChallenges());
     }
 
+    @play.db.jpa.Transactional
     public static Result followNotificationToChallengeDetails(long notificationId, long challengeId) {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
@@ -707,6 +721,7 @@ public class Application extends Controller {
         return redirect(routes.Application.showMyChallenges());
     }
 
+    @play.db.jpa.Transactional
     public static Result followNotificationToChallengeResponses(long notificationId, long challengeId) {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
@@ -722,6 +737,7 @@ public class Application extends Controller {
         return redirect(routes.Application.showMyChallenges());
     }
 
+    @play.db.jpa.Transactional
     public static Result followNotificationToUserProfile(long notificationId, String username) {
         InternalNotificationService service = getNotificationService();
         Notification notification = service.getNotification(notificationId);
@@ -737,7 +753,7 @@ public class Application extends Controller {
         return redirect(routes.Application.showMyChallenges());
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetChallengesContent() {
 
         ChallengeService service = Application.getChallengeService();
@@ -749,6 +765,7 @@ public class Application extends Controller {
         return ok(challenges_content.render(Application.getProfilePictureUrl(), challenges));
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetCurrentProfileContent() {
 
         ChallengeService service = Application.getChallengeService();
@@ -761,7 +778,7 @@ public class Application extends Controller {
 
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showMyParticipations() {
 
         ChallengeService service = Application.getChallengeService();
@@ -779,7 +796,7 @@ public class Application extends Controller {
         return ok(participations.render(Application.getFacebookService().getFacebookUser().getFirstName(), Application.getProfilePictureUrl(), myParticipations, challenges, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result ajaxGetParticipationsContent() {
 
         ChallengeService service = Application.getChallengeService();
@@ -791,7 +808,7 @@ public class Application extends Controller {
         return ok(participations_content.render(Application.getProfilePictureUrl(), participations));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showChallenge(long id) {
 
         ChallengeService service = Application.getChallengeService();
@@ -808,7 +825,7 @@ public class Application extends Controller {
         Long challengeResponsesNr = service.getResponsesNrForChallenge(id);
         Boolean isCurrentUserRespondedToChallenge = service.isUserRespondedToChallenge(currentChallenge, currentUser.getUsername());
 
-        Video video = facebookService.getVideo(currentChallenge.getVideoDescriptionUrl());
+        Video video = facebookService.getVideo(currentChallenge.getVideoId());
 
         List<ChallengeParticipation> participants = service.getParticipantsForChallenge(id);
 
@@ -820,7 +837,7 @@ public class Application extends Controller {
                 latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername()));
     }
 
-    @play.db.jpa.Transactional
+    @play.db.jpa.Transactional(readOnly = true)
     public static Result showChallengeResponses(long id) {
 
         ChallengeService service = Application.getChallengeService();

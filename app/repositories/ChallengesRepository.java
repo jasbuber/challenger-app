@@ -1,5 +1,6 @@
 package repositories;
 
+import controllers.CreateChallengeForm;
 import domain.*;
 import play.db.DB;
 import play.db.jpa.JPA;
@@ -310,5 +311,9 @@ public class ChallengesRepository {
             return false;
         }
 
+    }
+
+    public Challenge updateChallenge(Challenge challenge) {
+        return JPA.em().merge(challenge);
     }
 }

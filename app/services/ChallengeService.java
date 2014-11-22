@@ -1,5 +1,6 @@
 package services;
 
+import controllers.CreateChallengeForm;
 import domain.*;
 import play.libs.F;
 import repositories.ChallengeFilter;
@@ -444,5 +445,14 @@ public class ChallengeService extends TransactionalBase {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
+    }
+
+    public Challenge updateChallenge(final Challenge challenge) {
+        return withTransaction(new F.Function0<Challenge>() {
+            @Override
+            public Challenge apply() throws Throwable {
+                return challengesRepository.updateChallenge(challenge);
+            }
+        });
     }
 }

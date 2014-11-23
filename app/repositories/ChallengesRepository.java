@@ -311,4 +311,21 @@ public class ChallengesRepository {
         }
 
     }
+
+    public Long getResponsesNrForUser(String username) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "WHERE LOWER(r.challengeParticipation.participator.username) = LOWER(:username)");
+        completedChallengesQuery.setParameter("username", username);
+        return (Long) completedChallengesQuery.getSingleResult();
+    }
+
+    public Long getAcceptedResponsesNrForUser(String username) {
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
+                "FROM ChallengeResponse r " +
+                "WHERE LOWER(r.challengeParticipation.participator.username) = LOWER(:username) " +
+                "AND r.isAccepted = 'Y'");
+        completedChallengesQuery.setParameter("username", username);
+        return (Long) completedChallengesQuery.getSingleResult();
+    }
 }

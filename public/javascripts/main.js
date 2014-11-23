@@ -196,7 +196,14 @@ $(document).ready(function () {
 
         $(this).ajaxSubmit({
             success: function (response) {
-                if (response == "success") {
+                var customResponse = jQuery.parseJSON(response);
+
+                if (customResponse.hasOwnProperty("status")) {
+
+                    if(customResponse.rewardedPoints > 0) {
+                        rewardAllPoints(customResponse.messages, customResponse.points);
+                    }
+
                     alertify.alert("Challenge created and ready to join ! ", function (e) {
                         if (e) {
                             window.location = "/";
@@ -430,12 +437,20 @@ $(document).ready(function () {
         NProgress.start();
 
         jsRoutes.controllers.Application.ajaxDeclineResponse($id).ajax({
-            success: function (data) {
-                NProgress.done();
+            success: function (response) {
+                var customResponse = jQuery.parseJSON(response);
+                if(customResponse.status == "success") {
+                    NProgress.done();
+                    $parent.fadeOut(1200);
+
+                    if(customResponse.rewardedPoints > 0) {
+                        rewardAllPoints(customResponse.messages, customResponse.points);
+                    }
+                }
             }
         });
 
-        $parent.fadeOut(1200);
+
     });
 
     $(document).on("click", ".accept-response", function (e) {
@@ -444,12 +459,20 @@ $(document).ready(function () {
         NProgress.start();
 
         jsRoutes.controllers.Application.ajaxAcceptResponse($id).ajax({
-            success: function (data) {
-                NProgress.done();
+            success: function (response) {
+                var customResponse = jQuery.parseJSON(response);
+                if(customResponse.status == "success"){
+                    NProgress.done();
+                    $(".response-id[value='" + $id +"']").parents(".rate-response").fadeOut(1200);
+
+                    if(customResponse.rewardedPoints > 0) {
+                        rewardAllPoints(customResponse.messages, customResponse.points);
+                    }
+                }
             }
         });
 
-        $(".response-id[value='" + $id +"']").parents(".rate-response").fadeOut(1200);
+
     });
 
     $(document).on("click", ".leave-challenge", function () {
@@ -487,7 +510,9 @@ $(document).ready(function () {
 
         $(this).ajaxSubmit({
             success: function (response) {
-                if (response == "success") {
+                var customResponse = jQuery.parseJSON(response);
+
+                if (customResponse.hasOwnProperty("status")) {
 
                     var $parentTd = $(".active-participation").find(".leave-challenge").parents("td");
 
@@ -497,6 +522,10 @@ $(document).ready(function () {
 
                     $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");
+
+                    if(customResponse.rewardedPoints > 0) {
+                        rewardAllPoints(customResponse.messages, customResponse.points);
+                    }
                 }
                 else {
                     var fields = jQuery.parseJSON(response);
@@ -680,5 +709,54 @@ $(document).ready(function () {
             countdown: true
         });
     });
+
+    var rewardPoints = function(rewarded, message){
+
+        $(".rewarded-points-wrapper").fadeOut(300);
+
+        var $points = parseInt($(".menu-point-counter").text()) + rewarded;
+
+        $(".menu-point-counter").clearQueue();
+
+        $(".current-points-wrapper").fadeOut(300);
+
+        $(".points-number-wrapper").animate({width: "300px"}, 300, function(){
+
+            $(".rewarded-points-message").text(message);
+            $(".rewarded-points-number").text("+" + rewarded);
+
+            $(".rewarded-points-wrapper").fadeIn(300);
+
+            $(".menu-point-counter").text($points);
+
+            //$(".menu-point-counter").effect("bounce", { distance: 25}, 500);
+        });
+    }
+
+    var rewardAllPoints = function(messages, points){
+
+        var $endTimeout = 5000 * messages.length;
+
+        var $timeout = 5000;
+
+        if(messages.length > 0){
+            rewardPoints(points[0], messages[0]);
+
+            if(messages.length > 1){
+                setTimeout(function(){rewardPoints(points[1], messages[1])}, 5000);
+
+                if(messages.length > 2){
+                    setTimeout(function(){rewardPoints(points[2], messages[2])}, 10000);
+                }
+            }
+        }
+
+        setTimeout(function(){
+            $(".rewarded-points-wrapper").fadeOut(300, function(){
+                $(".points-number-wrapper").css("width", "auto");
+                $(".current-points-wrapper").fadeIn(300);
+            });
+        }, $endTimeout);
+    }
 
 });

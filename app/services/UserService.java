@@ -63,4 +63,46 @@ public class UserService extends TransactionalBase {
         return new User("currentUser");
     }
 
+    public User rewardCreationPoints(final String username, final int points) {
+        return withTransaction(new F.Function0<User>() {
+            @Override
+            public User apply() throws Throwable {
+
+                if (usersRepository.isUserExist(username)) {
+                    return usersRepository.rewardCreationPoints(username, points);
+                }
+
+                return null;
+            }
+        });
+    }
+
+    public User rewardParticipationPoints(final String username, final int points) {
+        return withTransaction(new F.Function0<User>() {
+            @Override
+            public User apply() throws Throwable {
+
+                if (usersRepository.isUserExist(username)) {
+                    return usersRepository.rewardParticipationPoints(username, points);
+                }
+
+                return null;
+            }
+        });
+    }
+
+    public User rewardOtherPoints(final String username, final int points) {
+        return withTransaction(new F.Function0<User>() {
+            @Override
+            public User apply() throws Throwable {
+
+                if (usersRepository.isUserExist(username)) {
+                    return usersRepository.rewardOtherPoints(username, points);
+                }
+
+                return null;
+            }
+        });
+    }
+
 }

@@ -11,6 +11,11 @@ import java.util.Date;
 @Table(name = "USERS")
 public class User {
 
+    public static final int MINOR_REWARD = 5;
+    public static final int NORMAL_REWARD = 10;
+    public static final int MAJOR_REWARD = 15;
+    public static final int SPECIAL_REWARD = 25;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     //@SequenceGenerator(name = "user_seq_gen", sequenceName = "USER_SEQ")
@@ -40,6 +45,15 @@ public class User {
 
     @Column(name = "FULL_NAME")
     private String fullName;
+
+    @Column(name = "CREATION_POINTS")
+    private Integer creationPoints = 0;
+
+    @Column(name = "PARTICIPATION_POINTS")
+    private Integer participationPoints = 0;
+
+    @Column(name = "OTHER_POINTS")
+    private Integer otherPoints = 0;
 
     protected User() {
         //for jpa purposes...
@@ -131,5 +145,36 @@ public class User {
         }else {
             return this.firstName + " " + lastName.substring(0, 3);
         }
+    }
+
+    public Integer getCreationPoints() {
+        return creationPoints;
+    }
+
+    public Integer getParticipationPoints() {
+        return participationPoints;
+    }
+
+    public Integer getOtherPoints() {
+        return otherPoints;
+    }
+
+    public Integer addCreationPoints(int points){
+        this.creationPoints += points;
+        return this.creationPoints;
+    }
+
+    public Integer addParticipationPoints(int points){
+        this.participationPoints += points;
+        return this.participationPoints;
+    }
+
+    public Integer addOtherPoints(int points){
+        this.otherPoints += points;
+        return this.otherPoints;
+    }
+
+    public Integer getAllPoints(){
+        return this.creationPoints + this.participationPoints + this.otherPoints;
     }
 }

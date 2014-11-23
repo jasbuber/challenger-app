@@ -1,4 +1,4 @@
-@(name: java.lang.String, bigProfilePicUrl: java.lang.String, createdChallengesNr: Long, joinedChallengesNr: Long, completedChallengesNr: Long)
+@(name: java.lang.String, bigProfilePicUrl: java.lang.String, createdChallengesNr: Long, joinedChallengesNr: Long, completedChallengesNr: Long, points: java.lang.Integer)
 
 <div id="profile-wrapper" class="account-content">
     <div id="profile-picture">
@@ -11,7 +11,7 @@
     <div id="profile-data">
         <ul>
             <li>@name</li>
-            <li><img src="@routes.Assets.at("images/trophy_small.png")"/>125 points</li>
+            <li class="profile-points-wrapper"><img src="@routes.Assets.at("images/trophy_small.png")"/>@points points</li>
             <li>Some desription that will say a bit about an user</li>
         </ul>
     </div>

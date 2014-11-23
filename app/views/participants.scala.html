@@ -1,8 +1,9 @@
-@(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, participants: java.util.List[domain.ChallengeParticipation], challenges: java.util.List[Array[Object]],
-        latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
+@(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, participants: java.util.List[domain.ChallengeParticipation],
+        challenges: java.util.List[Array[Object]],latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification],
+        newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
 
 @main("Welcome to Challenge Application") {
-    @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
+    @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
     <div id="wrapper" class="video-block-wrapper">
         <div class="single-body-block" id="challenge-body">
             <div id="content-wrapper">
@@ -39,7 +40,9 @@
                                             <td><b>6</b></td>
                                             <td>404</td>
                                             <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
-                                                <a class="remove-participant" href="#"><img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/remove.png")"/></a>
+                                                <a class="remove-participant" href="#">
+                                                    <img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/remove.png")"/>
+                                                </a>
                                             }
                                             </td>
                                             <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>

@@ -28,7 +28,10 @@ public class ChallengeService extends TransactionalBase {
                     " has already been created by user " + creatorUsername);
         }
 
-        return createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+        Challenge newChallenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+
+
+        return newChallenge;
     }
 
     private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
@@ -79,7 +82,7 @@ public class ChallengeService extends TransactionalBase {
      * during creating/removing new challenge participation)
      *
      */
-    private boolean hasChallengeBecamePopular(final Challenge challenge) {
+    public boolean hasChallengeBecamePopular(final Challenge challenge) {
         return withReadOnlyTransaction(new F.Function0<Boolean>() {
             @Override
             public Boolean apply() throws Throwable {
@@ -439,6 +442,32 @@ public class ChallengeService extends TransactionalBase {
                 @Override
                 public Long apply() throws Throwable {
                     return challengesRepository.getJoinedChallengesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getResponsesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getResponsesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getAcceptedResponsesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getAcceptedResponsesNrForUser(username);
                 }
             });
         } catch (Throwable throwable) {

@@ -49,6 +49,8 @@ public class UserService extends TransactionalBase {
             }
         });
     }
+<<<<<<< HEAD
+
     public User rewardCreationPoints(final String username, final int points) {
         return withTransaction(new F.Function0<User>() {
             @Override
@@ -91,4 +93,6 @@ public class UserService extends TransactionalBase {
         });
     }
 
+=======
+>>>>>>> origin/facebook-integration
 }

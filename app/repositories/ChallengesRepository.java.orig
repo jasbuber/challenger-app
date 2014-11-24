@@ -313,10 +313,7 @@ public class ChallengesRepository {
 
     }
 
-    public Challenge updateChallenge(Challenge challenge) {
-        return JPA.em().merge(challenge);
-    }
-
+<<<<<<< HEAD
     public Long getResponsesNrForUser(String username) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
                 "FROM ChallengeResponse r " +
@@ -332,5 +329,9 @@ public class ChallengesRepository {
                 "AND r.isAccepted = 'Y'");
         completedChallengesQuery.setParameter("username", username);
         return (Long) completedChallengesQuery.getSingleResult();
+=======
+    public Challenge updateChallenge(Challenge challenge) {
+        return JPA.em().merge(challenge);
+>>>>>>> origin/facebook-integration
     }
 }

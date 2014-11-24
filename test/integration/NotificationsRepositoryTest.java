@@ -48,7 +48,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
         openTransaction();
         List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
-        boolean hasUserAnyNotification = internalNotificationsRepository.hasUserAnyNotification(user);
+        boolean hasUserAnyNotification = notifications.size() > 0;
         boolean hasUserUnreadNotifications = internalNotificationsRepository.hasUserUnreadNotification(user);
         closeTransaction();
 
@@ -104,6 +104,5 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         closeTransaction();
         return user;
     }
-
 
 }

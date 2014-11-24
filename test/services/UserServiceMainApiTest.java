@@ -26,7 +26,7 @@ public class UserServiceMainApiTest {
         String username = "username";
 
         //when
-        User newUser = userService.createNewOrGetExistingUser(username);
+        User newUser = userService.createNewOrGetExistingUser(username, null, null, null);
 
         //then
         assertTrue(!newUser.equals(EXISTING_USER));
@@ -35,7 +35,7 @@ public class UserServiceMainApiTest {
     @Test
     public void shouldNotCreateNewUserIfOneWithUsernameAlreadyExists() throws Exception {
         //when
-        User returnedExistingUser = userService.createNewOrGetExistingUser(EXISTING_USER_USERNAME);
+        User returnedExistingUser = userService.createNewOrGetExistingUser(EXISTING_USER_USERNAME, null, null, null);
 
         //then
         assertEquals(EXISTING_USER, returnedExistingUser);

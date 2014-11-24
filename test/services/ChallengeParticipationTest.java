@@ -29,6 +29,7 @@ public class ChallengeParticipationTest {
     private final ChallengeService challengeService = createChallengeService();
 
     private final String challengeName = "challengeName";
+    private final String userId = "1123123";
     private final String user = "username";
 
     private final Challenge challenge = createChallenge(user);
@@ -41,7 +42,7 @@ public class ChallengeParticipationTest {
     @Test
     public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
         //when
-        challengeService.participateInChallenge(challenge, user);
+        participateInChallenge(user);
         boolean userParticipatingInChallenge = challengeService.isUserParticipatingInChallenge(challenge, user);
 
         //
@@ -61,7 +62,7 @@ public class ChallengeParticipationTest {
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
         //when
         ChallengeParticipation challengeParticipation =
-                challengeService.participateInChallenge(challenge, user);
+                challengeService.participateInChallenge(challenge, userId, user);
 
         //then
         assertTrue(challengeParticipation != null);
@@ -70,8 +71,8 @@ public class ChallengeParticipationTest {
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWhenTryingToParticipateAgainInSameChallenge() throws Exception {
         //when
-        challengeService.participateInChallenge(challenge, user);
-        challengeService.participateInChallenge(challenge, user);
+        participateInChallenge(user);
+        participateInChallenge(user);
 
         //then throw exception
     }
@@ -79,36 +80,40 @@ public class ChallengeParticipationTest {
     @Test
     public void shouldNotNotifyUntilPopularityFactorIsAchieved() throws Exception {
         //when
-        challengeService.participateInChallenge(challenge, "participator");
+        participateInChallenge("participator");
 
         //then
-        verify(challengeNotificationService, never()).notifyAboutNewChallengeParticipation(challenge, "participator", Collections.<User>emptyList());
+        verify(challengeNotificationService, never()).notifyAboutNewChallengeParticipation(challenge, userId, "participator", Collections.<User>emptyList());
     }
 
     @Test
     public void shouldNotifyParticipatorForWhomPopularityFactorIsAchieved() throws Exception {
         //when
         achieveOneFromPopularityFactor(challenge);
-        challengeService.participateInChallenge(challenge, "participatorOfFactorAchievement");
+        participateInChallenge("participatorOfFactorAchievement");
 
         //then
-        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, "participatorOfFactorAchievement", Collections.<User>emptyList());
+        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, userId, "participatorOfFactorAchievement", Collections.<User>emptyList());
     }
 
     @Test
     public void shouldNotifyOnlyParticipatorForWhomPopularityFactorIsAchieved() throws Exception {
         //when
         achieveOneFromPopularityFactor(challenge);
-        challengeService.participateInChallenge(challenge, "participatorOfFactorAchievement");
-        challengeService.participateInChallenge(challenge, "participatorAfterAchievement");
+        participateInChallenge("participatorOfFactorAchievement");
+        participateInChallenge("participatorAfterAchievement");
 
         //then
-        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, "participatorOfFactorAchievement", Collections.<User>emptyList());
+        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, userId, "participatorOfFactorAchievement", Collections.<User>emptyList());
+    }
+
+    private void participateInChallenge(String username) {
+        challengeService.participateInChallenge(challenge, userId, username);
     }
 
     private void achieveOneFromPopularityFactor(Challenge challenge) {
         for (int i = 0; i < ChallengeService.POPULARITY_INDICATOR - 1; i++) {
-            challengeService.participateInChallenge(challenge, "participator" + i);
+            challengeService.participateInChallenge(challenge, userId, "participator" + i);
         }
     }
 

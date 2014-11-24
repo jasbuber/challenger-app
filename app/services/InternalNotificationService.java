@@ -49,16 +49,6 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public boolean hasUserAnyNotification(final User user) {
-        return withReadOnlyTransaction(new F.Function0<Boolean>() {
-            @Override
-            public Boolean apply() throws Throwable {
-                return internalNotificationsRepository.hasUserAnyNotification(user);
-            }
-        });
-    }
-
-    @Override
     public boolean hasUserUnreadNotification(final User user) {
         return withReadOnlyTransaction(new F.Function0<Boolean>() {
             @Override

@@ -450,6 +450,7 @@ public class ChallengeService extends TransactionalBase {
         }
     }
 
+<<<<<<< HEAD
     public Long getResponsesNrForUser(final String username){
         try {
             return withReadOnlyTransaction(new F.Function0<Long>() {
@@ -474,8 +475,7 @@ public class ChallengeService extends TransactionalBase {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
-    }
-
+=======
     public Challenge updateChallenge(final Challenge challenge) {
         return withTransaction(new F.Function0<Challenge>() {
             @Override
@@ -483,5 +483,6 @@ public class ChallengeService extends TransactionalBase {
                 return challengesRepository.updateChallenge(challenge);
             }
         });
+>>>>>>> origin/facebook-integration
     }
 }

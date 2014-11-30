@@ -8,7 +8,7 @@ public class ChallengeServiceWithoutTransactionMgmt extends ChallengeService {
 
     public ChallengeServiceWithoutTransactionMgmt(ChallengesRepository challengesRepository, UsersRepository usersRepository,
                                                   ChallengeNotificationsService challengeNotificationsService) {
-        super(challengesRepository, usersRepository, challengeNotificationsService);
+        super(challengesRepository, null, challengeNotificationsService, null);
     }
 
     @Override

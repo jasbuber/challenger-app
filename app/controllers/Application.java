@@ -93,7 +93,6 @@ public class Application extends Controller {
         }
 
         CreateChallengeForm challenge = challengeForm.get();
-        String videoId = null;
 
         validateChallengeFormData(challengeForm);
 
@@ -101,56 +100,35 @@ public class Application extends Controller {
             return ok(new Gson().toJson(challengeForm.errors()));
         }
 
-        Challenge newChallenge = getChallengeService().createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(), videoId, challenge.getChallengeVisibility());
-
-
-        if (!isChallengePrivate(challenge)) {
-            List<User> participants = new ArrayList<User>();
-
-            if (challenge.getParticipants() != null && challenge.getParticipants().size() > 0) {
-                addParicipantToChallenge(challenge, newChallenge, participants);
-            } else {
-                challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
-                return ok(new Gson().toJson(challengeForm.errors()));
-            }
-
-            getChallengeNotificationService().notifyAboutNewPrivateChallenge(newChallenge, participants);
+        if (isChallengePrivate(challenge) && !isChallengeParticipantSelected(challenge)) {
+            challengeForm.reject("participants", "You didn't select any of your friends. Challenge someone or make the challenge public.");
+            return ok(new Gson().toJson(challengeForm.errors()));
         }
 
-        //upload video to fb
+
         Http.MultipartFormData.FilePart resourceFile = request().body().asMultipartFormData().getFile("video-description");
-        InputStream stream = null;
         try {
-            stream = new FileInputStream(resourceFile.getFile());
-            if (!challenge.getChallengeVisibility()) {
-                videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
-            } else {
-                videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
-            }
-        } catch (IOException e) {
-            return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, e);
-        } finally {
-            if(stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, e);
-                }
-            }
+            getChallengeService()
+                    .createChallenge(getLoggedInUsername(), challenge.getChallengeName(),
+                            challenge.getChallengeCategory(), challenge.getChallengeVisibility(),
+                            challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename());
+        } catch(UploadVideoFileException exc) {
+            return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, exc);
         }
-
-        newChallenge.setVideoId(videoId);
-        getChallengeService().updateChallenge(newChallenge);
 
         return ok("success");
 
     }
 
-    private static Boolean isChallengePrivate(CreateChallengeForm challenge) {
-        return challenge.getChallengeVisibility();
+    private static boolean isChallengeParticipantSelected(CreateChallengeForm challenge) {
+        return challenge.getParticipants() != null && challenge.getParticipants().size() > 0;
     }
 
-    private static Result handleErrorMsgDuringFileUploading(Form<CreateChallengeForm> challengeForm, Http.MultipartFormData.FilePart resourceFile, IOException e) {
+    private static boolean isChallengePrivate(CreateChallengeForm challenge) {
+        return !challenge.getChallengeVisibility();
+    }
+
+    private static Result handleErrorMsgDuringFileUploading(Form<CreateChallengeForm> challengeForm, Http.MultipartFormData.FilePart resourceFile, UploadVideoFileException e) {
         Logger.error("Error has occurred during uploading file: " + resourceFile.getFilename(), e);
         challengeForm.reject("participants", "An internal error occurred during file uploading");
         return ok(new Gson().toJson(challengeForm.errors()));
@@ -188,7 +166,7 @@ public class Application extends Controller {
 
     //need to exist until dependency injection framework is added
     private static ChallengeService getChallengeService() {
-        return new ChallengeService(new ChallengesRepository(), new UsersRepository(), createNotificationService());
+        return new ChallengeService(new ChallengesRepository(), new UserService(new UsersRepository()), createNotificationService(), getFacebookService());
     }
 
     //need to exist until dependency injection framework is added
@@ -346,7 +324,7 @@ public class Application extends Controller {
     public static Result generateData() {
 
         UserService userService = new UserService(new UsersRepository());
-        ChallengeService service = new ChallengeService(new ChallengesRepository(), new UsersRepository(), createNotificationService());
+        ChallengeService service = new ChallengeService(new ChallengesRepository(), userService, createNotificationService(), getFacebookService());
         InternalNotificationService notificationService = new InternalNotificationService(new InternalNotificationsRepository());
 
         User testUser = creteTestUser(userService, getLoggedInUsername());
@@ -356,9 +334,9 @@ public class Application extends Controller {
         User otherUser4 = creteTestUser(userService, "12122115");
         User otherUser5 = creteTestUser(userService, "12122116");
 
-        Challenge challenge = service.createChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "543763142406586", true);
-        service.createChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "543758585740375", true);
-        service.createChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "543763142406586", true);
+        Challenge challenge = service.createAndPersistChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "543763142406586", true);
+        service.createAndPersistChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "543758585740375", true);
+        service.createAndPersistChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "543763142406586", true);
 
         service.submitChallengeResponse(service.participateInChallenge(challenge, "12122112", "otherUser"), "fsfdsdss", "543763142406586");
         service.submitChallengeResponse(service.participateInChallenge(challenge, "12122113", "otherUser2"), "fsdss", "544923992290501");
@@ -366,10 +344,10 @@ public class Application extends Controller {
         service.submitChallengeResponse(service.participateInChallenge(challenge, "12122115", "otherUser4"), "fsfdss", "544923992290501");
         service.submitChallengeResponse(service.participateInChallenge(challenge, "12122116", "otherUser5"), "fsfddfgfdgfddgfdgfgfgfsdss", "544923992290501");
 
-        service.createChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "543763142406586", true);
-        service.createChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "543763142406586", false);
-        service.createChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "543763142406586", false);
-        service.createChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "543763142406586", true);
+        service.createAndPersistChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "543763142406586", true);
+        service.createAndPersistChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "543763142406586", false);
+        service.createAndPersistChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "543763142406586", false);
+        service.createAndPersistChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "543763142406586", true);
 
         return redirect(routes.Application.index());
     }

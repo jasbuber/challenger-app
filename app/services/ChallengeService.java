@@ -1,11 +1,15 @@
 package services;
 
 import domain.*;
-import play.db.jpa.Transactional;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
-import repositories.UsersRepository;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChallengeService extends TransactionalBase {
@@ -13,26 +17,95 @@ public class ChallengeService extends TransactionalBase {
     public static final int POPULARITY_INDICATOR = 10;
 
     private final ChallengesRepository challengesRepository;
-    private final UsersRepository usersRepository;
+    private final UserService userService;
     private final ChallengeNotificationsService notificationService;
+    private final FacebookService facebookService;
 
-    public ChallengeService(ChallengesRepository challengesRepository, UsersRepository usersRepository, ChallengeNotificationsService notificationService) {
+    public ChallengeService(ChallengesRepository challengesRepository, UserService userService,
+                            ChallengeNotificationsService notificationService, FacebookService facebookService) {
         this.challengesRepository = challengesRepository;
-        this.usersRepository = usersRepository;
+        this.userService = userService;
         this.notificationService = notificationService;
+        this.facebookService = facebookService;
     }
 
-    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
+    public Challenge createChallenge(final String creatorUsername, final String challengeName,
+                                     final ChallengeCategory category, final Boolean visibility,
+                                     final List<String> challengeParticipants, final File resourceFile, String filename) {
+
+
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
                     " has already been created by user " + creatorUsername);
         }
 
-        return createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, null, visibility);
+
+        if (isChallengePrivate(challenge)) {
+
+            if (!isAnyParticipantSelect(challengeParticipants)) {
+                throw new IllegalArgumentException("Participants must be selected for private challenge creation. Challenge name: " + challengeName);
+            }
+
+            List<User> participants = addParicipantToChallenge(challenge, challengeParticipants);
+            notificationService.notifyAboutNewPrivateChallenge(challenge, participants);
+
+        }
+
+        //upload video to fb
+        String videoId = null;
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(resourceFile);
+            if (isChallengePrivate(challenge)) {
+                videoId = facebookService.publishAPrivateVideo(challenge.getChallengeName(), stream, filename);
+            } else {
+                videoId = facebookService.publishAVideo(challenge.getChallengeName(), stream, filename);
+            }
+        } catch (IOException e) {
+            throw new UploadVideoFileException(e);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new UploadVideoFileException(e);
+                }
+            }
+        }
+
+        challenge.setVideoId(videoId);
+        updateChallenge(challenge);
+        return challenge;
     }
 
-    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
-        User creator = usersRepository.getUser(creatorUsername);
+    private boolean isAnyParticipantSelect(List<String> challengeParticipants) {
+        return challengeParticipants != null && challengeParticipants.size() > 0;
+    }
+
+    private List<User> addParicipantToChallenge(Challenge newChallenge, List<String> participants) {
+        List<User> userParticipants = new ArrayList<User>();
+        for (String p : participants) {
+
+            List<String> items = Arrays.asList(p.split("\\s*,\\s*"));
+
+            String id = items.get(0);
+
+            //TODO batch?
+            User user = userService.createNewOrGetExistingUser(id, items.get(1), items.get(2), items.get(3));
+            userParticipants.add(user);
+            participateInChallenge(newChallenge, id, user.getFormattedName());
+        }
+
+        return userParticipants;
+    }
+
+    private boolean isChallengePrivate(Challenge challenge) {
+        return !challenge.getVisibility();
+    }
+
+    public Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
+        User creator = userService.getExistingUser(creatorUsername);
         return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
     }
 
@@ -45,8 +118,7 @@ public class ChallengeService extends TransactionalBase {
             throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
         }
 
-
-        User participator = usersRepository.getUser(participatorUsername);
+        User participator = userService.getExistingUser(participatorUsername);
         Challenge refreshedChallenge = challengesRepository.getChallenge(challenge.getId());
         ChallengeParticipation challengeParticipation = challengesRepository.persistChallengeParticipation(new ChallengeParticipation(refreshedChallenge, participator));
 
@@ -74,7 +146,7 @@ public class ChallengeService extends TransactionalBase {
             throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
         }
 
-        User participator = usersRepository.getUser(participatorUsername);
+        User participator = userService.getExistingUser(participatorUsername);
         Boolean challengeRemovalResult = challengesRepository.deleteChallengeParticipation(challenge, participator);
 
         notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));

@@ -484,4 +484,15 @@ public class ChallengeService extends TransactionalBase {
             }
         });
     }
+
+    public ChallengeParticipation updateChallengeParticipation(final ChallengeParticipation challengeParticipation) {
+        return withTransaction(new F.Function0<ChallengeParticipation>() {
+            @Override
+            public ChallengeParticipation apply() throws Throwable {
+                return challengesRepository.updateChallengeParticipation(challengeParticipation);
+            }
+        });
+    }
+
+
 }

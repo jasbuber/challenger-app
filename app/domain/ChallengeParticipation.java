@@ -17,7 +17,6 @@ import java.util.List;
 @Table(name = "CHALLENGE_PARTICIPATIONS")
 public class ChallengeParticipation {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -40,6 +39,9 @@ public class ChallengeParticipation {
     @Column(name = "ENDING_DATE" )
     @Temporal(TemporalType.TIMESTAMP)
     private Date endingDate;
+
+    @Column(name = "IS_CHALLENGE_RATED")
+    private Character isChallengeRated;
 
     protected ChallengeParticipation() {
         //for jpa purposes...
@@ -99,5 +101,13 @@ public class ChallengeParticipation {
 
     public Boolean isOverdue(){
         return endingDate.getTime() <= new Date().getTime();
+    }
+
+    public void rateChallenge() {
+        this.isChallengeRated = 'Y';
+    }
+
+    public boolean isChallengeRated() {
+        return this.isChallengeRated != null;
     }
 }

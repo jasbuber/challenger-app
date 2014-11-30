@@ -318,6 +318,22 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details di
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper{ padding: 3%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper a{ font-size: 20px; }
 
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.rating-star{
+    background: url('../images/star_inactive_small.png') no-repeat;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-rating-star{
+    cursor: pointer;
+}
+
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.full-star{background: url('../images/star_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.half-star{background: url('../images/star_half_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-full-star{background: url('../images/star_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-no-star{background: url('../images/star_inactive_small.png') no-repeat;}
+
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; padding-bottom: 5%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper,
     div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{

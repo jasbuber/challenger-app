@@ -57,6 +57,12 @@ public class Challenge {
     @Column(name = "DIFFICULTY")
     private Integer difficulty = 0;
 
+    @Column(name = "RATING")
+    private float rating = 0;
+
+    @Column(name = "PARTICIPATORS_RATED")
+    private Integer participatorsRatedNr = 0;
+
     public static final int POPULARITY_LEVEL_1 = 3;
     public static final int POPULARITY_LEVEL_2 = 8;
     public static final int POPULARITY_LEVEL_3 = 15;
@@ -190,4 +196,17 @@ public class Challenge {
 
         return DifficultyLevel.values()[difficulty].toString();
     }
+
+    public float getRating() {
+        return this.rating;
+    }
+
+    public void addRating(int rating){
+        this.rating = ((this.rating * this.participatorsRatedNr) + (float) rating)/ ++this.participatorsRatedNr;
+    }
+
+    public Integer getParticipatorsRatedNr() {
+        return participatorsRatedNr;
+    }
+
 }

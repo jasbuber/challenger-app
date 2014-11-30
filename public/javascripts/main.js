@@ -777,4 +777,29 @@ $(document).ready(function () {
         }, $endTimeout);
     }
 
+    $(document).on("mouseenter", ".active-rating-star", function(){
+        $(this).prevAll(".active-rating-star").addClass("active-full-star");
+        $(this).nextAll(".active-rating-star").addClass("active-no-star");
+        $(this).addClass("active-full-star");
+    });
+
+    $(document).on("mouseleave", ".active-rating-star", function(){
+        $(this).prevAll(".active-rating-star").removeClass("active-full-star");
+        $(this).nextAll(".active-rating-star").removeClass("active-no-star");
+        $(this).removeClass("active-full-star");
+    });
+
+    $(document).on("click", ".active-rating-star", function(){
+        var $challengeId = $(".challenge-id").val(), $rating = $(".active-full-star").size();
+
+        $(document).off("mouseenter", ".active-rating-star");
+        $(document).off("mouseleave", ".active-rating-star");
+        $(document).off("click", ".active-rating-star");
+
+        jsRoutes.controllers.Application.ajaxRateChallenge($challengeId, $rating).ajax({
+            success: function (response) {}
+        });
+    });
+
+
 });

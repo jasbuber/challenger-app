@@ -570,7 +570,8 @@ public class Application extends Controller {
                         routes.javascript.Application.showBrowseChallengesWithData(),
                         routes.javascript.Application.showBrowseChallenges(),
                         routes.javascript.Application.showMyParticipations(),
-                        routes.javascript.Application.showChallenge()
+                        routes.javascript.Application.showChallenge(),
+                        routes.javascript.Application.ajaxRateChallenge()
                 )
         );
     }
@@ -933,6 +934,25 @@ public class Application extends Controller {
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
         return ok(challenge_responses.render(currentUser.getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges, participations, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, responses, currentChallenge, video));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxRateChallenge(long challengeId, int rating) {
+
+        ChallengeService service = getChallengeService();
+
+        Challenge challenge = service.getChallenge(challengeId);
+
+        ChallengeParticipation participation = service.getChallengeParticipation(challenge, getLoggedInUsername());
+
+        if(!participation.isChallengeRated()){
+            participation.getChallenge().addRating(rating);
+            service.updateChallenge(participation.getChallenge());
+            participation.rateChallenge();
+            service.updateChallengeParticipation(participation);
+        }
+
+        return ok("success");
     }
 
 }

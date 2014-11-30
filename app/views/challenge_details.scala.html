@@ -67,6 +67,9 @@
 
                                     <div>Created: @challenge.getCreationDate</div>
                                     <div>Category: @challenge.getCategory</div>
+                                    <div>Rating: @rating(challenge.getRating, participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0), currentUserResponded)
+
+                                    </div>
                                     @if(challengeResponsesNr > 0) {
                                         <div class="show-responses-wrapper">
                                             <a href="@routes.Application.showChallengeResponses(challenge.getId)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/>

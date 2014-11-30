@@ -333,4 +333,8 @@ public class ChallengesRepository {
         completedChallengesQuery.setParameter("username", username);
         return (Long) completedChallengesQuery.getSingleResult();
     }
+
+    public ChallengeParticipation updateChallengeParticipation(ChallengeParticipation challengeParticipation) {
+        return JPA.em().merge(challengeParticipation);
+    }
 }

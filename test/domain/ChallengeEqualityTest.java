@@ -12,8 +12,8 @@ public class ChallengeEqualityTest {
     @Test
     public void shouldChallengesBeEqualIfTheSameNameAndTheSameCreator() throws Exception {
         User creator = new User("username");
-        Challenge challengeOne = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY, 0);
 
         assertEquals(challengeOne, challengeTwo);
     }
@@ -22,8 +22,8 @@ public class ChallengeEqualityTest {
     public void shouldChallengesNotBeEqualIfTheSameNameButDifferentCreators() throws Exception {
         User creatorOne = new User("creatorOne");
         User creatorTwo = new User("creatorTwo");
-        Challenge challengeOne = new Challenge(creatorOne, "challenge", ANY_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creatorTwo, "challenge", ANY_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creatorOne, "challenge", ANY_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creatorTwo, "challenge", ANY_CHALLENGE_CATEGORY, 0);
 
         assertFalse(challengeOne.equals(challengeTwo));
     }
@@ -31,8 +31,8 @@ public class ChallengeEqualityTest {
     @Test
     public void shouldChallengesNotBeEqualIfTheSameCreatorButDifferentNames() throws Exception {
         User creator = new User("creator");
-        Challenge challengeOne = new Challenge(creator, "challengeOne", ANY_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creator, "challengeTwo", ANY_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creator, "challengeOne", ANY_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creator, "challengeTwo", ANY_CHALLENGE_CATEGORY, 0);
 
         assertFalse(challengeOne.equals(challengeTwo));
     }
@@ -41,8 +41,8 @@ public class ChallengeEqualityTest {
     public void shouldChallengesNotBeEqualIfDifferentCreatorsAndNames() throws Exception {
         User creatorOne = new User("creatorOne");
         User creatorTwo = new User("creatorTwo");
-        Challenge challengeOne = new Challenge(creatorOne, "challengeOne", ANY_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creatorTwo, "challengeTwo", ANY_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creatorOne, "challengeOne", ANY_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creatorTwo, "challengeTwo", ANY_CHALLENGE_CATEGORY, 0);
 
         assertFalse(challengeOne.equals(challengeTwo));
     }
@@ -50,8 +50,8 @@ public class ChallengeEqualityTest {
     @Test
     public void shouldChallengesBeEqualIfDifferentNameCaseSensitivityOnly() throws Exception {
         User creator = new User("creator");
-        Challenge challengeOne = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creator, "CHALLENGE", ANY_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creator, "challenge", ANY_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creator, "CHALLENGE", ANY_CHALLENGE_CATEGORY, 0);
 
         assertEquals(challengeOne, challengeTwo);
     }

@@ -17,7 +17,7 @@ public class ChallengeCreationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfNoCreator() throws Exception {
-        new Challenge(null, "challengeName", ChallengeCategory.ALL);
+        new Challenge(null, "challengeName", ChallengeCategory.ALL, 0);
         //throws exception
     }
 
@@ -40,6 +40,6 @@ public class ChallengeCreationTest {
     }
 
     private Challenge createChallengeWithName(String challengeName) {
-        return new Challenge(creator, challengeName, ChallengeCategory.ALL);
+        return new Challenge(creator, challengeName, ChallengeCategory.ALL, 0);
     }
 }

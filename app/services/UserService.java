@@ -2,7 +2,7 @@ package services;
 
 import domain.FacebookUser;
 import domain.User;
-import play.libs.F;
+import play.db.jpa.Transactional;
 import repositories.UsersRepository;
 
 public class UserService extends TransactionalBase {
@@ -18,17 +18,11 @@ public class UserService extends TransactionalBase {
     }
 
     public User createNewOrGetExistingUser(final String username, final String firstName, final String lastName, final String profilePictureUrl) {
-        return withTransaction(new F.Function0<User>() {
-            @Override
-            public User apply() throws Throwable {
+        if (usersRepository.isUserExist(username)) {
+            return usersRepository.getUser(username);
+        }
 
-                if (usersRepository.isUserExist(username)) {
-                    return usersRepository.getUser(username);
-                }
-
-                return usersRepository.createUser(username, firstName, lastName, profilePictureUrl);
-            }
-        });
+        return usersRepository.createUser(username, firstName, lastName, profilePictureUrl);
     }
 
     /**
@@ -42,11 +36,6 @@ public class UserService extends TransactionalBase {
      *                               RuntimeException for any other exception
      */
     public User getExistingUser(final String userId) {
-        return withReadOnlyTransaction(new F.Function0<User>() {
-            @Override
-            public User apply() throws Throwable {
-                return usersRepository.getUser(userId);
-            }
-        });
+        return usersRepository.getUser(userId);
     }
 }

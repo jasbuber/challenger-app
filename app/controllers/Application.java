@@ -6,6 +6,7 @@ import domain.*;
 import play.Logger;
 import play.Routes;
 import play.data.Form;
+import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class Application extends Controller {
 
+    @Transactional
     public static Result start(String code, String error) {
 
         if (!error.equals("")) {
@@ -38,6 +40,7 @@ public class Application extends Controller {
 
             session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
+
             Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
 
             session("username", user.getId());
@@ -48,6 +51,7 @@ public class Application extends Controller {
         }
     }
 
+    @Transactional(readOnly = true)
     public static Result index() {
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
@@ -233,6 +237,7 @@ public class Application extends Controller {
         return ok(new Gson().toJson(challenges));
     }
 
+    @Transactional(readOnly = true)
     public static List<Challenge> prepareChallengesForCriteria(String phrase, String category) {
         ChallengeService service = Application.getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(20);

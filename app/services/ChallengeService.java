@@ -23,24 +23,24 @@ public class ChallengeService extends TransactionalBase {
         this.notificationService = notificationService;
     }
 
-    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
+    public Challenge createChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility, final Integer difficulty) {
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
                     " has already been created by user " + creatorUsername);
         }
 
-        Challenge newChallenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility);
+        Challenge newChallenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility, difficulty);
 
 
         return newChallenge;
     }
 
-    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
+    private Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility, final Integer difficulty) {
         return withTransaction(new F.Function0<Challenge>() {
             @Override
             public Challenge apply() throws Throwable {
                 User creator = usersRepository.getUser(creatorUsername);
-                return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
+                return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility, difficulty));
             }
         });
     }

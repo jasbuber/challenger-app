@@ -23,6 +23,8 @@ public class CreateChallengeForm {
 
     private Boolean isInviteFriends;
 
+    private Integer difficulty;
+
     public void setCreator(String creatorUsername) {
         this.creatorUsername = creatorUsername;
     }
@@ -81,5 +83,13 @@ public class CreateChallengeForm {
 
     public void setIsInviteFriends(Boolean isInviteFriends) {
         this.isInviteFriends = isInviteFriends;
+    }
+
+    public Integer getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Integer difficulty) {
+        this.difficulty = difficulty;
     }
 }

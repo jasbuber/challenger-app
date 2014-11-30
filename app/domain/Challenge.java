@@ -12,6 +12,8 @@ import java.util.Date;
 @Table(name = "CHALLENGES")
 public class Challenge {
 
+    public static enum DifficultyLevel { easy, medium, hard, special }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -52,6 +54,9 @@ public class Challenge {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endingDate;
 
+    @Column(name = "DIFFICULTY")
+    private Integer difficulty = 0;
+
     public static final int POPULARITY_LEVEL_1 = 3;
     public static final int POPULARITY_LEVEL_2 = 8;
     public static final int POPULARITY_LEVEL_3 = 15;
@@ -59,16 +64,17 @@ public class Challenge {
 
     protected Challenge(){}
 
-    public Challenge(User creator, String challengeName, ChallengeCategory category) {
+    public Challenge(User creator, String challengeName, ChallengeCategory category, Integer difficulty) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
         this.active = true;
+        this.difficulty = difficulty;
     }
 
-    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility) {
+    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility, Integer difficulty) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
@@ -77,6 +83,7 @@ public class Challenge {
         this.videoId = videoId;
         this.visibility = visibility;
         this.active = true;
+        this.difficulty = difficulty;
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -170,5 +177,17 @@ public class Challenge {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
+    }
+
+    public Integer getDifficulty() {
+        return difficulty;
+    }
+
+    public String getFormattedDifficulty() {
+        if(DifficultyLevel.values().length <= difficulty){
+            return DifficultyLevel.easy.toString();
+        }
+
+        return DifficultyLevel.values()[difficulty].toString();
     }
 }

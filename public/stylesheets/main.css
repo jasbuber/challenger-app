@@ -346,6 +346,10 @@ div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dl{ margin-bottom: 0px; }
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dt{ line-height: 0px; height: 0px; }
 
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper{ width: 90%; margin-left: auto; margin-right: auto; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper .slider{ width: 80%; margin-left: auto; margin-right: auto; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper .difficulty-slider-levels{ display: flex; flex-flow: row wrap; justify-content: space-around; }
+
 div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block{ margin-bottom: 20px; }
 div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block .select{ vertical-align: top; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{ width: 50%; margin-left: 3%; min-height: 350px; max-height: 500px; min-width: 290px; background: url('../images/challenges_search_bg.png') repeat; }

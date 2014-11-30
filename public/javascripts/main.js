@@ -5,6 +5,24 @@ $(document).ready(function () {
 
     $(':checkbox').checkbox();
     $(".has-tooltip").tooltip();
+    var $slider = $(".slider");
+
+    if ($slider.length > 0) {
+        $slider.slider({
+            min: 0,
+            max: 3,
+            value: 0,
+            orientation: "horizontal",
+            range: "min"
+        });
+
+        $(document).on("mousedown", ".slider", function(){
+            $("body").mouseup(function(){
+                $("input[name='difficulty']").val($slider.slider("option", "value"));
+                $(this).off("mouseup");
+            });
+        });
+    }
 
     $(".ui-block").css("height", $(".ui-block").width() / 1.6);
     $(".ui-block").show();

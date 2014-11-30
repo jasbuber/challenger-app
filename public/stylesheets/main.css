@@ -126,6 +126,16 @@ div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ word-break: break-all;}
 
+div#wrapper div.form-wrapper div.challenge-search-results table td a.rating-star{
+    background: url('../images/star_inactive_smaller.png') no-repeat;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+div#wrapper div.form-wrapper div.challenge-search-results table td a.full-star{background: url('../images/star_smaller.png') no-repeat; }
+div#wrapper div.form-wrapper div.challenge-search-results table td a.half-star{background: url('../images/star_half_smaller.png') no-repeat; }
+
 div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0px 5px 5px 5px; vertical-align: top; }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{ width: 100%; margin-left: auto; margin-right: auto; }

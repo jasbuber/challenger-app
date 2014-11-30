@@ -131,9 +131,9 @@ public class Application extends Controller {
         try {
             stream = new FileInputStream(resourceFile.getFile());
             if (!challenge.getChallengeVisibility()) {
-                //videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+                videoId = Application.getFacebookService().publishAPrivateVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
             } else {
-                //videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
+                videoId = Application.getFacebookService().publishAVideo(challenge.getChallengeName(), stream, resourceFile.getFilename());
             }
         } catch (IOException e) {
             return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, e);

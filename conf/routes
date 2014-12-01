@@ -43,6 +43,8 @@ POST        /challenge/ajax/participants/remove           controllers.Applicatio
 
 GET         /challenge/participators                      controllers.Application.showParticipators(challengeId: Long)
 
+POST        /challenge/ajax/rate                          controllers.Application.ajaxRateChallenge(challengeId: Long, rating: Integer)
+
 POST        /response/ajax/decline                        controllers.Application.ajaxDeclineResponse(id: Long)
 
 POST        /response/ajax/accept                         controllers.Application.ajaxAcceptResponse(id: Long)

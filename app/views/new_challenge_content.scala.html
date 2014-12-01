@@ -16,6 +16,15 @@
                 <option value="@domain.ChallengeCategory.OTHER">Other</option>
             </select>
         </div>
+        <div class="difficulty-slider-wrapper">
+            <div class="difficulty-slider-levels">
+                <span>easy</span>
+                <span>medium</span>
+                <span>hard</span>
+                <span>special</span>
+            </div>
+            <div class="slider" class="ui-slider"></div>
+        </div>
         <div><input type="button" class="btn btn-hg btn-primary go-to-step-two" value="next"/></div>
     </div>
     <div class="form-arrow-block step-one-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
@@ -35,7 +44,6 @@
                     <option value="1" selected>Public</option>
                     <option value="0">Private</option>
                 </select>
-               <!-- <label class="checkbox fb-feed-label" for="checkbox"><input class="fb-feed-checkbox" name="isInviteFriends" type="checkbox" data-toggle="checkbox">Invite friends</label>-->
             </div>
             <div id="challenge-participants-wrapper" class="inline-block" style="display:none;">
                 <div class="form-group" id="search-facebook-friends">
@@ -54,5 +62,6 @@
         </div>
         <div><input type="submit" class="btn btn-hg btn-primary" value="Create!" /></div>
     </div>
+    <input type="hidden" name="difficulty" value="1"/>
 }
 </div>

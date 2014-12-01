@@ -24,6 +24,11 @@ div#menu-wrapper .navbar div.quick-challenge-search input{ padding: 0px 10px; he
 div#menu-wrapper .navbar div.quick-challenge-search button{ height: 40px; }
 div#menu-wrapper .navbar div.quick-challenge-search button span.fui-search{ top: -5px; }
 
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper{ color: #debe81; font-weight: 800; font-size: 19px; padding: 8px 10px 8px 0px; text-align: center; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper img{ margin-right: 5px; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ border-radius: 10px; border: 2px solid #bdc3c7; padding: 5px; height: 48px; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper span.rewarded-points-number{ font-size: 26px; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper div.points-number-content{ line-height: 32px; }
 div#wrapper{
     width: 80%;
     margin-left: auto;
@@ -32,6 +37,7 @@ div#wrapper{
     overflow-x: auto;
     overflow-y: hidden;
 }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div{ display: inline-block; }
 
 div.account-wrapper{ width: 100%!important; }
 
@@ -119,6 +125,17 @@ div#wrapper div.form-wrapper div.challenge-search-results table tbody td:nth-of-
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ word-break: break-all;}
+div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(3){ min-width: 115px; }
+
+div#wrapper div.form-wrapper div.challenge-search-results table td a.rating-star{
+    background: url('../images/star_inactive_smaller.png') no-repeat;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+div#wrapper div.form-wrapper div.challenge-search-results table td a.full-star{background: url('../images/star_smaller.png') no-repeat; }
+div#wrapper div.form-wrapper div.challenge-search-results table td a.half-star{background: url('../images/star_half_smaller.png') no-repeat; }
 
 div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0px 5px 5px 5px; vertical-align: top; }
@@ -184,6 +201,8 @@ div#wrapper div#profile-wrapper div#profile-picture{ padding: 10% 5% 5% 10%; }
 div#wrapper div#profile-wrapper div#profile-picture img{ border-radius: 20px; border: 2px solid #bdc3c7;}
 div#wrapper div#profile-wrapper div#profile-data{ width: 60%; padding: 10% 5% 5% 5%; }
 div#wrapper div#profile-wrapper div#profile-data ul{ list-style-type: none;  font-size: 20px; }
+div#wrapper div#profile-wrapper div#profile-data li.profile-points-wrapper{ color: #debe81; font-weight: 800; font-size: 20px; }
+div#wrapper div#profile-wrapper div#profile-data li.profile-points-wrapper img{ margin-right: 5px; }
 
 div#wrapper div#profile-wrapper div#profile-stats{ overflow: hidden; text-align: center; padding-top: 10%; padding-bottom: 20%; }
 div#wrapper div#profile-wrapper div#profile-stats .stats-glyph{
@@ -212,7 +231,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge{
 
 div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-color: #f6fbff; cursor: pointer;}
 div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
-div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; }
+div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; word-break: break-all; white-space: normal; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span img{ vertical-align: top;}
@@ -310,6 +329,22 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details di
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper{ padding: 3%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper a{ font-size: 20px; }
 
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.rating-star{
+    background: url('../images/star_inactive_small.png') no-repeat;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-rating-star{
+    cursor: pointer;
+}
+
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.full-star{background: url('../images/star_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.half-star{background: url('../images/star_half_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-full-star{background: url('../images/star_small.png') no-repeat;}
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-no-star{background: url('../images/star_inactive_small.png') no-repeat;}
+
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; padding-bottom: 5%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper,
     div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
@@ -338,6 +373,10 @@ div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dl{ margin-bottom: 0px; }
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dt{ line-height: 0px; height: 0px; }
 
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper{ width: 90%; margin-left: auto; margin-right: auto; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper .slider{ width: 80%; margin-left: auto; margin-right: auto; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper .difficulty-slider-levels{ display: flex; flex-flow: row wrap; justify-content: space-around; }
+
 div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block{ margin-bottom: 20px; }
 div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block .select{ vertical-align: top; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{ width: 50%; margin-left: 3%; min-height: 350px; max-height: 500px; min-width: 290px; background: url('../images/challenges_search_bg.png') repeat; }
@@ -364,6 +403,7 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
 
 .remove-selected{ margin-left: 15px; }
 .visibility-select-wrapper{ vertical-align: top;}
+.back-action-wrapper{ vertical-align: top; display: inline-block; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

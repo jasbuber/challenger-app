@@ -30,7 +30,7 @@ public class SubmittingChallengeResponseTest {
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");
-    private Challenge challenge = new Challenge(creator, challengeName, SOME_CHALLENGE_CATEGORY);
+    private Challenge challenge = new Challenge(creator, challengeName, SOME_CHALLENGE_CATEGORY, 0);
     private ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participator);
 
     @Before
@@ -84,8 +84,8 @@ public class SubmittingChallengeResponseTest {
     @Test
     public void shouldSubmitChallengeResponseForTwoDifferentChallengesButSameParticipator() throws Exception {
         //given
-        Challenge challengeOne = new Challenge(creator, "challengeOne", SOME_CHALLENGE_CATEGORY);
-        Challenge challengeTwo = new Challenge(creator, "challengeTwo", SOME_CHALLENGE_CATEGORY);
+        Challenge challengeOne = new Challenge(creator, "challengeOne", SOME_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creator, "challengeTwo", SOME_CHALLENGE_CATEGORY, 0);
 
         ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challengeOne, participator);
         ChallengeParticipation challengeParticipationTwo = new ChallengeParticipation(challengeTwo, participator);

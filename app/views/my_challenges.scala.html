@@ -1,8 +1,8 @@
-@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm],
-        unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification])
+@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]],
+        responseForm: Form[CreateChallengeResponseForm],unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification])
 
 @main("Welcome to Challenge Application") {
-    @menu(firstName, bigProfilePicUrl, unreadNotificationsNr, newestNotifications)
+    @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
     <div id="wrapper" class="account-wrapper">
         <div class="single-body-block" id="my-challenges-body">
             <div id="content-wrapper">

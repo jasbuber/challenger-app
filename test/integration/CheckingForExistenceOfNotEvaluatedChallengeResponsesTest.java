@@ -58,7 +58,7 @@ public class CheckingForExistenceOfNotEvaluatedChallengeResponsesTest extends Em
     private void createChallengeParticipation() {
         openTransaction();
         User creator = usersRepository.createUser("creator");
-        Challenge challenge = challengesRepository.createChallenge(new Challenge(creator, "challenge", ChallengeCategory.ALL, "videoId", true));
+        Challenge challenge = challengesRepository.createChallenge(new Challenge(creator, "challenge", ChallengeCategory.ALL, "videoId", true, 0));
 
         User participator = usersRepository.createUser("participator");
         challengeParticipation = challengesRepository.persistChallengeParticipation(new ChallengeParticipation(challenge, participator));

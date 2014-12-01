@@ -31,7 +31,8 @@ public class ChallengeService extends TransactionalBase {
 
     public Challenge createChallenge(final String creatorUsername, final String challengeName,
                                      final ChallengeCategory category, final Boolean visibility,
-                                     final List<String> challengeParticipants, final File resourceFile, String filename) {
+                                     final List<String> challengeParticipants, final File resourceFile, String filename,
+                                     final Integer difficulty) {
 
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
@@ -39,7 +40,7 @@ public class ChallengeService extends TransactionalBase {
                     " has already been created by user " + creatorUsername);
         }
 
-        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, null, visibility);
+        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, null, visibility, difficulty);
 
         if (isChallengePrivate(challenge)) {
 
@@ -104,9 +105,9 @@ public class ChallengeService extends TransactionalBase {
         return !challenge.getVisibility();
     }
 
-    public Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility) {
+    public Challenge createAndPersistChallenge(final String creatorUsername, final String challengeName, final ChallengeCategory category, final String videoId, final Boolean visibility, Integer difficulty) {
         User creator = userService.getExistingUser(creatorUsername);
-        return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility));
+        return challengesRepository.createChallenge(new Challenge(creator, challengeName, category, videoId, visibility, difficulty));
     }
 
     private List<User> findAllParticipatorsOf(final Challenge challenge) {
@@ -300,7 +301,44 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getJoinedChallengesNrForUser(username);
     }
 
+    public Long getResponsesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getResponsesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    public Long getAcceptedResponsesNrForUser(final String username){
+        try {
+            return withReadOnlyTransaction(new F.Function0<Long>() {
+                @Override
+                public Long apply() throws Throwable {
+                    return challengesRepository.getAcceptedResponsesNrForUser(username);
+                }
+            });
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
     public Challenge updateChallenge(final Challenge challenge) {
         return challengesRepository.updateChallenge(challenge);
     }
+
+    public ChallengeParticipation updateChallengeParticipation(final ChallengeParticipation challengeParticipation) {
+        return withTransaction(new F.Function0<ChallengeParticipation>() {
+            @Override
+            public ChallengeParticipation apply() throws Throwable {
+                return challengesRepository.updateChallengeParticipation(challengeParticipation);
+            }
+        });
+    }
+
+
 }

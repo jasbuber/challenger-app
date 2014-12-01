@@ -26,7 +26,7 @@ public class GettingChallengeParticipatorsIntegrationTest extends EmTestsBase {
     public void setUp() {
         openTransaction();
         User creator = usersRepository.createUser("creator");
-        challenge = challengesRepository.createChallenge(new Challenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true));
+        challenge = challengesRepository.createChallenge(new Challenge(creator, "challengeName", ChallengeCategory.ALL, "videoId", true, 0));
         closeTransaction();
     }
 

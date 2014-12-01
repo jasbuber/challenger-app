@@ -32,7 +32,8 @@
                     <tr>
                         <th><div>Started By</div></th>
                         <th><div>Name</div></th>
-                        <th><div>Category</div></th>
+                        <th><div>Rating</div></th>
+                        <th><div>Difficulty</div></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -47,7 +48,8 @@
                                 }
                                 @challenge.getCreator.getFormattedName</a></td>
                             <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
-                            <td>@challenge.getCategory</td>
+                            <td>@rating(challenge.getRating, None, false)</td>
+                            <td>@challenge.getFormattedDifficulty</td>
                             <td>
                                 @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
                                     <input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>

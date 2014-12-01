@@ -65,4 +65,26 @@ public class UsersRepository {
             throw new IllegalStateException("More than one user with username " + username + " found in storage", nonUniqueExc);
         }
     }
+
+    public User rewardCreationPoints(String username, int points){
+        User user = getUser(username);
+        user.addCreationPoints(points);
+        JPA.em().merge(user);
+        return user;
+    }
+
+    public User rewardParticipationPoints(String username, int points){
+        User user = getUser(username);
+        user.addParticipationPoints(points);
+        JPA.em().merge(user);
+        return user;
+    }
+
+    public User rewardOtherPoints(String username, int points){
+        User user = getUser(username);
+        user.addOtherPoints(points);
+        JPA.em().merge(user);
+        return user;
+    }
+
 }

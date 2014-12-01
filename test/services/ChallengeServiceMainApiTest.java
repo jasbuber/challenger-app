@@ -79,7 +79,7 @@ public class ChallengeServiceMainApiTest {
     }
 
     private Challenge createChallenge(String user) {
-        return new Challenge(new User(user), challengeName, SOME_CATEGORY);
+        return new Challenge(new User(user), challengeName, SOME_CATEGORY, 0);
     }
 
 

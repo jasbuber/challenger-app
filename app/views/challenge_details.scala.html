@@ -10,7 +10,7 @@
                 <div id="challenge-wrapper" class="account-content">
                     <div class="padded-glyphs-wrapper">
                         <div class="timer-parent">
-                        @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)) {
+                        @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted)) {
                             <div class="small-counter"></div>
                             <input class="time-left" type="hidden" value="@((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000)"/>
                         }</div>

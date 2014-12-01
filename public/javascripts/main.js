@@ -538,6 +538,9 @@ $(document).ready(function () {
                     $(".active-participation").find(".leave-challenge").remove();
                     $(".active-participation").find(".show-upload-response").remove();
 
+                    $(".show-upload-response").parents("span").remove();
+                    $(".challenge-details-name-wrapper").append('<span><img src="/assets/images/correct.png"></span>');
+
                     $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");
 

@@ -643,6 +643,8 @@ public class Application extends Controller {
 
             ChallengeParticipation participation = service.getChallengeParticipation(challenge, getLoggedInUsername());
             ChallengeResponse newResponse = service.submitChallengeResponse(participation, response.getMessage(), videoId);
+            participation.submit();
+            service.updateChallengeParticipation(participation);
 
             CustomResponse customResponse = new CustomResponse();
 

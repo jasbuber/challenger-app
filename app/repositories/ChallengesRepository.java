@@ -183,7 +183,7 @@ public class ChallengesRepository {
     }
 
     public List getChallengeParticipationsWithParticipantsNrForUser(String participatorUsername) {
-        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id, p.endingDate, p.joined " +
+        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id, p.endingDate, p.joined, p.isResponseSubmitted " +
                 "FROM ChallengeParticipation p " +
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +

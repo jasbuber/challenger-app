@@ -43,6 +43,9 @@ public class ChallengeParticipation {
     @Column(name = "IS_CHALLENGE_RATED")
     private Character isChallengeRated;
 
+    @Column(name = "IS_RESPONSE_SUBMITTED")
+    private Character isResponseSubmitted;
+
     protected ChallengeParticipation() {
         //for jpa purposes...
         this.endingDate = DateUtils.addHours(new Date(), 24);
@@ -109,5 +112,13 @@ public class ChallengeParticipation {
 
     public boolean isChallengeRated() {
         return this.isChallengeRated != null;
+    }
+
+    public boolean isResponseSubmitted() {
+        return this.isResponseSubmitted != null;
+    }
+
+    public void submit() {
+        this.isResponseSubmitted = 'Y';
     }
 }

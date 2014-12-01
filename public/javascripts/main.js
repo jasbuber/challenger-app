@@ -544,6 +544,9 @@ $(document).ready(function () {
                     $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");
 
+                    $(".rating-star").parents('div').tooltip('show');
+                    $(".rating-star").addClass("active-rating-star");
+
                     if(customResponse.rewardedPoints > 0) {
                         rewardAllPoints(customResponse.messages, customResponse.points);
                     }

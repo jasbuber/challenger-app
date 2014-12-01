@@ -67,8 +67,8 @@
 
                                     <div>Created: @challenge.getCreationDate</div>
                                     <div>Category: @challenge.getCategory</div>
-                                    <div>Rating: @rating(challenge.getRating, participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0), currentUserResponded)
-
+                                    <div data-togle="tooltip" data-placement="bottom" title="You might want to rate the challenge">
+                                        Rating: @rating(challenge.getRating, participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0), currentUserResponded)
                                     </div>
                                     @if(challengeResponsesNr > 0) {
                                         <div class="show-responses-wrapper">

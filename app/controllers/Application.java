@@ -131,7 +131,8 @@ public class Application extends Controller {
             getChallengeService()
                     .createChallenge(getLoggedInUsername(), challenge.getChallengeName(),
                             challenge.getChallengeCategory(), challenge.getChallengeVisibility(),
-                            challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename());
+                            challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename(),
+                            challenge.getDifficulty());
         } catch(UploadVideoFileException exc) {
             return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, exc);
         }

@@ -24,22 +24,24 @@ $(document).ready(function () {
         });
     }
 
-    $(".ui-block").css("height", $(".ui-block").width() / 1.6);
-    $(".ui-block").show();
+    var $uiBlock = $(".ui-block");
+    $uiBlock.css("height", $uiBlock.width() / 1.6);
+    $uiBlock.show();
 
     $(window).on("resize", function () {
-        $(".ui-block").css("height", $(".ui-block").width() / 1.2);
+        $uiBlock.css("height", $(".ui-block").width() / 1.2);
     });
 
-    $(".ui-block").click(function () {
+    $uiBlock.click(function () {
         if($(this).attr("id") != "share-block") {
             $(this).parents("#wrapper").height($(this).parents("#wrapper").height());
             $(this).toggleClass('active');
             $(this).siblings().not(this).toggleClass('hide');
             $(this).fadeOut(1500, function () {
+                var $blockBody = $("#" + $(this).attr("id") + "-body");
                 $(this).removeClass("active");
-                $("#" + $(this).attr("id") + "-body").removeClass('hide');
-                $("#" + $(this).attr("id") + "-body").fadeIn(1000);
+                $blockBody.removeClass('hide');
+                $blockBody.fadeIn(1000);
 
                 $(this).parents("#wrapper").removeAttr("style");
             });
@@ -56,9 +58,10 @@ $(document).ready(function () {
     });
 
     $(".backAction").click(function () {
+        console.log("dfdf");
         $(".ui-block-body").hide();
-        $(".ui-block").removeClass('hide');
-        $(".ui-block").fadeIn(1000);
+        $uiBlock.removeClass('hide');
+        $uiBlock.fadeIn(1000);
 
         e.preventDefault();
     });
@@ -81,15 +84,36 @@ $(document).ready(function () {
                 $body += '<img src="/assets/images/avatar_small.png"/>';
             }
             $body += $formattedName + '</a></td><td><a href="' + jsRoutes.controllers.Application.showChallenge(challenges[i].id).url + '">' + challenges[i].challengeName +
-                '</a></td><td>' + challenges[i].category + '</td><td>';
-                if(challenges[i].creator.username != username){ $body += '<input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/><input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/>'; }
+                '</a></td><td>' + formatRating(challenges[i].rating) + '</td><td>' + formatDifficulty(challenges[i].difficulty) + '</td><td>';
+                if(challenges[i].creator.username != username){ $body += '<input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>' +
+                '<input class="challenge-id" type="hidden" value="' + challenges[i].id + '"/>'; }
             $body += '</td></tr>';
         });
 
         return $body;
     };
 
-    $("#browse-block-body .form-wrapper form").submit(function (e) {
+    var formatDifficulty = function(index){
+        var levels = ["easy", "medium", "hard", "special"];
+        return levels[index];
+    }
+
+    var formatRating = function(rating){
+        var $stars = "";
+        for ( var i = 0; i < 5; i++ ) {
+
+            if((rating - i) <= 0.3){
+                $stars += ' <a class="rating-star"></a>';
+            }else if((rating - i) >= 0.8){
+                $stars += ' <a class="rating-star full-star"></a>';
+            }else{
+                $stars += ' <a class="rating-star half-star"></a>';
+            }
+        }
+        return $stars;
+    }
+
+    $(".browse-challenges-form").submit(function (e) {
 
         var phrase = $(this).find(".challenge-search-phrase").val(), category = $(".challenge-category").val(), username = $(".current-username").val();
 
@@ -175,8 +199,8 @@ $(document).ready(function () {
 
     });
 
-    var wrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'});
-    var fileInput = $(':file').wrap(wrapper);
+    var wrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'}), $file = $(':file');
+    var fileInput = $file.wrap(wrapper);
 
     fileInput.change(function () {
         var $this = $(this);
@@ -188,7 +212,7 @@ $(document).ready(function () {
         }
     });
 
-    var uploadResponse = $(':file').wrap(wrapper);
+    var uploadResponse = $file.wrap(wrapper);
 
     $('#video-input-wrapper').click(function () {
         fileInput.click();
@@ -245,7 +269,7 @@ $(document).ready(function () {
 
     });
 
-    $("#challenge-visibility").change(function (e) {
+    $("#challenge-visibility").change(function () {
 
         if ($(this).val() == 0) {
 
@@ -293,7 +317,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $(".challenge-category").change(function (e) {
+    $(".challenge-category").change(function () {
 
         var category = $(".challenge-category").val(), username = $(".current-username").val();
 
@@ -387,13 +411,13 @@ $(document).ready(function () {
 
         jsRoutes.controllers.Application.ajaxGetResponse(responseId).ajax({
             success: function (response) {
-                var challengeResponse = jQuery.parseJSON(response);
+                var challengeResponse = jQuery.parseJSON(response), $playerBody = $("#video-response-player_html5_api");
 
                 // hide the current loaded poster
                 $("img.vjs-poster").hide();
 
                 // hide the video UI
-                $("#video-response-player_html5_api").hide();
+                $playerBody.hide();
 
                 // and stop it from playing
                 $vid_obj.pause();
@@ -402,7 +426,7 @@ $(document).ready(function () {
                 $("video:nth-child(1)").attr("src", challengeResponse.videoResponseUrl);
 
                 // replace the poster source
-                $("#video-response-player_html5_api").attr("poster", challengeResponse.thumbnailUrl);
+                $playerBody.attr("poster", challengeResponse.thumbnailUrl);
 
                 // reset the UI states
                 //$(".vjs-big-play-button").show();
@@ -412,7 +436,7 @@ $(document).ready(function () {
 
                 // load the new sources
                 $vid_obj.load();
-                $("#video-response-player_html5_api").show();
+                $playerBody.show();
 
                 NProgress.done();
 
@@ -449,7 +473,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $(document).on("click", ".decline-response", function (e) {
+    $(document).on("click", ".decline-response", function () {
         var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
 
         NProgress.start();
@@ -471,7 +495,7 @@ $(document).ready(function () {
 
     });
 
-    $(document).on("click", ".accept-response", function (e) {
+    $(document).on("click", ".accept-response", function () {
         var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
 
         NProgress.start();
@@ -532,11 +556,12 @@ $(document).ready(function () {
 
                 if (customResponse.hasOwnProperty("status")) {
 
-                    var $parentTd = $(".active-participation").find(".leave-challenge").parents("td");
+                    var $activeParticipation = $(".active-participation"), $parentTd = $activeParticipation.find(".leave-challenge").parents("td"),
+                        $star = $(".rating-star");
 
                     $("#send-response-wrapper").hide();
-                    $(".active-participation").find(".leave-challenge").remove();
-                    $(".active-participation").find(".show-upload-response").remove();
+                    $activeParticipation.find(".leave-challenge").remove();
+                    $activeParticipation.find(".show-upload-response").remove();
 
                     $(".show-upload-response").parents("span").remove();
                     $(".challenge-details-name-wrapper").append('<span><img src="/assets/images/correct.png"></span>');
@@ -544,8 +569,8 @@ $(document).ready(function () {
                     $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");
 
-                    $(".rating-star").parents('div').tooltip('show');
-                    $(".rating-star").addClass("active-rating-star");
+                    $star.parents('div').tooltip('show');
+                    $star.addClass("active-rating-star");
 
                     if(customResponse.rewardedPoints > 0) {
                         rewardAllPoints(customResponse.messages, customResponse.points);
@@ -615,7 +640,7 @@ $(document).ready(function () {
                     success: function (data) {
                         NProgress.done();
                         $("#content-wrapper").append(data);
-                        $('.counter').each( function(e) {
+                        $('.counter').each( function() {
                             var $timeLeft = $(this).parents(".padded-glyph-challenge").find(".time-left").val();
                             $(this).FlipClock($timeLeft, {
                                 countdown: true
@@ -697,7 +722,7 @@ $(document).ready(function () {
 
     });
 
-    $(".quick-search-action").click(function(e){
+    $(".quick-search-action").click(function(){
         var $phrase = $(".challenge-search-phrase").val();
 
         if(!$phrase.trim()){
@@ -720,14 +745,14 @@ $(document).ready(function () {
     });
 
 
-    $('.counter').each( function(e) {
+    $('.counter').each( function() {
         var $timeLeft = $(this).parents(".timer-parent").find(".time-left").val();
         $(this).FlipClock($timeLeft, {
             countdown: true
         });
     });
 
-    $('.small-counter').each( function(e) {
+    $('.small-counter').each( function() {
         var $timeLeft = $(this).parents(".timer-parent").find(".time-left").val();
         $(this).FlipClock($timeLeft, {
             countdown: true
@@ -738,9 +763,9 @@ $(document).ready(function () {
 
         $(".rewarded-points-wrapper").fadeOut(300);
 
-        var $points = parseInt($(".menu-point-counter").text()) + rewarded;
+        var $counter = $(".menu-point-counter"), $points = parseInt($counter.text()) + rewarded;
 
-        $(".menu-point-counter").clearQueue();
+        $counter.clearQueue();
 
         $(".current-points-wrapper").fadeOut(300);
 
@@ -806,6 +831,5 @@ $(document).ready(function () {
             success: function (response) {}
         });
     });
-
 
 });

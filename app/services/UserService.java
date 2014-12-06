@@ -2,7 +2,10 @@ package services;
 
 import domain.FacebookUser;
 import domain.User;
+import play.db.jpa.Transactional;
 import repositories.UsersRepository;
+
+import java.util.List;
 
 public class UserService extends TransactionalBase {
 
@@ -39,26 +42,19 @@ public class UserService extends TransactionalBase {
     }
 
     public User rewardCreationPoints(final String username, final int points) {
-        if (usersRepository.isUserExist(username)) {
-            return usersRepository.rewardCreationPoints(username, points);
-        }
-
-        return null;
+        return usersRepository.rewardCreationPoints(username, points);
     }
 
     public User rewardParticipationPoints(final String username, final int points) {
-        if (usersRepository.isUserExist(username)) {
-            return usersRepository.rewardParticipationPoints(username, points);
-        }
-
-        return null;
+        return usersRepository.rewardParticipationPoints(username, points);
     }
 
     public User rewardOtherPoints(final String username, final int points) {
-        if (usersRepository.isUserExist(username)) {
-            return usersRepository.rewardOtherPoints(username, points);
-        }
-        return null;
+        return usersRepository.rewardOtherPoints(username, points);
+    }
+
+    public List<User> getTopRatedUsers() {
+        return usersRepository.getTopRatedUsers();
     }
 
 }

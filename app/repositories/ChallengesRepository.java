@@ -1,13 +1,12 @@
 package repositories;
 
-import controllers.CreateChallengeForm;
 import domain.*;
-import play.db.DB;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
-import java.sql.Connection;
-import java.util.ArrayList;
+import javax.persistence.TemporalType;
 import java.util.List;
 
 public class ChallengesRepository {
@@ -336,5 +335,37 @@ public class ChallengesRepository {
 
     public ChallengeParticipation updateChallengeParticipation(ChallengeParticipation challengeParticipation) {
         return JPA.em().merge(challengeParticipation);
+    }
+
+    public List<Challenge> getTopRatedChallenges(){
+        Query topChallengesQuery = JPA.em().createQuery("SELECT c FROM Challenge c ORDER BY c.rating DESC");
+        topChallengesQuery.setMaxResults(6);
+        return topChallengesQuery.getResultList();
+    }
+
+    public List<Challenge> getTrendingChallenges(){
+
+        DateTimeZone timeZone = DateTimeZone.forID( "Europe/Paris" );
+        DateTime dateTime = new DateTime( new java.util.Date(), timeZone );
+        DateTime trendingDate = dateTime.minusDays(14);
+
+        Query trendingChallengesQuery = JPA.em().createQuery("SELECT c " +
+                "FROM Challenge c " +
+                "WHERE c.creationDate > :trendingDate " +
+                "ORDER BY c.rating DESC");
+        trendingChallengesQuery.setParameter("trendingDate", trendingDate.toDate(), TemporalType.DATE);
+        trendingChallengesQuery.setMaxResults(6);
+        return trendingChallengesQuery.getResultList();
+    }
+
+    public List getMostPopularChallenges() {
+        Query mostPopularChallenges = JPA.em().createQuery("SELECT c.id, c.challengeName as name, count(p) " +
+                "FROM ChallengeParticipation p " +
+                "RIGHT OUTER JOIN p.challenge c " +
+                "WHERE c.active = true " +
+                "GROUP BY c.challengeName " +
+                "ORDER BY count(p) DESC");
+        mostPopularChallenges.setMaxResults(6);
+        return mostPopularChallenges.getResultList();
     }
 }

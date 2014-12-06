@@ -61,7 +61,13 @@ public class Application extends Controller {
         long unreadNotificationNr = (long) getNotificationService().getNumberOfUnreadNotifications(currentUser);
         List<Notification> newestNotifications = getNotificationService().getNewestNotifications(currentUser);
 
-        return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr, newestNotifications, new ArrayList<Challenge>()));
+        List<User> topRatedUsers = getUsersService().getTopRatedUsers();
+        List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
+        List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
+        List mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+
+        return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr, newestNotifications, new ArrayList<Challenge>(),
+                topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -104,6 +110,24 @@ public class Application extends Controller {
         return ok(new_challenge.render(firstName, Application.getProfilePictureUrl(), points, unreadNotificationNr, newestNotifications, challengeForm));
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result showRankings() {
+
+        User currentUser = getLoggedInUser();
+        String firstName = currentUser.getFirstName();
+        Integer points = currentUser.getAllPoints();
+        long unreadNotificationNr = (long) getNotificationService().getNumberOfUnreadNotifications(currentUser);
+        List<Notification> newestNotifications = getNotificationService().getNewestNotifications(currentUser);
+
+        List<User> topRatedUsers = getUsersService().getTopRatedUsers();
+        List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
+        List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
+        List mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+
+        return ok(rankings.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, unreadNotificationNr, newestNotifications,
+                topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
+    }
+
     @play.db.jpa.Transactional
     public static Result ajaxCreateChallenge() {
 
@@ -131,8 +155,8 @@ public class Application extends Controller {
             getChallengeService()
                     .createChallenge(getLoggedInUsername(), challenge.getChallengeName(),
                             challenge.getChallengeCategory(), challenge.getChallengeVisibility(),
-                            challenge.getParticipants(), resourceFile.getFile(),
-                            resourceFile.getFilename(), challenge.getDifficulty());
+                            challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename(),
+                            challenge.getDifficulty());
         } catch(UploadVideoFileException exc) {
             return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, exc);
         }

@@ -32,7 +32,7 @@ public class ChallengeService extends TransactionalBase {
     public Challenge createChallenge(final String creatorUsername, final String challengeName,
                                      final ChallengeCategory category, final Boolean visibility,
                                      final List<String> challengeParticipants, final File resourceFile, String filename,
-                                     final Integer difficulty) {
+                                     final Integer difficulty) throws UploadVideoFileException {
 
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
@@ -301,11 +301,11 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getJoinedChallengesNrForUser(username);
     }
 
-    public Long getResponsesNrForUser(final String username) {
+    public Long getResponsesNrForUser(final String username){
         return challengesRepository.getResponsesNrForUser(username);
     }
 
-    public Long getAcceptedResponsesNrForUser(final String username) {
+    public Long getAcceptedResponsesNrForUser(final String username){
         return challengesRepository.getAcceptedResponsesNrForUser(username);
     }
 
@@ -315,6 +315,19 @@ public class ChallengeService extends TransactionalBase {
 
     public ChallengeParticipation updateChallengeParticipation(final ChallengeParticipation challengeParticipation) {
         return challengesRepository.updateChallengeParticipation(challengeParticipation);
+
+    }
+
+    public List<Challenge> getTopRatedChallenges() {
+        return challengesRepository.getTopRatedChallenges();
+    }
+
+    public List<Challenge> getTrendingChallenges() {
+        return challengesRepository.getTrendingChallenges();
+    }
+
+    public List getMostPopularChallenges() {
+        return challengesRepository.getMostPopularChallenges();
     }
 
 

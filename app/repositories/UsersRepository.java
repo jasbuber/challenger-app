@@ -87,4 +87,12 @@ public class UsersRepository {
         return user;
     }
 
+    public List<User> getTopRatedUsers() {
+        Query topUsersQuery = JPA.em().createQuery("SELECT u FROM User u " +
+                "ORDER BY (u.creationPoints + u.participationPoints + u.otherPoints) DESC");
+        topUsersQuery.setMaxResults(6);
+
+        return topUsersQuery.getResultList();
+    }
+
 }

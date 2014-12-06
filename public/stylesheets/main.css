@@ -19,12 +19,12 @@ div.dropdown span.navbar-new{ top: 35%; right: 22px; }
 
 div#menu-wrapper .navbar ul.nav ul.dropdown-menu li.more-elements a{ text-align: right; color: #34495e; }
 
-div#menu-wrapper .navbar div.quick-challenge-search{ float: left; width: 15%; min-width: 80px; margin-bottom: 0px; margin-top: 10px; margin-left: 5%; }
-div#menu-wrapper .navbar div.quick-challenge-search input{ padding: 0px 10px; height: 40px; }
+div#menu-wrapper .navbar div.quick-challenge-search{ float: left; width: 15%; min-width: 80px; margin-bottom: 0; margin-top: 10px; margin-left: 5%; }
+div#menu-wrapper .navbar div.quick-challenge-search input{ padding: 0 10px; height: 40px; }
 div#menu-wrapper .navbar div.quick-challenge-search button{ height: 40px; }
 div#menu-wrapper .navbar div.quick-challenge-search button span.fui-search{ top: -5px; }
 
-div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper{ color: #debe81; font-weight: 800; font-size: 19px; padding: 8px 10px 8px 0px; text-align: center; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper{ color: #debe81; font-weight: 800; font-size: 19px; padding: 8px 10px 8px 0; text-align: center; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper img{ margin-right: 5px; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ border-radius: 10px; border: 2px solid #bdc3c7; padding: 5px; height: 48px; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper span.rewarded-points-number{ font-size: 26px; }
@@ -82,7 +82,7 @@ div#wrapper div#browse-block-body{
     padding-bottom: 120px;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
-    margin: 1% auto 0px auto;
+    margin: 1% auto 0 auto;
     min-width: 600px;
 }
 
@@ -138,7 +138,7 @@ div#wrapper div.form-wrapper div.challenge-search-results table td a.full-star{b
 div#wrapper div.form-wrapper div.challenge-search-results table td a.half-star{background: url('../images/star_half_smaller.png') no-repeat; }
 
 div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
-div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0px 5px 5px 5px; vertical-align: top; }
+div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0 5px 5px 5px; vertical-align: top; }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{ width: 100%; margin-left: auto; margin-right: auto; }
 
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
@@ -172,7 +172,7 @@ div#wrapper div.single-body-block{
     height: 90%!important;
     padding-top: 2%;
     padding-left: 2%;
-    margin: 20px auto 0px auto;
+    margin: 20px auto 0 auto;
     white-space: nowrap;
 }
 div#wrapper div.single-body-block h2{ text-align: center; }
@@ -212,7 +212,7 @@ div#wrapper div#profile-wrapper div#profile-stats .stats-glyph{
     overflow: hidden;
 }
 
-div#wrapper  div.single-body-block{ margin-top: 0px; }
+div#wrapper  div.single-body-block{ margin-top: 0; }
 
 div#wrapper div.single-body-block .challenges-wrapper{ margin-bottom: 5%; display: inline-block; width: 30%; }
 div#wrapper div.single-body-block .challenges-wrapper .glyph-challenges-wrapper{ height: 120px; }
@@ -225,7 +225,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge{
     padding: 4%;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
-    margin: 0px auto 2% auto;
+    margin: 0 auto 2% auto;
     background-color: #eef8ff;
 }
 
@@ -253,12 +253,12 @@ div#wrapper div.single-body-block .challenges-body{
     min-width: 265px;
 }
 
-div#wrapper div.single-body-block  .glyph-challenge{ height: 33px; margin-bottom: 2%;}
-div#wrapper div.single-body-block  .glyph-challenge a{ line-height: 33px; display: inline-block; vertical-align: top; }
-div#wrapper div.single-body-block  .glyph-challenge img{ vertical-align: top; }
-div#wrapper div.single-body-block  .glyph-challenge a.show-challenge{ padding-right: 5%; }
-div#wrapper div.single-body-block  .glyph-show-more{ text-align: right;}
-div#wrapper div.single-body-block  .glyph-show-more a{ font-size: 20px; font-weight: 700; }
+div#wrapper div.single-body-block .glyph-challenge{ height: 33px; margin-bottom: 2%;}
+div#wrapper div.single-body-block .glyph-challenge a{ line-height: 33px; display: inline-block; vertical-align: top; }
+div#wrapper div.single-body-block .glyph-challenge img{ vertical-align: top; }
+div#wrapper div.single-body-block .glyph-challenge a.show-challenge{ padding-right: 5%; }
+div#wrapper div.single-body-block .glyph-show-more{ text-align: right;}
+div#wrapper div.single-body-block .glyph-show-more a{ font-size: 20px; font-weight: 700; }
 div#wrapper div.single-body-block .challenges-body div.no-elements-wrapper{ text-align: center; margin-top: 50px; }
 
 div#wrapper div.single-body-block #challenges-completed div.no-elements-wrapper{ color: darkgrey; }
@@ -319,7 +319,7 @@ div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px;
 
 div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 375px; white-space: normal; }
 
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu{ padding: 10px 0px 30px 10px; }
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu{ padding: 10px 0 30px 10px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu span{ display: inline-block; margin-right: 20px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details > div{ font-size: 18px; font-weight: 700; }
 
@@ -368,10 +368,10 @@ div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block{
     background-color: #f6fbff;
     min-width: 355px;
 }
-div#wrapper div#challenge-block-body div.form-wrapper div.form-arrow-block{ padding: 10px 0px; }
+div#wrapper div#challenge-block-body div.form-wrapper div.form-arrow-block{ padding: 10px 0; }
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper{ width: 50%; }
-div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dl{ margin-bottom: 0px; }
-div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dt{ line-height: 0px; height: 0px; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dl{ margin-bottom: 0; }
+div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .challenge-name-wrapper dt{ line-height: 0; height: 0; }
 
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper{ width: 90%; margin-left: auto; margin-right: auto; }
 div#wrapper div#challenge-block-body div.form-wrapper div.challenge-form-block .difficulty-slider-wrapper .slider{ width: 80%; margin-left: auto; margin-right: auto; }
@@ -382,19 +382,68 @@ div#wrapper div#challenge-block-body div.form-wrapper div.visibility-block .sele
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{ width: 50%; margin-left: 3%; min-height: 350px; max-height: 500px; min-width: 290px; background: url('../images/challenges_search_bg.png') repeat; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper .friend-item{ font-size: 20px; font-weight: 700; padding-left: 30px; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper .friend-item img.smallProfilePicture{ margin-right: 20px; }
-div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper label.checkbox{ padding: 0px; display: inline; margin-left: 20px; }
+div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper label.checkbox{ padding: 0; display: inline; margin-left: 20px; }
 div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper label.checkbox .icons span{ font-size: 30px }
 
 div.video-block-wrapper{ width: 100%!important; }
 
 div.video-block-wrapper .video-content-wrapper{ width: 850px!important;}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper{ display: inline-block; width: 535px; vertical-align: top; }
-div.video-block-wrapper .video-content-wrapper .current-response-wrapper #video-panel{ margin: 0px!important; width: 535px!important;}
+div.video-block-wrapper .video-content-wrapper .current-response-wrapper #video-panel{ margin: 0!important; width: 535px!important;}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details{ margin-top: 20px;}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details div.inline-block{vertical-align: top;}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .rate-current-response{}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .rate-current-response button.accept-response{ margin-left: 15px; }
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .current-response-description{ width: 220px; margin-left: 10px; }
+
+div#wrapper div#rank-block-body .rankings-wrapper .ranking-row{
+    display: flex; flex-flow: row wrap; justify-content: space-around;
+}
+div#wrapper div#rank-block-wrapper{ padding-bottom: 3%; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph{
+    display: inline-block;
+    width: 40%;
+    text-align: center;
+}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header{
+    width: 60%;
+    height: 42px;
+    margin: 0 auto 2% auto;
+    font-size: 18px;
+    font-weight: 800;
+    border-bottom: 2px solid #bdc3c7;
+}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header a{ color: #34495e; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header img{ margin-right: 10px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2){ font-size: 20px; font-weight: 800; height: 40px;}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) .result{ font-size: 22px; font-weight: 800; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a{ vertical-align: middle; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a img{ vertical-align: middle;}
+
+div#wrapper .glyph{
+    background-color: #eef8ff;
+    border-radius: 20px;
+    border: 2px solid #bdc3c7;
+    min-width: 0;
+    padding: 1% 0 2% 0;
+    margin: 2%;
+    vertical-align: top;
+}
+div#wrapper .glyph-element{ height: 33px; margin-bottom: 2%; display: block; width: 80%; margin-left: auto; margin-right: auto; line-height: 33px;}
+div#wrapper .glyph-element a{ line-height: 33px; display: inline-block; vertical-align: top; }
+div#wrapper .glyph-element img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element span.result{
+    color: #debe81;
+    font-weight: 800;
+    font-size: 19px;
+    margin-right: 5%;
+    float: right;
+}
+div#wrapper .glyph-element a.show-element{ padding-right: 5%; }
+div#wrapper .glyph-show-more{ text-align: right;}
+div#wrapper .glyph-show-more a{ font-size: 20px; font-weight: 700; }
+
+
 
 .inline-block{ display: inline-block; }
 

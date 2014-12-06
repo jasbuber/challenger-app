@@ -103,7 +103,7 @@ public class ChallengeResponse {
     }
 
     public String getSubmitted() {
-        return new SimpleDateFormat("H:m dd-MM-yyyy").format(this.submitted);
+        return new SimpleDateFormat("H:mm dd-MM-yyyy").format(this.submitted);
     }
 
 }

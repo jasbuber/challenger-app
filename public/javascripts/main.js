@@ -58,7 +58,6 @@ $(document).ready(function () {
     });
 
     $(".backAction").click(function () {
-        console.log("dfdf");
         $(".ui-block-body").hide();
         $uiBlock.removeClass('hide');
         $uiBlock.fadeIn(1000);
@@ -565,6 +564,7 @@ $(document).ready(function () {
 
                     $(".show-upload-response").parents("span").remove();
                     $(".challenge-details-name-wrapper").append('<span><img src="/assets/images/correct.png"></span>');
+                    $(".timer-parent").remove();
 
                     $parentTd.html('<img src="/assets/images/done.png"/>');
                     alertify.alert("Response send!");

@@ -396,9 +396,6 @@ div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challe
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .rate-current-response button.accept-response{ margin-left: 15px; }
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .current-response-description{ width: 220px; margin-left: 10px; }
 
-div#wrapper div#rank-block-body .rankings-wrapper .ranking-row{
-    display: flex; flex-flow: row wrap; justify-content: space-around;
-}
 div#wrapper div#rank-block-wrapper{ padding-bottom: 3%; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph{
     display: inline-block;
@@ -413,37 +410,22 @@ div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header{
     font-weight: 800;
     border-bottom: 2px solid #bdc3c7;
 }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header a{ color: #34495e; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header img{ margin-right: 10px; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2){ font-size: 20px; font-weight: 800; height: 40px;}
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) .result{ font-size: 22px; font-weight: 800; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a{ vertical-align: middle; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a img{ vertical-align: middle;}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table{ margin-left: auto; margin-right: auto; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr:first-of-type{ font-size: 20px; font-weight: 800; height: 40px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td{ padding: 2%; line-height: 36px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type{ text-align: left; min-width: 220px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2){ color: #debe81; font-weight: 800; min-width: 66px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2) img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }
 
 div#wrapper .glyph{
     background-color: #eef8ff;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
-    min-width: 0;
+    min-width: 350px;
     padding: 1% 0 2% 0;
     margin: 2%;
     vertical-align: top;
 }
-div#wrapper .glyph-element{ height: 33px; margin-bottom: 2%; display: block; width: 80%; margin-left: auto; margin-right: auto; line-height: 33px;}
-div#wrapper .glyph-element a{ line-height: 33px; display: inline-block; vertical-align: top; }
-div#wrapper .glyph-element img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element span.result{
-    color: #debe81;
-    font-weight: 800;
-    font-size: 19px;
-    margin-right: 5%;
-    float: right;
-}
-div#wrapper .glyph-element a.show-element{ padding-right: 5%; }
-div#wrapper .glyph-show-more{ text-align: right;}
-div#wrapper .glyph-show-more a{ font-size: 20px; font-weight: 700; }
-
-
 
 .inline-block{ display: inline-block; }
 

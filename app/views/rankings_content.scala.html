@@ -1,54 +1,68 @@
 @(currentUsername: java.lang.String, topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
         trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[Array[Object]])
 
-<div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+<div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">
+    Back</button></a></div>
 <h2>Rankings</h2>
 <div class="rankings-wrapper">
     <div class="ranking-row">
         <div class="ranking-glyph glyph">
-            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/trophy_small.png")"/>BEST USERS</a></div>
+            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/trophy_small.png")"/>
+                BEST USERS</a></div>
+            <table>
             @topRatedUsers.map { user =>
-              <div class="glyph-element">
-                  <a href="@routes.Application.showProfile(user.getUsername)">
-                      @if(user.getProfilePictureUrl != null) {
-                          <img class="smallProfilePicture" src="@user.getProfilePictureUrl"/>
-                      } else {
-                          <img src="@routes.Assets.at("images/avatar_small.png")"/>
-                      }
-                      @user.getFormattedName
-                  </a>
-                  <span class="result">@user.getAllPoints</span>
-              </div>
+                <tr>
+                    <td>
+                        <a href="@routes.Application.showProfile(user.getUsername)">
+                            @if(user.getProfilePictureUrl != null) {
+                                <img class="smallProfilePicture" src="@user.getProfilePictureUrl"/>
+                            } else {
+                                <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                            }
+                            @user.getFormattedName
+                        </a></td>
+                    <td>@user.getAllPoints pts.</td>
+                </tr>
             }
+            </table>
         </div>
         <div class="ranking-glyph glyph">
-            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/star_small.png")"/>BEST CHALLENGES</a></div>
+            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/star_small.png")"/>
+                BEST CHALLENGES</a></div>
+            <table>
             @topRatedChallenges.map { challenge =>
-                <div class="glyph-element">
-                    <a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a>
-                    <span class="result"><img src="@routes.Assets.at("images/star_smaller.png")"/>@challenge.getRating</span>
-                </div>
+                <tr>
+                    <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
+                    <td><img src="@routes.Assets.at("images/star_smaller.png")"/>@challenge.getRating</td>
+                </tr>
             }
+            </table>
         </div>
     </div>
     <div class="ranking-row">
         <div class="ranking-glyph glyph">
-            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/>TRENDING</a></div>
+            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/glyph_sandals_small.png")"/>
+                TRENDING</a></div>
+            <table>
             @trendingChallenges.map { challenge =>
-                <div class="glyph-element">
-                    <a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a>
-                    <span class="result"><img src="@routes.Assets.at("images/star_smaller.png")"/>@challenge.getRating</span>
-                </div>
+                <tr>
+                    <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
+                    <td><img src="@routes.Assets.at("images/star_smaller.png")"/>@challenge.getRating</td>
+                </tr>
             }
+            </table>
         </div>
         <div class="ranking-glyph glyph">
-            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/speedometer/speedometer_5_small.png")"/>MOST POPULAR</a></div>
+            <div class="glyph-header"><a href="#"><img src="@routes.Assets.at("images/speedometer/speedometer_5_small.png")"/>
+                MOST POPULAR</a></div>
+            <table>
             @mostPopularChallenges.map { challenge =>
-                <div class="glyph-element">
-                    <a href="@routes.Application.showChallenge(challenge.apply(0).asInstanceOf[Long])">@challenge.apply(1)</a>
-                    <span class="result">@challenge.apply(2)</span>
-                </div>
+                <tr>
+                    <td><a href="@routes.Application.showChallenge(challenge.apply(0).asInstanceOf[Long])">@challenge.apply(1)</a></td>
+                    <td><img src="@routes.Assets.at("images/speedometer.png")"/>@challenge.apply(2)</td>
+                </tr>
             }
+            </table>
         </div>
     </div>
 </div>

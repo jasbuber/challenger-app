@@ -5,6 +5,8 @@ import domain.User;
 import play.db.jpa.Transactional;
 import repositories.UsersRepository;
 
+import java.util.List;
+
 public class UserService extends TransactionalBase {
 
     private final UsersRepository usersRepository;
@@ -48,6 +50,10 @@ public class UserService extends TransactionalBase {
 
     public User rewardOtherPoints(final String username, final int points) {
         return usersRepository.rewardOtherPoints(username, points);
+    }
+
+    public List<User> getTopRatedUsers() {
+        return usersRepository.getTopRatedUsers();
     }
 
 }

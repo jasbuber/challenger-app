@@ -318,5 +318,17 @@ public class ChallengeService extends TransactionalBase {
 
     }
 
+    public List<Challenge> getTopRatedChallenges() {
+        return challengesRepository.getTopRatedChallenges();
+    }
+
+    public List<Challenge> getTrendingChallenges() {
+        return challengesRepository.getTrendingChallenges();
+    }
+
+    public List getMostPopularChallenges() {
+        return challengesRepository.getMostPopularChallenges();
+    }
+
 
 }

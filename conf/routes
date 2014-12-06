@@ -11,6 +11,8 @@ GET         /browse/:phrase                               controllers.Applicatio
 
 GET         /browse                                       controllers.Application.showBrowseChallenges()
 
+GET         /rankings                                     controllers.Application.showRankings()
+
 GET         /challenge/shownew                            controllers.Application.showCreateChallenge()
 
 POST        /challenge/create                             controllers.Application.ajaxCreateChallenge()

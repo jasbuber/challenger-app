@@ -253,12 +253,12 @@ div#wrapper div.single-body-block .challenges-body{
     min-width: 265px;
 }
 
-div#wrapper div.single-body-block  .glyph-challenge{ height: 33px; margin-bottom: 2%;}
-div#wrapper div.single-body-block  .glyph-challenge a{ line-height: 33px; display: inline-block; vertical-align: top; }
-div#wrapper div.single-body-block  .glyph-challenge img{ vertical-align: top; }
-div#wrapper div.single-body-block  .glyph-challenge a.show-challenge{ padding-right: 5%; }
-div#wrapper div.single-body-block  .glyph-show-more{ text-align: right;}
-div#wrapper div.single-body-block  .glyph-show-more a{ font-size: 20px; font-weight: 700; }
+div#wrapper div.single-body-block .glyph-challenge{ height: 33px; margin-bottom: 2%;}
+div#wrapper div.single-body-block .glyph-challenge a{ line-height: 33px; display: inline-block; vertical-align: top; }
+div#wrapper div.single-body-block .glyph-challenge img{ vertical-align: top; }
+div#wrapper div.single-body-block .glyph-challenge a.show-challenge{ padding-right: 5%; }
+div#wrapper div.single-body-block .glyph-show-more{ text-align: right;}
+div#wrapper div.single-body-block .glyph-show-more a{ font-size: 20px; font-weight: 700; }
 div#wrapper div.single-body-block .challenges-body div.no-elements-wrapper{ text-align: center; margin-top: 50px; }
 
 div#wrapper div.single-body-block #challenges-completed div.no-elements-wrapper{ color: darkgrey; }
@@ -395,6 +395,55 @@ div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challe
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .rate-current-response{}
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .rate-current-response button.accept-response{ margin-left: 15px; }
 div.video-block-wrapper .video-content-wrapper .current-response-wrapper .challenge-response-details .current-response-description{ width: 220px; margin-left: 10px; }
+
+div#wrapper div#rank-block-body .rankings-wrapper .ranking-row{
+    display: flex; flex-flow: row wrap; justify-content: space-around;
+}
+div#wrapper div#rank-block-wrapper{ padding-bottom: 3%; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph{
+    display: inline-block;
+    width: 40%;
+    text-align: center;
+}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header{
+    width: 60%;
+    height: 42px;
+    margin: 0 auto 2% auto;
+    font-size: 18px;
+    font-weight: 800;
+    border-bottom: 2px solid #bdc3c7;
+}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header a{ color: #34495e; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header img{ margin-right: 10px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2){ font-size: 20px; font-weight: 800; height: 40px;}
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) .result{ font-size: 22px; font-weight: 800; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a{ vertical-align: middle; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element:nth-of-type(2) a img{ vertical-align: middle;}
+
+div#wrapper .glyph{
+    background-color: #eef8ff;
+    border-radius: 20px;
+    border: 2px solid #bdc3c7;
+    min-width: 0;
+    padding: 1% 0 2% 0;
+    margin: 2%;
+    vertical-align: top;
+}
+div#wrapper .glyph-element{ height: 33px; margin-bottom: 2%; display: block; width: 80%; margin-left: auto; margin-right: auto; line-height: 33px;}
+div#wrapper .glyph-element a{ line-height: 33px; display: inline-block; vertical-align: top; }
+div#wrapper .glyph-element img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-element span.result{
+    color: #debe81;
+    font-weight: 800;
+    font-size: 19px;
+    margin-right: 5%;
+    float: right;
+}
+div#wrapper .glyph-element a.show-element{ padding-right: 5%; }
+div#wrapper .glyph-show-more{ text-align: right;}
+div#wrapper .glyph-show-more a{ font-size: 20px; font-weight: 700; }
+
+
 
 .inline-block{ display: inline-block; }
 

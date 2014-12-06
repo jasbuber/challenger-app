@@ -301,30 +301,12 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getJoinedChallengesNrForUser(username);
     }
 
-    public Long getResponsesNrForUser(final String username){
-        try {
-            return withReadOnlyTransaction(new F.Function0<Long>() {
-                @Override
-                public Long apply() throws Throwable {
-                    return challengesRepository.getResponsesNrForUser(username);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+    public Long getResponsesNrForUser(final String username) {
+        return challengesRepository.getResponsesNrForUser(username);
     }
 
-    public Long getAcceptedResponsesNrForUser(final String username){
-        try {
-            return withReadOnlyTransaction(new F.Function0<Long>() {
-                @Override
-                public Long apply() throws Throwable {
-                    return challengesRepository.getAcceptedResponsesNrForUser(username);
-                }
-            });
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+    public Long getAcceptedResponsesNrForUser(final String username) {
+        return challengesRepository.getAcceptedResponsesNrForUser(username);
     }
 
     public Challenge updateChallenge(final Challenge challenge) {
@@ -332,12 +314,7 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public ChallengeParticipation updateChallengeParticipation(final ChallengeParticipation challengeParticipation) {
-        return withTransaction(new F.Function0<ChallengeParticipation>() {
-            @Override
-            public ChallengeParticipation apply() throws Throwable {
-                return challengesRepository.updateChallengeParticipation(challengeParticipation);
-            }
-        });
+        return challengesRepository.updateChallengeParticipation(challengeParticipation);
     }
 
 

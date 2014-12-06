@@ -2,7 +2,6 @@ package services;
 
 import domain.FacebookUser;
 import domain.User;
-import play.db.jpa.Transactional;
 import repositories.UsersRepository;
 
 public class UserService extends TransactionalBase {
@@ -38,46 +37,28 @@ public class UserService extends TransactionalBase {
     public User getExistingUser(final String userId) {
         return usersRepository.getUser(userId);
     }
+
     public User rewardCreationPoints(final String username, final int points) {
-        return withTransaction(new F.Function0<User>() {
-            @Override
-            public User apply() throws Throwable {
+        if (usersRepository.isUserExist(username)) {
+            return usersRepository.rewardCreationPoints(username, points);
+        }
 
-                if (usersRepository.isUserExist(username)) {
-                    return usersRepository.rewardCreationPoints(username, points);
-                }
-
-                return null;
-            }
-        });
+        return null;
     }
 
     public User rewardParticipationPoints(final String username, final int points) {
-        return withTransaction(new F.Function0<User>() {
-            @Override
-            public User apply() throws Throwable {
+        if (usersRepository.isUserExist(username)) {
+            return usersRepository.rewardParticipationPoints(username, points);
+        }
 
-                if (usersRepository.isUserExist(username)) {
-                    return usersRepository.rewardParticipationPoints(username, points);
-                }
-
-                return null;
-            }
-        });
+        return null;
     }
 
     public User rewardOtherPoints(final String username, final int points) {
-        return withTransaction(new F.Function0<User>() {
-            @Override
-            public User apply() throws Throwable {
-
-                if (usersRepository.isUserExist(username)) {
-                    return usersRepository.rewardOtherPoints(username, points);
-                }
-
-                return null;
-            }
-        });
+        if (usersRepository.isUserExist(username)) {
+            return usersRepository.rewardOtherPoints(username, points);
+        }
+        return null;
     }
 
 }

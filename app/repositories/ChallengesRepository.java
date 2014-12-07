@@ -368,4 +368,18 @@ public class ChallengesRepository {
         mostPopularChallenges.setMaxResults(6);
         return mostPopularChallenges.getResultList();
     }
+
+    public List<Comment> getCommentsForChallenge(long challengeId){
+        Query commentsQuery = JPA.em().createQuery("SELECT c " +
+                "FROM Comment c " +
+                "WHERE LOWER(c.relevantObjectId) = LOWER(:challengeId) " +
+                "ORDER BY c.creationTimestamp DESC");
+        commentsQuery.setParameter("challengeId", challengeId);
+        return commentsQuery.getResultList();
+    }
+
+    public Comment createComment(Comment comment) {
+        JPA.em().persist(comment);
+        return comment;
+    }
 }

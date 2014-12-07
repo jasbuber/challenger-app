@@ -241,6 +241,21 @@ div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; wid
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
 div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper{ max-width: 600px; margin-left: 4%;}
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .new-comment input.btn{ padding: 7px 15px; margin-left: 43%; }
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .new-comment textarea{
+    resize: none;
+    border-radius: 10px;
+    border: 2px solid #bdc3c7;
+    outline: none;
+    width: 60%;
+    height: 100px;
+    font-size: 16px;
+    font-weight: 600;
+}
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment{ padding: 10px 0 10px 0;}
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment .comment-message{ margin-left: 40px; white-space:normal; }
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment .timeago{ color: gray; font-size: 16px; margin-left: 20px; }
 
 div#wrapper div.single-body-block .challenges-body{
     overflow: hidden;
@@ -345,7 +360,7 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-full-star{background: url('../images/star_small.png') no-repeat;}
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-no-star{background: url('../images/star_inactive_small.png') no-repeat;}
 
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; padding-bottom: 5%; }
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper,
     div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
     padding: 1% 2% 2% 2%;

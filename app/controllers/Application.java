@@ -569,7 +569,8 @@ public class Application extends Controller {
                         routes.javascript.Application.showBrowseChallenges(),
                         routes.javascript.Application.showMyParticipations(),
                         routes.javascript.Application.showChallenge(),
-                        routes.javascript.Application.ajaxRateChallenge()
+                        routes.javascript.Application.ajaxRateChallenge(),
+                        routes.javascript.Application.ajaxSubmitComment()
                 )
         );
     }
@@ -881,6 +882,7 @@ public class Application extends Controller {
         FacebookService facebookService = Application.getFacebookService();
 
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
+        Form<CreateCommentForm> commentForm = Form.form(CreateCommentForm.class);
 
         User currentUser = Application.getLoggedInUser();
         Challenge currentChallenge = service.getChallenge(id);
@@ -899,8 +901,10 @@ public class Application extends Controller {
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
+        List<Comment> comments = service.getCommentsForChallenge(id);
+
         return ok(challenge_details.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges, participations, responseForm, currentUnreadNotificationsNr,
-                latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername()));
+                latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername(), commentForm, comments));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -953,6 +957,25 @@ public class Application extends Controller {
         }
 
         return ok("success");
+    }
+
+    @play.db.jpa.Transactional
+    public static Result ajaxSubmitComment() {
+
+        Form<CreateCommentForm> commentForm = Form.form(CreateCommentForm.class).bindFromRequest();
+
+        ChallengeService service = getChallengeService();
+
+        if (commentForm.hasErrors()) {
+            return ok(new Gson().toJson(commentForm.errors()));
+        } else {
+            CreateCommentForm comment = commentForm.get();
+            Comment c = service.createComment(getLoggedInUsername(), comment.getMessage(), comment.getRelevantObjectId());
+
+            CustomResponse response = new CustomResponse();
+
+            return ok((new Gson().toJson(response)));
+        }
     }
 
 }

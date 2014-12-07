@@ -6,6 +6,7 @@ $(document).ready(function () {
     $(':checkbox').checkbox();
     $(".has-tooltip").tooltip();
     var $slider = $(".slider");
+    jQuery("span.timeago").timeago();
 
     if ($slider.length > 0) {
         $slider.slider({
@@ -830,6 +831,41 @@ $(document).ready(function () {
         jsRoutes.controllers.Application.ajaxRateChallenge($challengeId, $rating).ajax({
             success: function (response) {}
         });
+    });
+
+    $(".new-comment-form").submit(function (e) {
+
+        $(this).ajaxSubmit({
+            success: function (response) {
+                var customResponse = jQuery.parseJSON(response);
+
+                if (customResponse.hasOwnProperty("status")) {
+                    var $comments = $(".comments-block"), $newComment = "", $currentName = $("#current-username").val(),
+                        $profilePictureUrl = $("#menu-wrapper").find("img.smallProfilePicture").attr("src"),
+                        $message = $(".new-comment-form").find("textarea").val();
+
+                    $newComment += '<div class="comment newly-added-comment" style="display: none"><div class="comment-author">' +
+                        '<a href="' + jsRoutes.controllers.Application.showProfile($currentName).url + '">' +
+                        '<img class="smallProfilePicture" src="' + $profilePictureUrl + '"/>' + $currentName +
+                        '</a></div><div class="comment-message">' + $message + '</div></div>';
+
+                    $comments.prepend($newComment);
+                    $comments.find(".newly-added-comment").show("slow");
+                }
+                else {
+                    var fields = jQuery.parseJSON(response);
+
+                    $.each(fields, function (i) {
+                        var errors = fields[i];
+                        $.each(errors, function (j) {
+                            alertify.error(errors[j].message);
+                        });
+                    });
+                }
+            }
+        });
+        e.preventDefault();
+
     });
 
 });

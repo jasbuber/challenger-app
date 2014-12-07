@@ -330,5 +330,15 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getMostPopularChallenges();
     }
 
+    public List<Comment> getCommentsForChallenge(final long challengeId){
+        return this.challengesRepository.getCommentsForChallenge(challengeId);
+    }
+
+    public Comment createComment(String authorUsername, String message, String relevantObjectId){
+
+        User author = userService.getExistingUser(authorUsername);
+
+        return challengesRepository.createComment(new Comment(author, message, relevantObjectId));
+    }
 
 }

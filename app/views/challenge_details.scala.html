@@ -1,6 +1,7 @@
 @(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]],
         responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long,newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification],
-        challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean, currentUsername: java.lang.String)
+        challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean,
+        currentUsername: java.lang.String, commentForm: Form[CreateCommentForm], comments: java.util.List[domain.Comment])
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -101,6 +102,31 @@
                                         }
                                     </div>
                                 }
+                            </div>
+                        </div>
+                        <div class="comments-wrapper">
+                            <h4>Comments</h4>
+                            <div class="new-comment">
+                                @helper.form(action = routes.Application.ajaxSubmitComment(), 'method -> "POST", 'enctype -> "multipart/form-data", 'class -> "new-comment-form") {
+                                    <textarea name="message"></textarea>
+                                    <div><input type="submit" class="btn btn-hg btn-primary" value="Submit" /></div>
+                                    <input type="hidden" name="relevantObjectId" value="@challenge.getId"/>
+                                    <input type="hidden" id="current-username" value="@firstName"/>
+                                }
+                            </div>
+                            <div class="comments-block">
+                            @comments.map{ comment =>
+                                <div class="comment">
+                                    <div class="comment-author">
+                                        <a href="@routes.Application.showProfile(comment.getAuthor.getUsername)">
+                                            <img class="smallProfilePicture" src="@comment.getAuthor.getProfilePictureUrl"/>
+                                            @comment.getAuthor.getFormattedName
+                                        </a>
+                                        <span class="timeago"  title="@comment.getCreationTimestamp"></span>
+                                    </div>
+                                    <div class="comment-message">@comment.getMessage</div>
+                                </div>
+                            }
                             </div>
                         </div>
                     </div>

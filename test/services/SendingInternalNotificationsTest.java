@@ -19,7 +19,7 @@ public class SendingInternalNotificationsTest {
             new InternalNotificationServiceWithoutTransactionMgmt(internalNotificationsRepository);
 
     private boolean hasUserAnyNotification(User user) {
-        return notificationService.getAllNotifications(user).size() > 0;
+        return notificationService.getNotificationsFor(user, 0).size() > 0;
     }
 
     @Test
@@ -66,7 +66,7 @@ public class SendingInternalNotificationsTest {
         notifyUser(user);
 
         //when
-        List<Notification> notifications = notificationService.getAllNotifications(user);
+        List<Notification> notifications = notificationService.getNotificationsFor(user, 0);
         Notification notification = notifications.get(0);
         notificationService.readNotification(notification);
 
@@ -94,7 +94,7 @@ public class SendingInternalNotificationsTest {
         }
 
         @Override
-        public List<Notification> getAllNotificationsFor(User user) {
+        public List<Notification> getNotificationsFor(User user, int offset) {
             return usersNotifications.get(user);
         }
 

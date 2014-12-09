@@ -31,7 +31,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User user = createUser("username");
 
         openTransaction();
-        List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
+        List<Notification> notifications = internalNotificationsRepository.getNotificationsFor(user, 0);
         closeTransaction();
 
         assertTrue(notifications.isEmpty());
@@ -47,7 +47,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
 
 
         openTransaction();
-        List<Notification> notifications = internalNotificationsRepository.getAllNotificationsFor(user);
+        List<Notification> notifications = internalNotificationsRepository.getNotificationsFor(user, 0);
         boolean hasUserAnyNotification = notifications.size() > 0;
         boolean hasUserUnreadNotifications = internalNotificationsRepository.hasUserUnreadNotification(user);
         closeTransaction();
@@ -90,8 +90,8 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         closeTransaction();
 
         openTransaction();
-        List<Notification> notificationsUserOne = internalNotificationsRepository.getAllNotificationsFor(userOne);
-        List<Notification> notificationsUserTwo = internalNotificationsRepository.getAllNotificationsFor(userTwo);
+        List<Notification> notificationsUserOne = internalNotificationsRepository.getNotificationsFor(userOne, 0);
+        List<Notification> notificationsUserTwo = internalNotificationsRepository.getNotificationsFor(userTwo, 0);
         closeTransaction();
 
         assertEquals(1, notificationsUserOne.size());

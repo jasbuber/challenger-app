@@ -13,7 +13,9 @@ public interface NotificationService {
 
     boolean hasUserUnreadNotification(User user);
 
-    List<Notification> getAllNotifications(User user);
+    List<Notification> getNotificationsFor(User user, int offsetIndex);
+
+    long getNotificationsNrFor(User user);
 
     Notification readNotification(Notification notification);
 

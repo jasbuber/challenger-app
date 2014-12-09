@@ -972,4 +972,26 @@ $(document).ready(function () {
         });
     });
 
+    $(document).on("click", ".show-more-notifications", function(){
+
+        var $this= $(this), $offset = $(".current-offset").val(), $body = "", $newOffset = parseInt($offset)+ 1,
+            $notificationsNr = $("#notifications-number").val(), $currentNotifications = $("#current-notifications-number"),
+            $wrapper = $(".user-notification-wrapper").find("table tbody");
+
+        jsRoutes.controllers.Application.ajaxShowMoreNotifications($offset).ajax({
+            success: function (response) {
+                $(".current-offset").val($newOffset);
+
+                $wrapper.append(response);
+                $wrapper.find("tr").show("normal");
+
+                $currentNotifications.val($wrapper.find("tr").length);
+
+                if($notificationsNr <= $currentNotifications.val()){
+                    $this.hide();
+                }
+            }
+        });
+    });
+
 });

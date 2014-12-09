@@ -78,6 +78,8 @@ GET         /notifications                                controllers.Applicatio
 
 GET         /notifications/follow                         controllers.Application.followNotification(notificationId: Long)
 
+GET         /notifications/ajax/more                      controllers.Application.ajaxShowMoreNotifications(offset: Integer)
+
 GET         /notifications/follow/challengedetails        controllers.Application.followNotificationToChallengeDetails(notificationId: Long, challengeId: Long)
 
 GET         /notifications/follow/responses               controllers.Application.followNotificationToChallengeResponses(notificationId: Long, challengeId: Long)

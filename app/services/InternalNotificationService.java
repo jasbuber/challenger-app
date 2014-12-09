@@ -43,8 +43,13 @@ public class InternalNotificationService extends TransactionalBase implements No
     }
 
     @Override
-    public List<Notification> getAllNotifications(final User user) {
-        return internalNotificationsRepository.getAllNotificationsFor(user);
+    public List<Notification> getNotificationsFor(final User user, final int offsetIndex) {
+        return internalNotificationsRepository.getNotificationsFor(user, offsetIndex);
+    }
+
+    @Override
+    public long getNotificationsNrFor(final User user) {
+        return internalNotificationsRepository.getNotificationsNrFor(user);
     }
 
     @Override

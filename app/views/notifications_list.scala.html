@@ -1,0 +1,5 @@
+@(notifications: java.util.List[domain.Notification])
+
+@notifications.map { notification =>
+    @single_full_notification(notification)
+}

@@ -576,7 +576,8 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxShowMoreParticipants(),
                         routes.javascript.Application.ajaxShowMoreChallenges(),
                         routes.javascript.Application.ajaxShowMoreParticipations(),
-                        routes.javascript.Application.ajaxShowMoreComments()
+                        routes.javascript.Application.ajaxShowMoreComments(),
+                        routes.javascript.Application.ajaxShowMoreNotifications()
                 )
         );
     }
@@ -755,7 +756,8 @@ public class Application extends Controller {
         ChallengeService service = getChallengeService();
         User currentUser = getLoggedInUser();
 
-        List<Notification> myNotifications = notificationService.getAllNotifications(getLoggedInUser());
+        List<Notification> myNotifications = notificationService.getNotificationsFor(getLoggedInUser(), 0);
+        long notificationsNr = notificationService.getNotificationsNrFor(getLoggedInUser());
 
         List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
         List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
@@ -766,7 +768,8 @@ public class Application extends Controller {
         Integer currentPoints = currentUser.getAllPoints();
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        return ok(notifications.render(currentFirstName, currentPicture, currentPoints, myNotifications, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications));
+        return ok(notifications.render(currentFirstName, currentPicture, currentPoints, myNotifications, latestChallenges, latestParticipations,
+                currentUnreadNotificationsNr, latestNotifications, notificationsNr));
 
     }
 
@@ -1031,6 +1034,16 @@ public class Application extends Controller {
         List<Comment> comments = service.getCommentsForChallenge(challengeId, offset);
 
         return ok(comments_list.render(comments));
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result ajaxShowMoreNotifications(int offset) {
+
+        ChallengeService service = Application.getChallengeService();
+
+        List<Notification> notifications = getNotificationService().getNotificationsFor(getLoggedInUser(), offset);
+
+        return ok(notifications_list.render(notifications));
     }
 
 }

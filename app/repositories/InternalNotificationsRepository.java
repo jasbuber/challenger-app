@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InternalNotificationsRepository {
+
+    private final int pagingRowNumber = 10;
+
     public boolean hasUserUnreadNotification(User user) {
         return getNumberOfUnreadNotifications(user) > 0;
     }
@@ -35,14 +38,25 @@ public class InternalNotificationsRepository {
         return persistedNotifications;
     }
 
-    public List<Notification> getAllNotificationsFor(User user) {
-        Query getAllNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
+    public List<Notification> getNotificationsFor(User user, int offsetIndex) {
+        Query getNotificationsForUserQuery = JPA.em().createQuery("SELECT n " +
                 "FROM Notification n " +
                 "WHERE n.user = :user " +
                 "ORDER BY n.creationTimestamp DESC");
 
-        getAllNotificationsForUserQuery.setParameter("user", user);
-        return getAllNotificationsForUserQuery.getResultList();
+        getNotificationsForUserQuery.setParameter("user", user);
+        getNotificationsForUserQuery.setMaxResults(pagingRowNumber);
+        getNotificationsForUserQuery.setFirstResult(calculateOffsetNumber(offsetIndex));
+        return getNotificationsForUserQuery.getResultList();
+    }
+
+    public long getNotificationsNrFor(User user) {
+        Query getNotificationsForUserQuery = JPA.em().createQuery("SELECT count(n) " +
+                "FROM Notification n " +
+                "WHERE n.user = :user ");
+
+        getNotificationsForUserQuery.setParameter("user", user);
+        return (long)getNotificationsForUserQuery.getSingleResult();
     }
 
     public Notification update(Notification notification) {
@@ -74,5 +88,9 @@ public class InternalNotificationsRepository {
     }
 
     public Notification getNotification(long id){ return JPA.em().find(Notification.class, id); }
+
+    private int calculateOffsetNumber(int index){
+        return index * pagingRowNumber;
+    }
 
 }

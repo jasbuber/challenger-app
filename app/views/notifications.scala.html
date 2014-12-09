@@ -1,5 +1,5 @@
 @(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, notifications: java.util.List[domain.Notification], challenges: java.util.List[Array[Object]],
-            latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+            latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], notificationsNr: java.lang.Long)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -23,14 +23,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @notifications.map { notification =>
-                                        @single_full_notification(notification)
-                                    }
+                                    @notifications_list(notifications)
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    @if(notifications.size() < notificationsNr) {
+                        <div class="show-more-wrapper"><button class="btn btn-default show-more-notifications">show more</button></div>
+                        <input type="hidden" class="current-offset" value="1"/>
+                        <input type="hidden" id="notifications-number" value="@notificationsNr"/>
+                        <input type="hidden" id="current-notifications-number" value="@notifications.size()"/>
+                    }
                 </div>
             </div>
             @glyphs_panel(challenges, latestParticipations, notifications)

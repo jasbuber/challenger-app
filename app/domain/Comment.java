@@ -29,11 +29,11 @@ public class Comment {
     private String message;
 
     @Column(name = "RELEVANT_OBJECT_ID")
-    private String relevantObjectId;
+    private long relevantObjectId;
 
     public Comment(){}
 
-    public Comment(User author, String message, String relevantObjectId){
+    public Comment(User author, String message, long relevantObjectId){
         this.author = author;
         this.message = message;
         this.relevantObjectId = relevantObjectId;
@@ -79,7 +79,7 @@ public class Comment {
         return message;
     }
 
-    public String getRelevantObjectId() {
+    public long getRelevantObjectId() {
         return relevantObjectId;
     }
 }

@@ -11,7 +11,7 @@ public class CreateCommentForm {
     @Constraints.MaxLength(value = 250, message = "Only 250 characters allowed. It's just a comment, not a poem ;]")
     private String message;
 
-    private String relevantObjectId;
+    private long relevantObjectId;
 
     public String getMessage() {
         return message;
@@ -21,11 +21,11 @@ public class CreateCommentForm {
         this.message = message;
     }
 
-    public String getRelevantObjectId() {
+    public long getRelevantObjectId() {
         return relevantObjectId;
     }
 
-    public void setRelevantObjectId(String relevantObjectId) {
+    public void setRelevantObjectId(long relevantObjectId) {
         this.relevantObjectId = relevantObjectId;
     }
 }

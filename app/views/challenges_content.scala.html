@@ -1,22 +1,20 @@
-@(bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]])
+@(bigProfilePicUrl: java.lang.String, challenges: java.util.List[Array[Object]], challengesNr: Long)
 
 <div id="my-challenges-wrapper" class="account-content">
     <div class="padded-glyphs-wrapper">
         <div class="padded-glyphs-top-panel"><span><a class="show-profile" href="#"><img class="smallProfilePicture" src="@bigProfilePicUrl"/></a></span><span class="padded-glyph-header">My challenges</span></div>
         @if(!challenges.isEmpty) {
             <div class="padded-glyph-challenges-wrapper">
-            @challenges.map { challenge =>
-                <div class="padded-glyph-challenge">
-                    <span><a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])">
-                        <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants"
-                            src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
-                    </a></span>
-                    <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
-                </div>
-            }
+            @challenges_list(challenges)
         </div>
+            @if(challenges.size() < challengesNr) {
+                <div class="show-more-wrapper"><button class="btn btn-default show-more-challenges">show more</button></div>
+                <input type="hidden" class="current-offset" value="1"/>
+            }
         }else{
         <div class="no-elements-wrapper"><a href="@routes.Application.showCreateChallenge()">Create a new challenge!</a></div>
     }
     </div>
+    <input type="hidden" id="challenges-number" value="@challengesNr"/>
+    <input type="hidden" id="current-challenges-number" value="@challenges.size()"/>
 </div>

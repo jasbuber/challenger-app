@@ -1,6 +1,6 @@
 @(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, participants: java.util.List[domain.ChallengeParticipation],
         challenges: java.util.List[Array[Object]],latestParticipations: java.util.List[Array[Object]], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification],
-        newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge)
+        newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge, participantsNr: Long)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -27,34 +27,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @participants.map { participation =>
-                                        <tr>
-                                            <td>@participation.getJoined</td>
-                                            <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
-                                                @if(participation.getParticipator.getProfilePictureUrl != null) {
-                                                    <img class="smallProfilePicture" src="@participation.getParticipator.getProfilePictureUrl"/>
-                                                } else {
-                                                    <img src="@routes.Assets.at("images/avatar_small.png")"/>
-                                                }
-                                                <span class="participant-name-span">@participation.getParticipator.getFormattedName</span></a></td>
-                                            <td><b>6</b></td>
-                                            <td>404</td>
-                                            <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
-                                                <a class="remove-participant" href="#">
-                                                    <img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/remove.png")"/>
-                                                </a>
-                                            }
-                                            </td>
-                                            <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>
-                                        </tr>
-                                    }
+                                    @participants_list(challenge, username, participants)
                                     </tbody>
                                 </table>
-                                <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
+                                @if(participants.size() < participantsNr) {
+                                    <div class="show-more-wrapper"><button class="btn btn-default show-more-participants">show more</button></div>
+                                    <input type="hidden" class="current-offset" value="1"/>
+                                    <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" id="participants-number" value="@participantsNr"/>
+                <input type="hidden" id="current-participants-number" value="@participants.size()"/>
             </div>
             @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
         </div>

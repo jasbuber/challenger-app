@@ -19,6 +19,8 @@ POST        /challenge/create                             controllers.Applicatio
 
 GET         /challenge/ajax/search                        controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
 
+GET         /challenge/ajax/more                          controllers.Application.ajaxShowMoreChallenges(offset: Integer)
+
 POST        /challenge/ajax/join                          controllers.Application.ajaxJoinChallenge(challengeId: Long)
 
 GET         /challenge/ajax/searchbycategory              controllers.Application.ajaxGetChallengesForCategory(category: String)
@@ -42,6 +44,8 @@ GET         /challenge/responses                          controllers.Applicatio
 POST        /challenge/ajax/leave                         controllers.Application.ajaxLeaveChallenge(challengeId: String)
 
 POST        /challenge/ajax/participants/remove           controllers.Application.ajaxRemoveParticipantFromChallenge(challengeId: String, participantUsername: String, name: String)
+
+GET         /challenge/ajax/participants/more             controllers.Application.ajaxShowMoreParticipants(id: Long, offset: Integer)
 
 GET         /challenge/participators                      controllers.Application.showParticipators(challengeId: Long)
 
@@ -82,9 +86,13 @@ GET         /notifications/follow/userprofile             controllers.Applicatio
 
 GET         /participations                               controllers.Application.showMyParticipations()
 
+GET         /participations/ajax/more                     controllers.Application.ajaxShowMoreParticipations(offset: Integer)
+
 GET         /participations/content                       controllers.Application.ajaxGetParticipationsContent()
 
 POST        /comment/ajax/submit                          controllers.Application.ajaxSubmitComment()
+
+GET         /comment/ajax/more                            controllers.Application.ajaxShowMoreComments(challengeId: Long, offset: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

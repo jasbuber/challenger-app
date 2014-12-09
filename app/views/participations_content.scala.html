@@ -1,26 +1,20 @@
-@(bigProfilePicUrl: java.lang.String, participations: java.util.List[Array[Object]])
+@(bigProfilePicUrl: java.lang.String, participations: java.util.List[Array[Object]], participationsNr: Long)
 
 <div id="participations-wrapper" class="account-content">
     <div class="padded-glyphs-wrapper">
         <div class="padded-glyphs-top-panel"><span><a class="show-profile" href="#"><img class="smallProfilePicture" src="@bigProfilePicUrl"/></a></span><span class="padded-glyph-header">My Participations</span></div>
         <div class="padded-glyph-challenges-wrapper">
         @if(!participations.isEmpty) {
-            @participations.map { participation =>
-                <div class="padded-glyph-challenge timer-parent">
-                    <span><a href="@routes.Application.showParticipators(participation.apply(3).asInstanceOf[Long]).toString)">
-                        <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@participation.apply(2) participants" alt="@participation.apply(2) participants"
-                            src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(participation.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
-                    </a></span>
-                    <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(participation.apply(3).asInstanceOf[Long])">@participation.apply(0)</a></span>
-                    @if(participation.apply(6).asInstanceOf[Char] != 'Y') {
-                        <div class="counter hidden-sm hidden-xs"></div>
-                        <input class="time-left" type="hidden" value="@((participation.apply(4).asInstanceOf[Date].getTime - System.currentTimeMillis) / 1000)"/>
-                    }
-                </div>
+            @participations_list(participations)
+            @if(participations.size() < participationsNr) {
+                <div class="show-more-wrapper"><button class="btn btn-default show-more-participations">show more</button></div>
+                <input type="hidden" class="current-offset" value="1"/>
             }
         }else {
             <div class="no-elements-wrapper"><a href="@routes.Application.showBrowseChallenges()">Join a challenge!</a></div>
         }
         </div>
     </div>
+    <input type="hidden" id="participations-number" value="@participationsNr"/>
+    <input type="hidden" id="current-participations-number" value="@participations.size()"/>
 </div>

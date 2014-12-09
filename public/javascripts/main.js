@@ -57,15 +57,15 @@ $(document).ready(function () {
     }).on('blur', '.form-control', function () {
         $(this).closest('.input-group, .form-group').removeClass('focus');
     });
-
-    $(".backAction").click(function () {
+/*
+    $(".backAction").click(function (e) {
         $(".ui-block-body").hide();
         $uiBlock.removeClass('hide');
         $uiBlock.fadeIn(1000);
 
         e.preventDefault();
     });
-
+*/
     var formChallengesRows = function (challenges, username) {
         var $body = "";
 
@@ -865,7 +865,111 @@ $(document).ready(function () {
             }
         });
         e.preventDefault();
+    });
 
+    $(document).on("click", ".show-more-participants", function(){
+
+        var $this= $(this), $challengeId = $(".current-challenge-id").val(), $offset = $(".current-offset").val(), $body = ""
+            , $newOffset = parseInt($offset)+ 1, $participantsNr = $("#participants-number").val(), $currentParticipants = $("#current-participants-number");
+
+        jsRoutes.controllers.Application.ajaxShowMoreParticipants($challengeId, $offset).ajax({
+            success: function (response) {
+                var $currentCreator = $(".remove-participant").size() > 0,
+                    $table = $(".challenge-participants-wrapper").find("table tbody");
+
+                $(".current-offset").val($newOffset);
+
+                $table.append(response);
+                $table.find(".appended-row").show("normal");
+
+                $currentParticipants.val($table.find("tr").length);
+
+                $(".has-tooltip").tooltip();
+
+                if($participantsNr <= $currentParticipants.val()){
+                    $this.hide();
+                }
+            }
+        });
+    });
+
+    $(document).on("click", ".show-more-participations", function(){
+
+        var $this= $(this), $offset = $(".current-offset").val(), $body = "", $newOffset = parseInt($offset)+ 1,
+            $participationsNr = $("#participations-number").val(), $currentParticipations = $("#current-participations-number"),
+            $wrapper = $(".padded-glyph-challenges-wrapper");
+
+        jsRoutes.controllers.Application.ajaxShowMoreParticipations($offset).ajax({
+            success: function (response) {
+
+                $(".current-offset").val($newOffset);
+
+                $wrapper.append(response);
+                $wrapper.find(".padded-glyph-challenge").show("normal");
+
+                $currentParticipations.val($wrapper.find(".padded-glyph-challenge").length);
+
+                if($participationsNr <= $currentParticipations.val()){
+                    $this.hide();
+                }
+
+                $(".has-tooltip").tooltip();
+
+                $('.counter').not(".flip-clock-wrapper").each( function() {
+                    var $timeLeft = $(this).parents(".padded-glyph-challenge").find(".time-left").val();
+                    $(this).FlipClock($timeLeft, {
+                        countdown: true
+                    });
+                });
+            }
+        });
+    });
+
+    $(document).on("click", ".show-more-challenges", function(){
+
+        var $this= $(this), $offset = $(".current-offset").val(), $body = "", $newOffset = parseInt($offset)+ 1,
+            $challengesNr = $("#challenges-number").val(), $currentChallenges = $("#current-challenges-number"),
+            $wrapper = $(".padded-glyph-challenges-wrapper");
+
+        jsRoutes.controllers.Application.ajaxShowMoreChallenges($offset).ajax({
+            success: function (response) {
+
+                $(".current-offset").val($newOffset);
+
+                $wrapper.append(response);
+                $wrapper.find(".padded-glyph-challenge").show("normal");
+
+                $currentChallenges.val($wrapper.find(".padded-glyph-challenge").length);
+
+                if($challengesNr <= $currentChallenges.val()){
+                    $this.hide();
+                }
+
+                $(".has-tooltip").tooltip();
+            }
+        });
+    });
+
+    $(document).on("click", ".show-more-comments", function(){
+
+        var $this= $(this), $offset = $(".current-offset").val(), $body = "", $newOffset = parseInt($offset)+ 1,
+            $commentsNr = $("#comments-number").val(), $currentComments = $("#current-comments-number"),
+            $wrapper = $(".comments-block"), $challengeId = $(".current-challenge-id").val();
+
+        jsRoutes.controllers.Application.ajaxShowMoreComments($challengeId, $offset).ajax({
+            success: function (response) {
+                $(".current-offset").val($newOffset);
+
+                $wrapper.append(response);
+                $wrapper.find(".comment").show("normal");
+
+                $currentComments.val($wrapper.find(".comment").length);
+
+                if($commentsNr <= $currentComments.val()){
+                    $this.hide();
+                }
+            }
+        });
     });
 
 });

@@ -245,16 +245,16 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.countCompletedChallenges(username);
     }
 
-    public List getChallengeParticipationsWithParticipantsNrForUser(final String username) {
-        return challengesRepository.getChallengeParticipationsWithParticipantsNrForUser(username);
+    public List getChallengeParticipationsWithParticipantsNrForUser(final String username, final int offsetIndex) {
+        return challengesRepository.getChallengeParticipationsWithParticipantsNrForUser(username, offsetIndex);
     }
 
     public List getLatestChallengeParticipationsWithParticipantsNrForUser(final String username) {
         return challengesRepository.getLastestParticipationsWithParticipantsNrForUser(username);
     }
 
-    public List getChallengesWithParticipantsNrForUser(final String username) {
-        return challengesRepository.getChallengesWithParticipantsNrForUser(username);
+    public List getChallengesWithParticipantsNrForUser(final String username, final int offsetIndex) {
+        return challengesRepository.getChallengesWithParticipantsNrForUser(username, offsetIndex);
     }
 
     public List getLatestChallengesWithParticipantsNrForUser(final String username) {
@@ -285,8 +285,16 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getCompletedChallenges(username);
     }
 
-    public List<ChallengeParticipation> getParticipantsForChallenge(final long challengeId) {
-        return challengesRepository.getParticipantsForChallenge(challengeId);
+    public List<ChallengeParticipation> getParticipantsForChallenge(final long challengeId, final int offsetIndex) {
+        return challengesRepository.getParticipantsForChallenge(challengeId, offsetIndex);
+    }
+
+    public List<ChallengeParticipation> getLatestParticipantsForChallenge(final long challengeId) {
+        return challengesRepository.getLatestParticipantsForChallenge(challengeId);
+    }
+
+    public long getParticipantsNrForChallenge(final long challengeId) {
+        return challengesRepository.getParticipantsNrForChallenge(challengeId);
     }
 
     public Long getCreatedChallengesNrForUser(final String username) {
@@ -330,15 +338,27 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getMostPopularChallenges();
     }
 
-    public List<Comment> getCommentsForChallenge(final long challengeId){
-        return this.challengesRepository.getCommentsForChallenge(challengeId);
+    public List<Comment> getCommentsForChallenge(final long challengeId, final int offsetIndex){
+        return this.challengesRepository.getCommentsForChallenge(challengeId, offsetIndex);
     }
 
-    public Comment createComment(String authorUsername, String message, String relevantObjectId){
+    public Comment createComment(String authorUsername, String message, long relevantObjectId){
 
         User author = userService.getExistingUser(authorUsername);
 
         return challengesRepository.createComment(new Comment(author, message, relevantObjectId));
+    }
+
+    public Long getChallengeNrForUser(String username){
+        return challengesRepository.getChallengesNrForUser(username);
+    }
+
+    public Long getParticipationsNrForUser(String username){
+        return challengesRepository.getChallengeParticipationsNrForUser(username);
+    }
+
+    public Long getCommentsNrForChallenge(long challengeId){
+        return challengesRepository.getCommentsNrForChallenge(challengeId);
     }
 
 }

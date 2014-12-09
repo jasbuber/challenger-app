@@ -451,7 +451,8 @@ public class Application extends Controller {
         Integer points = currentUser.getAllPoints();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        long challengesNr = service.getChallengeNrForUser(getLoggedInUsername());
 
         List<Object[]> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
@@ -459,7 +460,8 @@ public class Application extends Controller {
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        return ok(my_challenges.render(firstName, Application.getProfilePictureUrl(), points, challenges, participations, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications));
+        return ok(my_challenges.render(firstName, Application.getProfilePictureUrl(), points, challenges, participations, responseForm, currentUnreadNotificationsNr, latestNotifications,
+                latestUnreadNotifications, challengesNr));
     }
 
     @play.db.jpa.Transactional
@@ -570,7 +572,11 @@ public class Application extends Controller {
                         routes.javascript.Application.showMyParticipations(),
                         routes.javascript.Application.showChallenge(),
                         routes.javascript.Application.ajaxRateChallenge(),
-                        routes.javascript.Application.ajaxSubmitComment()
+                        routes.javascript.Application.ajaxSubmitComment(),
+                        routes.javascript.Application.ajaxShowMoreParticipants(),
+                        routes.javascript.Application.ajaxShowMoreChallenges(),
+                        routes.javascript.Application.ajaxShowMoreParticipations(),
+                        routes.javascript.Application.ajaxShowMoreComments()
                 )
         );
     }
@@ -691,7 +697,8 @@ public class Application extends Controller {
 
         if (getChallengeService().isUserCreatedChallengeWithName(challenge.getChallengeName(), getLoggedInUsername())) {
 
-            List<ChallengeParticipation> challengeParticipants = getChallengeService().getParticipantsForChallenge(challengeId);
+            List<ChallengeParticipation> challengeParticipants = getChallengeService().getParticipantsForChallenge(challengeId, 0);
+            long participantsNr = service.getParticipantsNrForChallenge(challengeId);
 
             List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
             List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
@@ -705,7 +712,8 @@ public class Application extends Controller {
             Integer currentPoints = currentUser.getAllPoints();
 
 
-            return ok(participants.render(currentFirstName, currentUsername, currentPicture, currentPoints, challengeParticipants, latestChallenges, latestParticipations, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, challenge));
+            return ok(participants.render(currentFirstName, currentUsername, currentPicture, currentPoints, challengeParticipants, latestChallenges,
+                    latestParticipations, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, challenge, participantsNr));
         } else {
             return redirect(routes.Application.index());
         }
@@ -825,11 +833,11 @@ public class Application extends Controller {
 
         ChallengeService service = Application.getChallengeService();
         User currentUser = Application.getLoggedInUser();
-        Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        long challengesNr = service.getChallengeNrForUser(getLoggedInUsername());
 
-        return ok(challenges_content.render(Application.getProfilePictureUrl(), challenges));
+        return ok(challenges_content.render(Application.getProfilePictureUrl(), challenges, challengesNr));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -854,13 +862,15 @@ public class Application extends Controller {
 
         List<Object[]> challenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
 
-        List<Object[]> myParticipations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> myParticipations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        long participationsNr = service.getParticipationsNrForUser(getLoggedInUsername());
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        return ok(participations.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), myParticipations, challenges, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications));
+        return ok(participations.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), myParticipations, challenges,
+                responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, participationsNr));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -870,9 +880,10 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        long participationsNr = service.getParticipationsNrForUser(getLoggedInUsername());
 
-        return ok(participations_content.render(Application.getProfilePictureUrl(), participations));
+        return ok(participations_content.render(Application.getProfilePictureUrl(), participations, participationsNr));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -895,16 +906,19 @@ public class Application extends Controller {
 
         Video video = facebookService.getVideo(currentChallenge.getVideoId());
 
-        List<ChallengeParticipation> participants = service.getParticipantsForChallenge(id);
+        List<ChallengeParticipation> participants = service.getLatestParticipantsForChallenge(id);
+        long participantsNr = service.getParticipantsNrForChallenge(id);
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        List<Comment> comments = service.getCommentsForChallenge(id);
+        List<Comment> comments = service.getCommentsForChallenge(id, 0);
+        long commentsNr = service.getCommentsNrForChallenge(currentChallenge.getId());
 
-        return ok(challenge_details.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges, participations, responseForm, currentUnreadNotificationsNr,
-                latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr, isCurrentUserRespondedToChallenge, currentUser.getUsername(), commentForm, comments));
+        return ok(challenge_details.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges, participations,
+                responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponsesNr,
+                isCurrentUserRespondedToChallenge, currentUser.getUsername(), commentForm, comments, participantsNr, commentsNr));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -916,11 +930,11 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
 
         Challenge currentChallenge = service.getChallenge(id);
 
-        List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername(), 0);
 
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(id);
@@ -974,8 +988,49 @@ public class Application extends Controller {
 
             CustomResponse response = new CustomResponse();
 
-            return ok((new Gson().toJson(response)));
+            return ok(new Gson().toJson(response));
         }
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result ajaxShowMoreParticipants(long id, int offset) {
+
+        ChallengeService service = Application.getChallengeService();
+
+        Challenge challenge = service.getChallenge(id);
+        List<ChallengeParticipation> participants = service.getParticipantsForChallenge(id, offset);
+
+        return ok(participants_list.render(challenge, getLoggedInUsername(), participants));
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result ajaxShowMoreChallenges(int offset) {
+
+        ChallengeService service = Application.getChallengeService();
+
+        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(getLoggedInUsername(), offset);
+
+        return ok(challenges_list.render(challenges));
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result ajaxShowMoreParticipations(int offset) {
+
+        ChallengeService service = Application.getChallengeService();
+
+        List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(getLoggedInUsername(), offset);
+
+        return ok(participations_list.render(participations));
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result ajaxShowMoreComments(long challengeId, int offset) {
+
+        ChallengeService service = Application.getChallengeService();
+
+        List<Comment> comments = service.getCommentsForChallenge(challengeId, offset);
+
+        return ok(comments_list.render(comments));
     }
 
 }

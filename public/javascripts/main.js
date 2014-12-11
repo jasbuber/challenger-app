@@ -886,6 +886,13 @@ $(document).ready(function () {
 
                 $(".has-tooltip").tooltip();
 
+                $('.small-counter').not(".flip-clock-wrapper").each( function() {
+                    var $timeLeft = $(this).parents(".timer-parent").find(".time-left").val();
+                    $(this).FlipClock($timeLeft, {
+                        countdown: true
+                    });
+                });
+
                 if($participantsNr <= $currentParticipants.val()){
                     $this.hide();
                 }

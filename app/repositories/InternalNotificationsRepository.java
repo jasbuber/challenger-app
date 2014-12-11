@@ -56,7 +56,7 @@ public class InternalNotificationsRepository {
                 "WHERE n.user = :user ");
 
         getNotificationsForUserQuery.setParameter("user", user);
-        return (long)getNotificationsForUserQuery.getSingleResult();
+        return (Long)getNotificationsForUserQuery.getSingleResult();
     }
 
     public Notification update(Notification notification) {

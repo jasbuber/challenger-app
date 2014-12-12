@@ -40,12 +40,11 @@
                                                     <div>@responses.get(0).getMessage</div>
                                                 }
                                                 </div>
-                                                <div class="inline-block rate-response rate-current-response">
-                                                @if(!responses.isEmpty && !responses.get(0).isDecided && currentChallenge.getCreator.getUsername.compareTo(currentUsername) == 0) {
+                                                <div class="inline-block rate-response rate-current-response"
+                                                @if(responses.isEmpty || responses.get(0).isDecided || currentChallenge.getCreator.getUsername.compareTo(currentUsername) != 0) { style="display: none;" }>
                                                         <button class="btn btn-danger decline-response">Decline</button>
                                                         <button class="btn btn-success accept-response">Accept</button>
                                                         <input class="response-id" type="hidden" value="@responses.get(0).getId"/>
-                                                }
                                                 </div>
                                             </div>
                                             <div>

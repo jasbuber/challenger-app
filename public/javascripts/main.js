@@ -433,7 +433,6 @@ $(document).ready(function () {
 
                 $("#video-response-player").removeClass("vjs-playing").addClass("vjs-paused");
 
-
                 // load the new sources
                 $vid_obj.load();
                 $playerBody.show();
@@ -484,6 +483,7 @@ $(document).ready(function () {
                 if(customResponse.status == "success") {
                     NProgress.done();
                     $parent.fadeOut(1200);
+                    $(".response-id[value='" + $id +"']").parents(".rate-response").fadeOut(1200);
 
                     if(customResponse.rewardedPoints > 0) {
                         rewardAllPoints(customResponse.messages, customResponse.points);
@@ -505,6 +505,7 @@ $(document).ready(function () {
                 var customResponse = jQuery.parseJSON(response);
                 if(customResponse.status == "success"){
                     NProgress.done();
+                    $parent.fadeOut(1200);
                     $(".response-id[value='" + $id +"']").parents(".rate-response").fadeOut(1200);
 
                     if(customResponse.rewardedPoints > 0) {

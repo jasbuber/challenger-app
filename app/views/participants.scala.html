@@ -32,10 +32,10 @@
                                 @if(participants.size() < participantsNr) {
                                     <div class="show-more-wrapper"><button class="btn btn-default show-more-participants">show more</button></div>
                                     <input type="hidden" class="current-offset" value="1"/>
-                                    <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
                                     <input type="hidden" id="participants-number" value="@participantsNr"/>
                                     <input type="hidden" id="current-participants-number" value="@participants.size()"/>
                                 }
+                                <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
                             </div>
                         </div>
                     </div>

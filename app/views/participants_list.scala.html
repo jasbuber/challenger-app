@@ -1,7 +1,7 @@
 @(challenge: domain.Challenge, username: java.lang.String, participants: java.util.List[domain.ChallengeParticipation])
 
 @participants.map { participation =>
-  <tr>
+  <tr class="timer-parent">
     <td>@participation.getJoined</td>
     <td class="profilePicTd"><a href="@routes.Application.showProfile(participation.getParticipator.getUsername)">
       @if(participation.getParticipator.getProfilePictureUrl != null) {
@@ -9,15 +9,18 @@
       } else {
         <img src="@routes.Assets.at("images/avatar_small.png")"/>
       }
-      <span class="participant-name-span">@participation.getParticipator.getFormattedName</span></a></td>
-    <td><b>6</b></td>
-    <td>404</td>
-    <td>@if(challenge.getCreator.getUsername.compareTo(username) == 0) {
-      <a class="remove-participant" href="#">
-        <img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/remove.png")"/>
-      </a>
-    }
+      <span class="participant-name-span">@participation.getParticipator.getFormattedName</span></a>
+      @if(challenge.getCreator.getUsername.compareTo(username) == 0) {
+        <a class="remove-participant" href="#">
+          <img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/trash_small.png")"/>
+        </a>
+      }
     </td>
+    <td>@participation.getParticipator.getAllPoints</td>
+    <td>@if(!participation.isOverdue && !participation.isResponseSubmitted) {
+      <div class="small-counter hidden-sm hidden-xs"></div>
+      <input class="time-left" type="hidden" value="@((participation.getEndingDate.getTime - System.currentTimeMillis) / 1000)"/>
+    }</td>
     <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>
   </tr>
 }

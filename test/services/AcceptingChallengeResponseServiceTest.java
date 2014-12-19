@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 import services.stubs.ChallengesRepositoryStub;
+import services.stubs.UserRepositoryStub;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.mock;
 public class AcceptingChallengeResponseServiceTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
-    private final UsersRepository usersRepository = new UserServiceMainApiTest.UserRepositoryStub();
+    private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
     private final FacebookService facebookService = mock(FacebookService.class);
 

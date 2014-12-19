@@ -2,15 +2,13 @@ package services;
 
 import domain.Challenge;
 import domain.ChallengeCategory;
-import domain.ChallengeParticipation;
-import domain.User;
 import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 import services.stubs.ChallengesRepositoryStub;
+import services.stubs.UserRepositoryStub;
 
 import java.util.Collections;
-import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -19,7 +17,7 @@ import static org.mockito.Mockito.mock;
 public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
-    private final UsersRepository usersRepository = new UserServiceMainApiTest.UserRepositoryStub();
+    private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
     private final FacebookService facebookService = mock(FacebookService.class);
     private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);

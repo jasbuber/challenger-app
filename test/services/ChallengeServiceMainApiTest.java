@@ -19,7 +19,6 @@ public class ChallengeServiceMainApiTest {
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
-    private final FacebookService facebookService = mock(FacebookService.class);
     private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
@@ -30,7 +29,7 @@ public class ChallengeServiceMainApiTest {
 
 
     private ChallengeService createChallengeService() {
-        return new ChallengeService(challengesRepository, new UserService(usersRepository), challengeNotificationService, facebookService);
+        return new ChallengeService(challengesRepository, new UserService(usersRepository), challengeNotificationService);
     }
 
     @Test

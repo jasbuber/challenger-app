@@ -18,10 +18,9 @@ public class AcceptingChallengeResponseServiceTest {
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
-    private final FacebookService facebookService = mock(FacebookService.class);
 
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, new UserService(usersRepository),
-            challengeNotificationService, facebookService);
+            challengeNotificationService);
 
 
     private final User challengeCreator = new User("creatorUsername");

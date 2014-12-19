@@ -20,7 +20,6 @@ import views.html.*;
 import javax.persistence.criteria.Expression;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -231,7 +230,7 @@ public class Application extends Controller {
 
     //need to exist until dependency injection framework is added
     private static ChallengeService getChallengeService() {
-        return new ChallengeService(new ChallengesRepository(), new UserService(new UsersRepository()), createNotificationService(), getFacebookService());
+        return new ChallengeService(new ChallengesRepository(), new UserService(new UsersRepository()), createNotificationService());
     }
 
     //need to exist until dependency injection framework is added
@@ -373,7 +372,7 @@ public class Application extends Controller {
     public static Result generateData() {
 
         UserService userService = new UserService(new UsersRepository());
-        ChallengeService service = new ChallengeService(new ChallengesRepository(), userService, createNotificationService(), getFacebookService());
+        ChallengeService service = new ChallengeService(new ChallengesRepository(), userService, createNotificationService());
         InternalNotificationService notificationService = new InternalNotificationService(new InternalNotificationsRepository());
 
         User testUser = creteTestUser(userService, getLoggedInUsername());

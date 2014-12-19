@@ -19,14 +19,12 @@ public class ChallengeService extends TransactionalBase {
     private final ChallengesRepository challengesRepository;
     private final UserService userService;
     private final ChallengeNotificationsService notificationService;
-    private final FacebookService facebookService;
 
     public ChallengeService(ChallengesRepository challengesRepository, UserService userService,
-                            ChallengeNotificationsService notificationService, FacebookService facebookService) {
+                            ChallengeNotificationsService notificationService) {
         this.challengesRepository = challengesRepository;
         this.userService = userService;
         this.notificationService = notificationService;
-        this.facebookService = facebookService;
     }
 
     public Challenge createChallenge(final String creatorUsername, final String challengeName,

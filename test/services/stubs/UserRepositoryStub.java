@@ -66,4 +66,5 @@ public class UserRepositoryStub extends UsersRepository {
     public List<User> getTopRatedUsers() {
         throw new NotImplementedException();
     }
+
 }

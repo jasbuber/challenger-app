@@ -25,10 +25,9 @@ public class SubmittingChallengeResponseTest {
     private final UsersRepository usersRepository = mock(UsersRepository.class);
 
     private final ChallengeNotificationsService challengeNotficiationService = mock(ChallengeNotificationsService.class);
-    private final FacebookService facebookService = mock(FacebookService.class);
 
     private final ChallengeService challengeService = new ChallengeService(challengesRepository, new UserService(usersRepository),
-            challengeNotficiationService, facebookService);
+            challengeNotficiationService);
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");

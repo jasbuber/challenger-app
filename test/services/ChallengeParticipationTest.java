@@ -4,9 +4,12 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.User;
+import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+import services.stubs.ChallengesRepositoryStub;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -18,8 +21,10 @@ import static org.mockito.Mockito.*;
 public class ChallengeParticipationTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
-    private final UsersRepository usersRepository = new UserRepositoryStub();
+    private final UsersRepository usersRepository = new UserServiceMainApiTest.UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
+    private final FacebookService facebookService = mock(FacebookService.class);
+    private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);
 
     private final static String SOME_VIDEO_ID = "videoId";
     private final Boolean VISIBILITY_PRIVATE = false;
@@ -31,13 +36,21 @@ public class ChallengeParticipationTest {
     private final String challengeName = "challengeName";
     private final String userId = "1123123";
     private final String user = "username";
+    private User challengeCreator;
 
-    private final Challenge challenge = createChallenge(user);
+    private Challenge challenge;
 
-    private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
-        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
+    private ChallengeService createChallengeService() {
+        return new ChallengeService(challengesRepository, new UserService(usersRepository), challengeNotificationService, facebookService);
     }
 
+
+    @Before
+    public void setUp() {
+        this.challengeCreator = usersRepository.createUser(user);
+        this.challenge = challengeService.createChallenge(challengeCreator.getUsername(), challengeName, SOME_CATEGORY,
+                true, new ArrayList<String>(), null, null, 0, videoUploadingStrategy);
+    }
 
     @Test
     public void shouldUserParticipationBeTrueIfUserIsAlreadyParticipatingInChallenge() throws Exception {
@@ -83,17 +96,7 @@ public class ChallengeParticipationTest {
         participateInChallenge("participator");
 
         //then
-        verify(challengeNotificationService, never()).notifyAboutNewChallengeParticipation(challenge, userId, "participator", Collections.<User>emptyList());
-    }
-
-    @Test
-    public void shouldNotifyParticipatorForWhomPopularityFactorIsAchieved() throws Exception {
-        //when
-        achieveOneFromPopularityFactor(challenge);
-        participateInChallenge("participatorOfFactorAchievement");
-
-        //then
-        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, userId, "participatorOfFactorAchievement", Collections.<User>emptyList());
+        verify(challengeNotificationService, never()).notifyAboutNewChallengeParticipation(challenge, "participator", "participator", Collections.<User>emptyList());
     }
 
     @Test
@@ -104,124 +107,18 @@ public class ChallengeParticipationTest {
         participateInChallenge("participatorAfterAchievement");
 
         //then
-        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(challenge, userId, "participatorOfFactorAchievement", Collections.<User>emptyList());
+        verify(challengeNotificationService).notifyAboutNewChallengeParticipation(eq(challenge), eq("participatorOfFactorAchievement"), eq("participatorOfFactorAchievement"), anyList());
     }
 
     private void participateInChallenge(String username) {
-        challengeService.participateInChallenge(challenge, userId, username);
+        usersRepository.createUser(username);
+        challengeService.participateInChallenge(challenge, username, username);
     }
 
     private void achieveOneFromPopularityFactor(Challenge challenge) {
         for (int i = 0; i < ChallengeService.POPULARITY_INDICATOR - 1; i++) {
-            challengeService.participateInChallenge(challenge, userId, "participator" + i);
-        }
-    }
-
-    private Challenge createChallenge(String user) {
-        return new Challenge(new User(user), challengeName, SOME_CATEGORY, 0);
-    }
-
-
-    private static class UserRepositoryStub extends UsersRepository {
-
-        @Override
-        public User getUser(String username) {
-            return new User(username);
-        }
-
-    }
-
-    private class ChallengesRepositoryStub extends ChallengesRepository {
-
-        private Set<ChallengeNameAndCreatorTuple> challengesWithCreators = new HashSet<ChallengeNameAndCreatorTuple>();
-        private Map<Challenge, Set<String>> challengeParticipators = new HashMap<Challenge, Set<String>>();
-
-        @Override
-        public Challenge createChallenge(Challenge challengeWithoutId) {
-            Challenge challenge = setIdFieldOf(challengeWithoutId);
-            challengesWithCreators.add(new ChallengeNameAndCreatorTuple(challenge.getChallengeName(), challenge.getCreator().getUsername()));
-            return challenge;
-        }
-
-        private Challenge setIdFieldOf(Challenge challenge) {
-            Field idField = null;
-            try {
-                idField = Challenge.class.getDeclaredField("id");
-                idField.setAccessible(true);
-                idField.set(challenge, Long.valueOf(1L));
-                return challenge;
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException("Exception was thrown during setting id field of challenge: " + challenge, e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Exception was thrown during setting id field of challenge: " + challenge, e);
-            }
-        }
-
-        @Override
-        public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
-            Set<String> users = challengeParticipators.get(challengeParticipation.getChallenge());
-            if (users == null) {
-                users = new HashSet<String>();
-            }
-            users.add(challengeParticipation.getParticipator().getUsername());
-            challengeParticipators.put(challengeParticipation.getChallenge(), users);
-            return challengeParticipation;
-        }
-
-        @Override
-        public boolean isUserParticipatingInChallenge(Challenge challenge, String participatorUsername) {
-            Set<String> users = challengeParticipators.get(challenge);
-            return users != null && users.contains(participatorUsername);
-        }
-
-        @Override
-        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
-            return challengesWithCreators.contains(new ChallengeNameAndCreatorTuple(challengeName, creatorUsername));
-        }
-
-        @Override
-        public List<User> getAllParticipatorsOf(Challenge challenge) {
-            return Collections.<User>emptyList();
-        }
-
-        @Override
-        public long getNrOfParticipationsOf(Challenge challenge) {
-            return challengeParticipators.get(challenge).size();
-        }
-
-        @Override
-        public Challenge getChallenge(long id) {
-            return challenge;
-        }
-
-        private class ChallengeNameAndCreatorTuple {
-            private final String challengeName;
-            private final String challengeCreatorUsername;
-
-            private ChallengeNameAndCreatorTuple(String challengeName, String challengeCreatorUsername) {
-                this.challengeName = challengeName;
-                this.challengeCreatorUsername = challengeCreatorUsername;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                ChallengeNameAndCreatorTuple that = (ChallengeNameAndCreatorTuple) o;
-
-                if (!challengeCreatorUsername.equals(that.challengeCreatorUsername)) return false;
-                if (!challengeName.equals(that.challengeName)) return false;
-
-                return true;
-            }
-
-            @Override
-            public int hashCode() {
-                int result = challengeName.hashCode();
-                result = 31 * result + challengeCreatorUsername.hashCode();
-                return result;
-            }
+            usersRepository.createUser("participator" + i);
+            challengeService.participateInChallenge(challenge, "participator" + i, "participator" + i);
         }
     }
 }

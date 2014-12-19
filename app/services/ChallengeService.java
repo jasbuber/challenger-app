@@ -32,7 +32,7 @@ public class ChallengeService extends TransactionalBase {
     public Challenge createChallenge(final String creatorUsername, final String challengeName,
                                      final ChallengeCategory category, final Boolean visibility,
                                      final List<String> challengeParticipants, final File resourceFile, String filename,
-                                     final Integer difficulty) throws UploadVideoFileException {
+                                     final Integer difficulty, VideoUploadingStrategy videoUploadingStrategy) throws UploadVideoFileException {
 
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
@@ -54,26 +54,7 @@ public class ChallengeService extends TransactionalBase {
         }
 
         //upload video to fb
-        String videoId = null;
-        InputStream stream = null;
-        try {
-            stream = new FileInputStream(resourceFile);
-            if (isChallengePrivate(challenge)) {
-                videoId = facebookService.publishAPrivateVideo(challenge.getChallengeName(), stream, filename);
-            } else {
-                videoId = facebookService.publishAVideo(challenge.getChallengeName(), stream, filename);
-            }
-        } catch (IOException e) {
-            throw new UploadVideoFileException(e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    throw new UploadVideoFileException(e);
-                }
-            }
-        }
+        String videoId = videoUploadingStrategy.uploadVideo(challenge, filename, resourceFile);
 
         challenge.setVideoId(videoId);
         updateChallenge(challenge);

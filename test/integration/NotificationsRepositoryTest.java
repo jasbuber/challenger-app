@@ -42,7 +42,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User user = createUser("username");
 
         openTransaction();
-        internalNotificationsRepository.addNotification(new Notification(user, SOME_NOTIFICATION_MSG));
+        internalNotificationsRepository.addNotification(createNotification(user));
         closeTransaction();
 
 
@@ -57,12 +57,13 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         assertTrue(hasUserUnreadNotifications);
     }
 
+
     @Test
     public void shouldUserHaveNoUnreadNotificationAfterSetOnlyAsRead() throws Exception {
         User user = createUser("username");
 
         openTransaction();
-        Notification notification = new Notification(user, SOME_NOTIFICATION_MSG);
+        Notification notification = createNotification(user);
         internalNotificationsRepository.addNotification(notification);
         closeTransaction();
 
@@ -86,7 +87,7 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         User userTwo = createUser("userTwo");
 
         openTransaction();
-        internalNotificationsRepository.addNotifications(Arrays.asList(new Notification(userOne, SOME_NOTIFICATION_MSG), new Notification(userTwo, SOME_NOTIFICATION_MSG)));
+        internalNotificationsRepository.addNotifications(Arrays.asList(createNotification(userOne), createNotification(userTwo)));
         closeTransaction();
 
         openTransaction();
@@ -104,5 +105,9 @@ public class NotificationsRepositoryTest extends EmTestsBase {
         closeTransaction();
         return user;
     }
+
+    private Notification createNotification(User user) {
+            return new Notification(user, Notification.NotificationType.challenge_completed, SOME_NOTIFICATION_MSG, SOME_NOTIFICATION_MSG, null);
+        }
 
 }

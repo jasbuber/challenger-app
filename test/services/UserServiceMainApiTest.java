@@ -1,12 +1,19 @@
 package services;
 
+import domain.FacebookUser;
 import domain.User;
 import integration.EmTestsBase;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.libs.F;
 import repositories.UsersRepository;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -17,7 +24,7 @@ public class UserServiceMainApiTest {
     private static final User EXISTING_USER = new User(EXISTING_USER_USERNAME);
 
     private final UsersRepository usersRepository = new UserRepositoryStub();
-    private final UserService userService = new UserServiceWithoutTransactionMgmt(usersRepository);
+    private final UserService userService = new UserService(usersRepository);
 
 
     @Test
@@ -41,42 +48,61 @@ public class UserServiceMainApiTest {
         assertEquals(EXISTING_USER, returnedExistingUser);
     }
 
-    private static class UserRepositoryStub extends UsersRepository {
+    public static class UserRepositoryStub extends UsersRepository {
+
+        private Map<String, User> users = new HashMap<String, User>();
 
         @Override
         public User createUser(String username) {
-            return new User(username);
+            User newUser = new User(username);
+            return addUser(newUser);
+        }
+
+        @Override
+        public User createUser(FacebookUser fbUser, String profilePictureUrl) {
+            User newUser = new User(fbUser, profilePictureUrl);
+            return addUser(newUser);
+        }
+
+        @Override
+        public User createUser(String username, String firstName, String lastName, String profilePictureUrl) {
+            User newUser = new User(username, profilePictureUrl, firstName, lastName);
+            return addUser(newUser);
+        }
+
+        private User addUser(User newUser) {
+            users.put(newUser.getUsername(), newUser);
+            return newUser;
         }
 
         @Override
         public boolean isUserExist(String username) {
-            return EXISTING_USER_USERNAME.equals(username);
+            return users.containsKey(StringUtils.lowerCase(username));
         }
 
         @Override
         public User getUser(String username) {
-            return EXISTING_USER;
-        }
-    }
-
-    private static class UserServiceWithoutTransactionMgmt extends UserService {
-
-        public UserServiceWithoutTransactionMgmt(UsersRepository usersRepository) {
-            super(usersRepository);
+            return users.get(StringUtils.lowerCase(username));
         }
 
         @Override
-        protected <T> T withTransaction(F.Function0<T> function) {
-            try {
-                return function.apply();
-            } catch (Throwable throwable) {
-                throw new RuntimeException(throwable);
-            }
+        public User rewardCreationPoints(String username, int points) {
+            throw new NotImplementedException();
         }
 
         @Override
-        protected <T> T withReadOnlyTransaction(F.Function0<T> function) {
-            return withTransaction(function);
+        public User rewardParticipationPoints(String username, int points) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public User rewardOtherPoints(String username, int points) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public List<User> getTopRatedUsers() {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,13 +1,12 @@
 package services;
 
-import domain.ChallengeCategory;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
+import domain.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+import services.stubs.ChallengesRepositoryStub;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -15,17 +14,20 @@ import static org.mockito.Mockito.mock;
 
 public class AcceptingChallengeResponseServiceTest {
 
-    private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
-    private final UsersRepository usersRepository = mock(UsersRepository.class);
+    private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
+    private final UsersRepository usersRepository = new UserServiceMainApiTest.UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
+    private final FacebookService facebookService = mock(FacebookService.class);
 
-    private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
+    private final ChallengeService challengeService = new ChallengeService(challengesRepository, new UserService(usersRepository),
+            challengeNotificationService, facebookService);
 
-    private final ChallengeService challengeService = new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
-    private final String challengeName = "challengeName";
 
-    private static ChallengeParticipation ANY_CHALLENGE_PARTICIPATION = mock(ChallengeParticipation.class);
-    private final ChallengeResponse challengeResponse = new ChallengeResponse(ANY_CHALLENGE_PARTICIPATION);
+    private final User challengeCreator = new User("creatorUsername");
+    private final User challengeParticipator = new User("creatorUsername");
+    private final Challenge challenge = new Challenge(challengeCreator, "challengeName", ChallengeCategory.ALL, 0);
+    private final ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, challengeParticipator);
+    private final ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -49,14 +51,14 @@ public class AcceptingChallengeResponseServiceTest {
         challengeService.acceptChallengeResponse(challengeResponse);
     }
 
-    private void decideOnResponseInAnyWay(ChallengeResponse challengeResponse) {
-        challengeService.acceptChallengeResponse(challengeResponse);
-    }
-
     @Test
     public void shouldThrowExceptionWhenTryToRefuseAlreadyDecidedResponse() throws Exception {
         decideOnResponseInAnyWay(challengeResponse);
         expectedException.expect(RuntimeException.class);
         challengeService.refuseChallengeResponse(challengeResponse);
+    }
+
+    private void decideOnResponseInAnyWay(ChallengeResponse challengeResponse) {
+        challengeService.acceptChallengeResponse(challengeResponse);
     }
 }

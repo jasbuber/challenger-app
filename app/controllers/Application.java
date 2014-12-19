@@ -156,7 +156,7 @@ public class Application extends Controller {
                     .createChallenge(getLoggedInUsername(), challenge.getChallengeName(),
                             challenge.getChallengeCategory(), challenge.getChallengeVisibility(),
                             challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename(),
-                            challenge.getDifficulty());
+                            challenge.getDifficulty(), new VideoUploadingStrategy(getFacebookService()));
         } catch(UploadVideoFileException exc) {
             return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, exc);
         }

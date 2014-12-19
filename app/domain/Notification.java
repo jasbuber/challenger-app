@@ -49,18 +49,6 @@ public class Notification {
     protected Notification() {
     }
 
-    public Notification(User user, String notificationMsg) {
-        this.user = user;
-        this.notificationMsg = notificationMsg;
-    }
-
-    public Notification(User user, NotificationType type, String notificationMsg, String shortNotificationMsg) {
-        this.user = user;
-        this.notificationMsg = notificationMsg;
-        this.shortNotificationMsg = shortNotificationMsg;
-        this.notificationType = type;
-    }
-
     public Notification(User user, NotificationType type, String notificationMsg, String shortNotificationMsg, String relevantObjectId) {
         this.user = user;
         this.notificationMsg = notificationMsg;

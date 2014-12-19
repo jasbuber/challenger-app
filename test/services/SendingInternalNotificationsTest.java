@@ -4,6 +4,7 @@ import domain.Notification;
 import domain.User;
 import org.junit.Test;
 import repositories.InternalNotificationsRepository;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class SendingInternalNotificationsTest {
 
     private final InternalNotificationsRepository internalNotificationsRepository = new InternalNotificationsRepositoryStub();
     private final NotificationService notificationService =
-            new InternalNotificationServiceWithoutTransactionMgmt(internalNotificationsRepository);
+            new InternalNotificationService(internalNotificationsRepository);
 
     private boolean hasUserAnyNotification(User user) {
         return notificationService.getNotificationsFor(user, 0).size() > 0;
@@ -95,7 +96,11 @@ public class SendingInternalNotificationsTest {
 
         @Override
         public List<Notification> getNotificationsFor(User user, int offset) {
-            return usersNotifications.get(user);
+            List<Notification> userNotifications = usersNotifications.get(user);
+            if(userNotifications == null) {
+                return Collections.emptyList();
+            }
+            return userNotifications;
         }
 
         @Override
@@ -122,6 +127,36 @@ public class SendingInternalNotificationsTest {
                 usersNotifications.get(user).add(notification);
             }
             return notification;
+        }
+
+        @Override
+        public Long getNumberOfUnreadNotifications(User user) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public List<Notification> addNotifications(List<Notification> notifications) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public long getNotificationsNrFor(User user) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public List<Notification> getNewestNotificationsForUser(User user) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public List<Notification> getNewestUnreadNotificationsForUser(User user) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Notification getNotification(long id) {
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,6 +7,7 @@ import domain.User;
 import org.junit.Test;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+import services.stubs.ChallengesRepositoryStub;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +19,10 @@ import static org.mockito.Mockito.mock;
 public class ChallengeServiceMainApiTest {
 
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
-    private final UsersRepository usersRepository = new UsersRepositoryStub();
+    private final UsersRepository usersRepository = new UserServiceMainApiTest.UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
+    private final FacebookService facebookService = mock(FacebookService.class);
+    private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
@@ -27,12 +30,9 @@ public class ChallengeServiceMainApiTest {
 
     private final String challengeName = "challengeName";
 
-    private final static String SOME_VIDEO_ID = "videoId";
-    private final Boolean VISIBILITY_PRIVATE = false;
 
-
-    private ChallengeServiceWithoutTransactionMgmt createChallengeService() {
-        return new ChallengeServiceWithoutTransactionMgmt(challengesRepository, usersRepository, challengeNotificationService);
+    private ChallengeService createChallengeService() {
+        return new ChallengeService(challengesRepository, new UserService(usersRepository), challengeNotificationService, facebookService);
     }
 
     @Test
@@ -79,63 +79,8 @@ public class ChallengeServiceMainApiTest {
     }
 
     private Challenge createChallenge(String user) {
-        return new Challenge(new User(user), challengeName, SOME_CATEGORY, 0);
-    }
-
-
-
-
-
-    private final static class ChallengesRepositoryStub extends ChallengesRepository {
-
-        private User challengeCreator;
-        private String challengeName;
-
-        private Challenge challengeParticipatedIn;
-        private User userWhichParticipates;
-
-        private Boolean visibility;
-
-        @Override
-        public Challenge createChallenge(Challenge challenge) {
-            this.challengeCreator = challenge.getCreator();
-            this.challengeName = challenge.getChallengeName();
-            return challenge;
-        }
-
-        @Override
-        public boolean isChallengeWithGivenNameExistsForUser(String challengeName, String creatorUsername) {
-            return challengeName.equalsIgnoreCase(this.challengeName) && createUserStub(creatorUsername).equals(challengeCreator);
-        }
-
-        @Override
-        public ChallengeParticipation persistChallengeParticipation(ChallengeParticipation challengeParticipation) {
-            this.challengeParticipatedIn = challengeParticipation.getChallenge();
-            this.userWhichParticipates = challengeParticipation.getParticipator();
-            return challengeParticipation;
-        }
-
-        @Override
-        public boolean isUserParticipatingInChallenge(Challenge challenge, String participator) {
-            return challenge.equals(challengeParticipatedIn) && createUserStub(participator).equals(userWhichParticipates);
-        }
-
-        @Override
-        public List<User> getAllParticipatorsOf(Challenge challenge) {
-            return Collections.emptyList();
-        }
-
-        private User createUserStub(String username) {
-            return new User(username);
-        }
-    }
-
-    private final static class UsersRepositoryStub extends UsersRepository {
-
-        @Override
-        public User getUser(String username) {
-            return new User(username);
-        }
+        usersRepository.createUser(user);
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, true, Collections.<String>emptyList(), null, null, 0, videoUploadingStrategy);
     }
 
 }

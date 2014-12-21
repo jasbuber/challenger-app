@@ -190,7 +190,7 @@ public class Challenge {
     }
 
     public String getFormattedDifficulty() {
-        if(DifficultyLevel.values().length <= difficulty){
+        if(DifficultyLevel.values().length <= difficulty || difficulty < 0){
             return DifficultyLevel.easy.toString();
         }
 
@@ -202,6 +202,9 @@ public class Challenge {
     }
 
     public void addRating(int rating){
+        if(rating < 1 || rating > 5){
+            return;
+        }
         this.rating = ((this.rating * this.participatorsRatedNr) + (float) rating)/ ++this.participatorsRatedNr;
     }
 

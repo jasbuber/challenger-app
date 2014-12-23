@@ -1,14 +1,17 @@
 package services.stubs;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import domain.FacebookUser;
 import domain.User;
 import org.apache.commons.lang3.StringUtils;
 import repositories.UsersRepository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class UserRepositoryStub extends UsersRepository {
 
@@ -44,17 +47,25 @@ public class UserRepositoryStub extends UsersRepository {
 
     @Override
     public User getUser(String username) {
-        return users.get(StringUtils.lowerCase(username));
+        User user = users.get(StringUtils.lowerCase(username));
+        if(user == null) {
+            throw new IllegalStateException("User not in repository");
+        }
+        return user;
     }
 
     @Override
     public User rewardCreationPoints(String username, int points) {
-        throw new NotImplementedException();
+        User user = users.get(StringUtils.lowerCase(username));
+        user.addCreationPoints(points);
+        return user;
     }
 
     @Override
     public User rewardParticipationPoints(String username, int points) {
-        throw new NotImplementedException();
+        User user = users.get(StringUtils.lowerCase(username));
+        user.addParticipationPoints(points);
+        return user;
     }
 
     @Override
@@ -64,7 +75,12 @@ public class UserRepositoryStub extends UsersRepository {
 
     @Override
     public List<User> getTopRatedUsers() {
-        throw new NotImplementedException();
+        return Ordering.from(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getAllPoints().compareTo(o2.getAllPoints());
+            }
+        }).reverse().sortedCopy(users.values());
     }
 
 }

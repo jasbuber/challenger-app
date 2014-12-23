@@ -160,16 +160,25 @@ public class User {
     }
 
     public Integer addCreationPoints(int points){
+        if(points <= 0 || points > SPECIAL_REWARD){
+            return this.creationPoints;
+        }
         this.creationPoints += points;
         return this.creationPoints;
     }
 
     public Integer addParticipationPoints(int points){
+        if(points <= 0 || points > SPECIAL_REWARD){
+            return this.participationPoints;
+        }
         this.participationPoints += points;
         return this.participationPoints;
     }
 
     public Integer addOtherPoints(int points){
+        if(points <= 0 || points > SPECIAL_REWARD){
+            return this.otherPoints;
+        }
         this.otherPoints += points;
         return this.otherPoints;
     }

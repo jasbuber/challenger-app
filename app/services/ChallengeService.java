@@ -46,7 +46,7 @@ public class ChallengeService extends TransactionalBase {
                 throw new IllegalArgumentException("Participants must be selected for private challenge creation. Challenge name: " + challengeName);
             }
 
-            List<User> participants = addParicipantToChallenge(challenge, challengeParticipants);
+            List<User> participants = addParticipantsToChallenge(challenge, challengeParticipants);
             notificationService.notifyAboutNewPrivateChallenge(challenge, participants);
 
         }
@@ -63,7 +63,7 @@ public class ChallengeService extends TransactionalBase {
         return challengeParticipants != null && challengeParticipants.size() > 0;
     }
 
-    private List<User> addParicipantToChallenge(Challenge newChallenge, List<String> participants) {
+    private List<User> addParticipantsToChallenge(Challenge newChallenge, List<String> participants) {
         List<User> userParticipants = new ArrayList<User>();
         for (String p : participants) {
 
@@ -122,7 +122,7 @@ public class ChallengeService extends TransactionalBase {
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername, String participatorName) {
 
-        if (!isUserParticipatingInChallenge(challenge, participatorUsername)) {
+        if (!isUserParticipatingInChallengeButNotResponded(challenge, participatorUsername)) {
             throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
         }
 
@@ -136,6 +136,10 @@ public class ChallengeService extends TransactionalBase {
 
     public boolean isUserParticipatingInChallenge(final Challenge challenge, final String user) {
         return challengesRepository.isUserParticipatingInChallenge(challenge, user);
+    }
+
+    public boolean isUserParticipatingInChallengeButNotResponded(final Challenge challenge, final String user) {
+        return challengesRepository.isUserParticipatingInChallengeButNotResponded(challenge, user);
     }
 
     public boolean isUserRespondedToChallenge(final Challenge challenge, final String user) {

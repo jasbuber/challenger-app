@@ -32,7 +32,7 @@
                                 <div id="challenge-details">
                                     <div class="challenge-details-name-wrapper">
                                         <span class="challenge-details-name">
-                                            @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)){
+                                            @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted )){
                                                 <a class="challenge-details-leave-action" href="#">
                                                     <img class="has-tooltip" src="@routes.Assets.at("images/trash_small.png")" data-togle="tooltip" data-placement="top" title="Leave the challenge."/>
                                                 </a>

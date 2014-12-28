@@ -574,6 +574,8 @@ $(document).ready(function () {
                     $star.parents('div').tooltip('show');
                     $star.addClass("active-rating-star");
 
+                    $(".challenge-details-leave-action").remove();
+
                     if(customResponse.rewardedPoints > 0) {
                         rewardAllPoints(customResponse.messages, customResponse.points);
                     }

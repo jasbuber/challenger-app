@@ -58,6 +58,18 @@ public class ChallengesRepository {
         return usernameUsersParticipatingNr > 0;
     }
 
+    public boolean isUserParticipatingInChallengeButNotResponded(Challenge challenge, String participatorUsername) {
+        Query usernameUsersParticipatingNrQuery = JPA.em().createQuery("SELECT count(p) " +
+                "FROM ChallengeParticipation p " +
+                "WHERE p.challenge = :challenge " +
+                "AND p.isResponseSubmitted != 'Y' " +
+                "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
+        usernameUsersParticipatingNrQuery.setParameter("challenge", challenge);
+        usernameUsersParticipatingNrQuery.setParameter("participatorUsername", participatorUsername);
+        Long usernameUsersParticipatingNr = (Long) usernameUsersParticipatingNrQuery.getSingleResult();
+        return usernameUsersParticipatingNr > 0;
+    }
+
     public boolean isUserRespondedToChallenge(Challenge challenge, String participatorUsername) {
         Query usernameUsersParticipatingNrQuery = JPA.em().createQuery("SELECT count(r) " +
                 "FROM ChallengeResponse r " +

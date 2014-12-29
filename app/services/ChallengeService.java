@@ -123,7 +123,7 @@ public class ChallengeService extends TransactionalBase {
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername, String participatorName) {
 
         if (!isUserParticipatingInChallengeButNotResponded(challenge, participatorUsername)) {
-            throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge " + challenge);
+            throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge or already responded" + challenge);
         }
 
         User participator = userService.getExistingUser(participatorUsername);

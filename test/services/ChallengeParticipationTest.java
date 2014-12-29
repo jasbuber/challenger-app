@@ -29,7 +29,6 @@ public class ChallengeParticipationTest {
     private final ChallengeService challengeService = createChallengeService();
 
     private final String challengeName = "challengeName";
-    private final String userId = "1123123";
     private final String user = "username";
     private User challengeCreator;
 
@@ -70,7 +69,7 @@ public class ChallengeParticipationTest {
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
         //when
         ChallengeParticipation challengeParticipation =
-                challengeService.participateInChallenge(challenge, userId, user);
+                challengeService.participateInChallenge(challenge, user, user);
 
         //then
         assertTrue(challengeParticipation != null);

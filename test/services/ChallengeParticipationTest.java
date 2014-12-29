@@ -64,7 +64,7 @@ public class ChallengeParticipationTest {
 
     @Test
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
-        usersRepository.createUser(userId);
+        usersRepository.createUser(user);
         //when
         ChallengeParticipation challengeParticipation =
                 challengeService.participateInChallenge(challenge, user, user);

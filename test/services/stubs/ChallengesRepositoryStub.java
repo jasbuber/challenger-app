@@ -27,6 +27,7 @@ public class ChallengesRepositoryStub extends ChallengesRepository {
     private final Map<Long, ChallengeResponse> challengeResponses = new HashMap<Long, ChallengeResponse>();
 
     private long challengeIdGenerator = 0L;
+    private long challengeResponseIdGenerator = 0L;
 
     @Override
     public Challenge createChallenge(Challenge challenge) {
@@ -64,7 +65,9 @@ public class ChallengesRepositoryStub extends ChallengesRepository {
 
     @Override
     public boolean deleteChallengeParticipation(Challenge challenge, User user) {
-        throw new NotImplementedException();
+        ChallengeParticipation participation = getChallengeParticipation(challenge, user.getUsername());
+        challengeParticipations.get(challenge).remove(participation);
+        return true;
     }
 
     @Override
@@ -85,24 +88,68 @@ public class ChallengesRepositoryStub extends ChallengesRepository {
     }
 
     @Override
+    public boolean isUserParticipatingInChallengeButNotResponded(Challenge challenge, final String participatorUsername) {
+        List<ChallengeParticipation> participationsOfChallenge = challengeParticipations.get(challenge);
+        if(participationsOfChallenge == null) {
+            participationsOfChallenge = new ArrayList<ChallengeParticipation>();
+        }
+
+        Collection<ChallengeParticipation> challengeParticipationsOfUser = Collections2.filter(participationsOfChallenge, new Predicate<ChallengeParticipation>() {
+            @Override
+            public boolean apply(@Nullable ChallengeParticipation input) {
+                return input.getParticipator().getUsername().equals(lowerCase(participatorUsername)) && !input.isResponseSubmitted();
+            }
+        });
+
+        return challengeParticipationsOfUser.size() > 0;
+    }
+
+    @Override
     public boolean isUserRespondedToChallenge(Challenge challenge, String participatorUsername) {
         throw new NotImplementedException();
     }
 
     @Override
     public ChallengeResponse addChallengeResponse(ChallengeResponse challengeResponse) {
-        challengeResponses.put(challengeResponse.getId(), challengeResponse);
+
+        long id = challengeResponseIdGenerator++;
+        setIdOfChallengeResponse(id, challengeResponse);
+
+        challengeResponses.put(id, challengeResponse);
+
+        List<ChallengeParticipation> participationsOfChallenge =
+                challengeParticipations.get(challengeResponse.getChallengeParticipation().getChallenge());
+
+        int participationIndex = participationsOfChallenge.indexOf(challengeResponse.getChallengeParticipation());
+
+        participationsOfChallenge.get(participationIndex).submit();
+
         return challengeResponse;
     }
 
     @Override
-    public ChallengeParticipation getChallengeParticipation(Challenge challenge, String participatorUsername) {
-        throw new NotImplementedException();
+    public ChallengeParticipation getChallengeParticipation(Challenge challenge, final String participatorUsername) {
+        List<ChallengeParticipation> participationsOfChallenge = challengeParticipations.get(challenge);
+
+        for(ChallengeParticipation participation : participationsOfChallenge){
+            if(participation.getParticipator().getUsername().equals(participatorUsername)){
+                return participation;
+            }
+        }
+        return null;
     }
 
     @Override
-    public boolean isNotEvaluatedChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
-        throw new NotImplementedException();
+    public boolean isNotEvaluatedChallengeResponseExistsFor(final ChallengeParticipation challengeParticipation) {
+
+        Collection<ChallengeResponse> decidedResponsesForParticipation = Collections2.filter(challengeResponses.values(), new Predicate<ChallengeResponse>() {
+            @Override
+            public boolean apply(@Nullable ChallengeResponse input) {
+                return input.getChallengeParticipation().equals(challengeParticipation) && !input.isDecided();
+            }
+        });
+
+        return decidedResponsesForParticipation.size() > 0;
     }
 
     @Override
@@ -185,7 +232,7 @@ public class ChallengesRepositoryStub extends ChallengesRepository {
 
     @Override
     public ChallengeResponse getChallengeResponse(long id) {
-        throw new NotImplementedException();
+        return challengeResponses.get(id);
     }
 
     @Override
@@ -313,5 +360,20 @@ public class ChallengesRepositoryStub extends ChallengesRepository {
             Assert.fail();
         }
         return challenge;
+    }
+
+    private ChallengeResponse setIdOfChallengeResponse(long id, ChallengeResponse response)  {
+        try {
+            Field challengeIdField = ChallengeResponse.class.getDeclaredField("id");
+            challengeIdField.setAccessible(true);
+            challengeIdField.set(response, id);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        return response;
     }
 }

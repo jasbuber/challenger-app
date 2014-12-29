@@ -8,6 +8,7 @@ import repositories.UsersRepository;
 import services.stubs.ChallengesRepositoryStub;
 import services.stubs.UserRepositoryStub;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static junit.framework.Assert.assertFalse;
@@ -39,6 +40,28 @@ public class ChallengeServiceMainApiTest {
 
         //then
         assertTrue(challenge != null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreatePrivateChallengeWithoutParticipants(){
+        usersRepository.createUser("username");
+        challengeService.createChallenge("username", challengeName, SOME_CATEGORY, false, Collections.<String>emptyList(), null, null, 0, videoUploadingStrategy);
+    }
+
+    @Test
+    public void testCreatePrivateChallenge(){
+        usersRepository.createUser("username");
+        usersRepository.createUser("participant1");
+        usersRepository.createUser("participant2");
+        usersRepository.createUser("notParticipant");
+
+        Challenge challenge = challengeService.createChallenge("username", challengeName, SOME_CATEGORY, false,
+                Arrays.asList(new String[]{"participant1,Guy,One,photo1","participant2,Guy,Two,photo2"}), null, null,
+                0, videoUploadingStrategy);
+
+        assertTrue(challengeService.isUserParticipatingInChallenge(challenge, "participant1"));
+        assertTrue(challengeService.isUserParticipatingInChallenge(challenge, "participant1"));
+        assertFalse(challengeService.isUserParticipatingInChallenge(challenge, "notParticipant"));
     }
 
     @Test(expected = IllegalStateException.class)

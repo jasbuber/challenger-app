@@ -1,9 +1,6 @@
 package services;
 
-import domain.Challenge;
-import domain.ChallengeCategory;
-import domain.ChallengeParticipation;
-import domain.User;
+import domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import repositories.ChallengesRepository;
@@ -68,6 +65,7 @@ public class ChallengeParticipationTest {
 
     @Test
     public void shouldCreateChallengeParticipationForUserAndChallenge() throws Exception {
+        usersRepository.createUser(userId);
         //when
         ChallengeParticipation challengeParticipation =
                 challengeService.participateInChallenge(challenge, userId, user);
@@ -116,4 +114,69 @@ public class ChallengeParticipationTest {
             challengeService.participateInChallenge(challenge, "participator" + i, "participator" + i);
         }
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void testLeaveChallengeWhenNotParticipating(){
+        User participator = usersRepository.createUser("participator");
+        challengeService.leaveChallenge(challenge, "participator", "");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testLeaveChallengeWhenAlreadySubmitted(){
+        User participator = usersRepository.createUser("participator");
+
+        challengeService.participateInChallenge(challenge, "participator", "");
+        challengeService.submitChallengeResponse(challengeService.getChallengeParticipation(challenge, "participator"), "", "");
+        challengeService.leaveChallenge(challenge, "participator", "");
+    }
+
+    @Test
+    public void testLeaveChallenge(){
+        User participator = usersRepository.createUser("participator");
+        challengeService.participateInChallenge(challenge, "participator", "");
+        assertTrue(challengeService.isUserParticipatingInChallenge(challenge, "participator"));
+        challengeService.leaveChallenge(challenge, "participator", "");
+        assertFalse(challengeService.isUserParticipatingInChallenge(challenge, "participator"));
+    }
+
+    /* Should be move to SubmittingChallengeResponseTest after clean up with old mocking system */
+    @Test
+    public void testAcceptResponse(){
+        ChallengeResponse response = challengeService.acceptChallengeResponse(
+                challengeService.getChallengeResponse(createChallengeResponse()));
+        assertTrue(response.isAccepted());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testTryToAcceptResponseMultipleTimes(){
+        ChallengeResponse response = challengeService.acceptChallengeResponse(
+                challengeService.getChallengeResponse(createChallengeResponse()));
+
+        challengeService.acceptChallengeResponse(response);
+    }
+
+    @Test
+    public void testRefuseResponse(){
+        ChallengeResponse response = challengeService.refuseChallengeResponse(
+                challengeService.getChallengeResponse(createChallengeResponse()));
+        assertFalse(response.isAccepted());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testTryToRefuseResponseMultipleTimes(){
+        ChallengeResponse response = challengeService.refuseChallengeResponse(
+                challengeService.getChallengeResponse(createChallengeResponse()));
+
+        challengeService.refuseChallengeResponse(response);
+    }
+
+    private long createChallengeResponse(){
+
+        User participator = usersRepository.createUser("participator");
+        challengeService.participateInChallenge(challenge, "participator", "");
+
+        return challengeService.submitChallengeResponse(
+                challengeService.getChallengeParticipation(challenge, "participator"), "", "").getId();
+    }
+
 }

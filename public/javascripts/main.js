@@ -854,6 +854,7 @@ $(document).ready(function () {
 
                     $comments.prepend($newComment);
                     $comments.find(".newly-added-comment").show("slow");
+                    $(".new-comment").slideUp();
                 }
                 else {
                     var fields = jQuery.parseJSON(response);

@@ -108,7 +108,7 @@
                             <h4>Comments</h4>
                             <div class="new-comment">
                                 @helper.form(action = routes.Application.ajaxSubmitComment(), 'method -> "POST", 'enctype -> "multipart/form-data", 'class -> "new-comment-form") {
-                                    <textarea name="message"></textarea>
+                                    <textarea name="message" placeholder="Write your comment here..."></textarea>
                                     <div><input type="submit" class="btn btn-hg btn-primary" value="Submit" /></div>
                                     <input type="hidden" name="relevantObjectId" value="@challenge.getId"/>
                                     <input type="hidden" id="current-username" value="@firstName"/>

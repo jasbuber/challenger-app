@@ -592,11 +592,11 @@ public class Application extends Controller {
     }
 
     @play.db.jpa.Transactional
-    public static Result ajaxLeaveChallenge(String challengeId) {
+    public static Result ajaxLeaveChallenge(long challengeId) {
 
         ChallengeService service = Application.getChallengeService();
 
-        Challenge challenge = service.getChallenge(Long.parseLong(challengeId));
+        Challenge challenge = service.getChallenge(challengeId);
 
         service.leaveChallenge(challenge, getLoggedInUsername(), getLoggedInName());
 

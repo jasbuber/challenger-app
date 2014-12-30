@@ -62,7 +62,7 @@ public class ChallengesRepository {
         Query usernameUsersParticipatingNrQuery = JPA.em().createQuery("SELECT count(p) " +
                 "FROM ChallengeParticipation p " +
                 "WHERE p.challenge = :challenge " +
-                "AND p.isResponseSubmitted != 'Y' " +
+                "AND p.isResponseSubmitted IS NULL " +
                 "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
         usernameUsersParticipatingNrQuery.setParameter("challenge", challenge);
         usernameUsersParticipatingNrQuery.setParameter("participatorUsername", participatorUsername);

@@ -234,6 +234,29 @@ $(document).ready(function () {
 
     $('#create-challenge-form').submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if(!$("#challengeName").val()) {
+            alertify.error("You forgot to type the challenge name, you know...");
+            $hasErrors = true;
+
+        } else if($("#challengeName").val().length < 5){
+            alertify.error("Challenge name should be at least 5 characters long. Just because :P");
+            $hasErrors = true;
+        }
+        if(!$("input[name='video-description']").val()){
+            alertify.error("Upload a video description...");
+            $hasErrors = true;
+        }
+        if($(".friend-item").size() == 0 && $("#challenge-visibility").val() == 0){
+            alertify.error("You didn't select any of your friends. Challenge someone or make the challenge public.");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         NProgress.start();
 
         $(this).ajaxSubmit({
@@ -265,7 +288,6 @@ $(document).ready(function () {
                 NProgress.done();
             }
         });
-        e.preventDefault();
 
     });
 
@@ -480,6 +502,17 @@ $(document).ready(function () {
 
     $('#upload-response-form').submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if(!$("input[name='video-description']").val()){
+            alertify.error("You need to choose a video response...");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         NProgress.start();
 
         $(this).ajaxSubmit({
@@ -524,7 +557,6 @@ $(document).ready(function () {
                 NProgress.done();
             }
         });
-        e.preventDefault();
 
     });
 
@@ -769,6 +801,20 @@ $(document).ready(function () {
 
     $(".new-comment-form").submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if($("textarea[name='message']").val().length == 0){
+            alertify.error("If you want to post a comment, write it first -_-");
+            $hasErrors = true;
+        }else if($("textarea[name='message']").val().length > 250){
+            alertify.error("Only 250 characters allowed. It's just a comment, not a poem ;]");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         $(this).ajaxSubmit({
             success: function (response) {
                 var customResponse = jQuery.parseJSON(response);
@@ -799,7 +845,6 @@ $(document).ready(function () {
                 }
             }
         });
-        e.preventDefault();
     });
 
     $(document).on("click", ".show-more-participants", function(){

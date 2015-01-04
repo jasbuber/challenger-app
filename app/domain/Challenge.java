@@ -15,7 +15,7 @@ public class Challenge {
     public static enum DifficultyLevel { easy, medium, hard, special }
 
     @Id
-    @SequenceGenerator(name = "CHALLENGE_SEQ_GEN", sequenceName = "CHALLENGE_SEQ")
+    @SequenceGenerator(name = "CHALLENGE_SEQ_GEN", sequenceName = "CHALLENGE_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_SEQ_GEN")
     private Long id;
 

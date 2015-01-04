@@ -170,13 +170,14 @@ public class ChallengesRepository {
         return (Long) completedChallengesQuery.getSingleResult();
     }
 
+    //TODO check fixed group by
     public List getChallengesWithParticipantsNrForUser(String creatorUsername, int offsetIndex) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
-                "GROUP BY c.challengeName " +
+                "GROUP BY c.challengeName, c.creationDate, c.id " +
                 "ORDER BY c.creationDate DESC");
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         completedChallengesQuery.setFirstResult(calculateOffsetNumber(offsetIndex));
@@ -184,26 +185,28 @@ public class ChallengesRepository {
         return completedChallengesQuery.getResultList();
     }
 
+    //TODO check fixed group by
     public List getLatestChallengesWithParticipantsNrForUser(String creatorUsername) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(c.creator.username) = LOWER(:creatorUsername) " +
-                "GROUP BY c.challengeName " +
+                "GROUP BY c.challengeName, c.creationDate, c.id " +
                 "ORDER BY c.creationDate DESC");
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         completedChallengesQuery.setMaxResults(3);
         return completedChallengesQuery.getResultList();
     }
 
+    //TODO check fixed group by
     public List getChallengeParticipationsWithParticipantsNrForUser(String participatorUsername, int offsetIndex) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id, p.endingDate, p.joined, p.isResponseSubmitted " +
                 "FROM ChallengeParticipation p " +
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
-                "GROUP BY c.challengeName " +
+                "GROUP BY c.challengeName, c.creationDate, c.id, p.endingDate, p.joined, p.isResponseSubmitted, p.endingDate " +
                 "ORDER BY p.endingDate ASC");
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         completedChallengesQuery.setFirstResult(calculateOffsetNumber(offsetIndex));
@@ -211,13 +214,14 @@ public class ChallengesRepository {
         return completedChallengesQuery.getResultList();
     }
 
+    //TODO check fixed group by
     public List getLastestParticipationsWithParticipantsNrForUser(String participatorUsername) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
                 "FROM ChallengeParticipation p " +
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "AND LOWER(p.participator.username) = LOWER(:participatorUsername) " +
-                "GROUP BY c.challengeName " +
+                "GROUP BY c.challengeName, c.creationDate, c.id, p.joined " +
                 "ORDER BY p.joined DESC");
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         completedChallengesQuery.setMaxResults(3);
@@ -233,10 +237,11 @@ public class ChallengesRepository {
         return challenge;
     }
 
+    //TODO fix train-wreck in where clause
     public List<ChallengeResponse> getResponsesForChallenge(long challengeId) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT r " +
                 "FROM ChallengeResponse r " +
-                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)" +
+                "WHERE r.challengeParticipation.challenge.id = :challengeId " +
                 "ORDER BY r.submitted DESC");
         completedChallengesQuery.setParameter("challengeId", challengeId);
         return completedChallengesQuery.getResultList();
@@ -245,7 +250,7 @@ public class ChallengesRepository {
     public Long getResponsesNrForChallenge(long challengeId) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
                 "FROM ChallengeResponse r " +
-                "WHERE LOWER(r.challengeParticipation.challenge.id) = LOWER(:challengeId)");
+                "WHERE r.challengeParticipation.challenge.id = :challengeId");
         completedChallengesQuery.setParameter("challengeId", challengeId);
         return (Long) completedChallengesQuery.getSingleResult();
     }
@@ -263,6 +268,7 @@ public class ChallengesRepository {
         return challengeParticipationsQuery.getResultList();
     }
 
+    //TODO add brackets to where clause to make it more readable
     public List<Challenge> getCompletedChallenges(String username) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT DISTINCT c " +
                 "FROM Challenge c " +
@@ -401,12 +407,13 @@ public class ChallengesRepository {
         return trendingChallengesQuery.getResultList();
     }
 
+    //TODO check fixed group by
     public List getMostPopularChallenges() {
         Query mostPopularChallenges = JPA.em().createQuery("SELECT c.id, c.challengeName as name, count(p) " +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
-                "GROUP BY c.challengeName " +
+                "GROUP BY c.challengeName, c.id " +
                 "ORDER BY count(p) DESC");
         mostPopularChallenges.setMaxResults(6);
         return mostPopularChallenges.getResultList();
@@ -415,7 +422,7 @@ public class ChallengesRepository {
     public List<Comment> getCommentsForChallenge(long challengeId, int offsetIndex){
         Query commentsQuery = JPA.em().createQuery("SELECT c " +
                 "FROM Comment c " +
-                "WHERE LOWER(c.relevantObjectId) = LOWER(:challengeId) " +
+                "WHERE c.relevantObjectId = :challengeId " +
                 "ORDER BY c.creationTimestamp DESC");
         commentsQuery.setParameter("challengeId", challengeId);
         commentsQuery.setFirstResult(calculateOffsetNumber(offsetIndex));
@@ -451,7 +458,7 @@ public class ChallengesRepository {
     public Long getCommentsNrForChallenge(long challengeId) {
         Query commentsNrQuery = JPA.em().createQuery("SELECT count(c) " +
                 "FROM Comment c " +
-                "WHERE LOWER(c.relevantObjectId) = LOWER(:challengeId)");
+                "WHERE c.relevantObjectId = :challengeId");
         commentsNrQuery.setParameter("challengeId", challengeId);
         return (Long) commentsNrQuery.getSingleResult();
     }

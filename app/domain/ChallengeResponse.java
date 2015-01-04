@@ -10,7 +10,7 @@ import java.util.Date;
 public class ChallengeResponse {
 
     @Id
-    @SequenceGenerator(name = "CHALLENGE_RESP_SEQ_GEN", sequenceName = "CHALLENGE_RESP_SEQ")
+    @SequenceGenerator(name = "CHALLENGE_RESP_SEQ_GEN", sequenceName = "CHALLENGE_RESP_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_RESP_SEQ_GEN")
     private Long id;
 

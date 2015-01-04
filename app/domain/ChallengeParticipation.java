@@ -18,7 +18,7 @@ import java.util.List;
 public class ChallengeParticipation {
 
     @Id
-    @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ")
+    @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_PART_SEQ_GEN")
     private Long id;
 

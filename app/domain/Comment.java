@@ -12,7 +12,7 @@ import java.util.Date;
 public class Comment {
 
     @Id
-    @SequenceGenerator(name = "COMMENTS_SEQ_GEN", sequenceName = "COMMENTS_SEQ")
+    @SequenceGenerator(name = "COMMENTS_SEQ_GEN", sequenceName = "COMMENTS_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMENTS_SEQ_GEN")
     private Long id;
 

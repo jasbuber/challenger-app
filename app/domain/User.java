@@ -17,7 +17,7 @@ public class User {
     public static final int SPECIAL_REWARD = 25;
 
     @Id
-    @SequenceGenerator(name = "USERS_SEQ_GEN", sequenceName = "USERS_SEQ")
+    @SequenceGenerator(name = "USERS_SEQ_GEN", sequenceName = "USERS_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ_GEN")
     private Long id;
 

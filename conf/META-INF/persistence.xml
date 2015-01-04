@@ -8,7 +8,6 @@
         <non-jta-data-source>DefaultDS</non-jta-data-source>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
-            <property name="hibernate.id.new_generator_mappings" value="true"/>
         </properties>
     </persistence-unit>
 

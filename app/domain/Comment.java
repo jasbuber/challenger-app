@@ -12,7 +12,8 @@ import java.util.Date;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "COMMENTS_SEQ_GEN", sequenceName = "COMMENTS_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMENTS_SEQ_GEN")
     private Long id;
 
     @ManyToOne

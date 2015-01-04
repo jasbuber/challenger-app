@@ -18,7 +18,8 @@ import java.util.List;
 public class ChallengeParticipation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_PART_SEQ_GEN")
     private Long id;
 
     @ManyToOne

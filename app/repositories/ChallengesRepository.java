@@ -4,6 +4,7 @@ import domain.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import play.db.jpa.JPA;
+import repositories.dtos.ChallengeWithParticipantsNr;
 
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
@@ -171,8 +172,9 @@ public class ChallengesRepository {
     }
 
     //TODO check fixed group by
-    public List getChallengesWithParticipantsNrForUser(String creatorUsername, int offsetIndex) {
-        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+    public List<ChallengeWithParticipantsNr> getChallengesWithParticipantsNrForUser(String creatorUsername, int offsetIndex) {
+        Query completedChallengesQuery = JPA.em().createQuery(
+                "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, c.creationDate, count(p), c.id) " +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
@@ -182,12 +184,13 @@ public class ChallengesRepository {
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         completedChallengesQuery.setFirstResult(calculateOffsetNumber(offsetIndex));
         completedChallengesQuery.setMaxResults(pagingRowNumber);
-        return completedChallengesQuery.getResultList();
+        return (List<ChallengeWithParticipantsNr>)completedChallengesQuery.getResultList();
     }
 
     //TODO check fixed group by
-    public List getLatestChallengesWithParticipantsNrForUser(String creatorUsername) {
-        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+    public List<ChallengeWithParticipantsNr> getLatestChallengesWithParticipantsNrForUser(String creatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery(
+                "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, c.creationDate, count(p), c.id) " +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
@@ -196,10 +199,10 @@ public class ChallengesRepository {
                 "ORDER BY c.creationDate DESC");
         completedChallengesQuery.setParameter("creatorUsername", creatorUsername);
         completedChallengesQuery.setMaxResults(3);
-        return completedChallengesQuery.getResultList();
+        return (List<ChallengeWithParticipantsNr>)completedChallengesQuery.getResultList();
     }
 
-    //TODO check fixed group by
+    //TODO check fixed group by -> group by in this definitions does not seem to work properly (participations are group by also by ending date and joined, count result may be wrong)
     public List getChallengeParticipationsWithParticipantsNrForUser(String participatorUsername, int offsetIndex) {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id, p.endingDate, p.joined, p.isResponseSubmitted " +
                 "FROM ChallengeParticipation p " +
@@ -215,8 +218,9 @@ public class ChallengesRepository {
     }
 
     //TODO check fixed group by
-    public List getLastestParticipationsWithParticipantsNrForUser(String participatorUsername) {
-        Query completedChallengesQuery = JPA.em().createQuery("SELECT c.challengeName as name, c.creationDate, count(p), c.id " +
+    public List<ChallengeWithParticipantsNr> getLastestParticipationsWithParticipantsNrForUser(String participatorUsername) {
+        Query completedChallengesQuery = JPA.em().createQuery(
+                "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, c.creationDate, count(p), c.id) " +
                 "FROM ChallengeParticipation p " +
                 "JOIN p.challenge c " +
                 "WHERE c.active = true " +
@@ -225,7 +229,7 @@ public class ChallengesRepository {
                 "ORDER BY p.joined DESC");
         completedChallengesQuery.setParameter("participatorUsername", participatorUsername);
         completedChallengesQuery.setMaxResults(3);
-        return completedChallengesQuery.getResultList();
+        return (List<ChallengeWithParticipantsNr>)completedChallengesQuery.getResultList();
     }
 
     public Challenge closeChallenge(long id){
@@ -408,15 +412,16 @@ public class ChallengesRepository {
     }
 
     //TODO check fixed group by
-    public List getMostPopularChallenges() {
-        Query mostPopularChallenges = JPA.em().createQuery("SELECT c.id, c.challengeName as name, count(p) " +
+    public List<ChallengeWithParticipantsNr> getMostPopularChallenges() {
+        Query mostPopularChallenges = JPA.em().createQuery(
+                "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, count(p), c.id)" +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
                 "WHERE c.active = true " +
                 "GROUP BY c.challengeName, c.id " +
                 "ORDER BY count(p) DESC");
         mostPopularChallenges.setMaxResults(6);
-        return mostPopularChallenges.getResultList();
+        return (List<ChallengeWithParticipantsNr>)mostPopularChallenges.getResultList();
     }
 
     public List<Comment> getCommentsForChallenge(long challengeId, int offsetIndex){

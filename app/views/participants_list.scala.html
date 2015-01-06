@@ -18,7 +18,7 @@
     </td>
     <td>@participation.getParticipator.getAllPoints</td>
     <td>@if(!participation.isOverdue && !participation.isResponseSubmitted) {
-      <div class="small-counter hidden-sm hidden-xs"></div>
+      <div class="small-counter"></div>
       <input class="time-left" type="hidden" value="@((participation.getEndingDate.getTime - System.currentTimeMillis) / 1000)"/>
     }</td>
     <input type="hidden" class="participant-username" value="@participation.getParticipator.getUsername"/>

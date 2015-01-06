@@ -504,6 +504,9 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     div#wrapper div#challenge-block-body div.form-wrapper,
     div#wrapper div#browse-block-body div.form-wrapper{ width: 98%; }
     div#wrapper div.single-body-block .challenges-wrapper{ display: none; }
+    div#wrapper div.single-body-block .padded-glyph-list-name{ width: 40%; }
+    div#wrapper div.challenge-participants-wrapper table thead tr th:nth-of-type(3){ display: none; }
+    div#wrapper div.challenge-participants-wrapper table tbody tr td:nth-of-type(3){ display: none; }
 
 }
 

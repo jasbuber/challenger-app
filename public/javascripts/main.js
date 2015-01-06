@@ -38,6 +38,10 @@ $(document).ready(function () {
         NProgress.done();
     });
 
+    $uiBlock.find("a").click(function(e){
+        e.preventDefault();
+    });
+
     $uiBlock.click(function () {
         if($(this).attr("id") != "share-block") {
             $(this).parents("#wrapper").height($(this).parents("#wrapper").height());

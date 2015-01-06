@@ -1,10 +1,10 @@
 @(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer, unreadNotificationsNr: Long,
         newestNotifications: java.util.List[domain.Notification], topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
-        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[Array[Object]])
+        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr])
 
 @main("Welcome to Challenge Application") {
   @menu(firstName, profilePicUrl, points, unreadNotificationsNr, newestNotifications)
-  <div id="wrapper">
+  <div id="wrapper" class="rankings-wrapper">
     <div id="rank-block-wrapper" class="ui-block-body">
     @rankings_content(username, topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges)
     </div>

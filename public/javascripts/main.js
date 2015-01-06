@@ -33,6 +33,11 @@ $(document).ready(function () {
         $uiBlock.css("height", $(".ui-block").width() / 1.2);
     });
 
+    $(document).ajaxError(function() {
+        alertify.error("An unexpected error occurred. Please try again...");
+        NProgress.done();
+    });
+
     $uiBlock.click(function () {
         if($(this).attr("id") != "share-block") {
             $(this).parents("#wrapper").height($(this).parents("#wrapper").height());

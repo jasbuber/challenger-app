@@ -1,5 +1,5 @@
-@(firstName: java.lang.String, currentUsername: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], responseForm: Form[CreateChallengeResponseForm],
-        unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video,
+@(firstName: java.lang.String, currentUsername: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestParticipations: java.util.List[Array[Object]], participationsSummary: java.util.List[repositories.dtos.ChallengeWithParticipantsNr],
+        responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video,
         currentResponse: domain.ChallengeResponse)
 
 @main("Welcome to Challenge Application") {
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
+            @glyphs_panel(challenges, participationsSummary, newestUnreadNotifications: java.util.List[domain.Notification])
         </div>
     </div>
 

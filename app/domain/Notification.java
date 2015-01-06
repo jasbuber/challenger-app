@@ -11,7 +11,8 @@ import java.util.Date;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "NOTIFICATIONS_SEQ_GEN", sequenceName = "NOTIFICATIONS_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTIFICATIONS_SEQ_GEN")
     private Long id;
 
     @Column(name = "IS_READ")

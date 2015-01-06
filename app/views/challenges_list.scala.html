@@ -1,11 +1,11 @@
-@(challenges: java.util.List[Array[Object]])
+@(challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr])
 
 @challenges.map { challenge =>
   <div class="padded-glyph-challenge">
-    <span><a href="@routes.Application.showParticipators(challenge.apply(3).asInstanceOf[Long])">
-      <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@challenge.apply(2) participants" alt="@challenge.apply(2) participants"
-      src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
+    <span><a href="@routes.Application.showParticipators(challenge.getChallengeId)">
+      <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@challenge.getParticipantsNr participants" alt="@challenge.getParticipantsNr participants"
+      src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.getParticipantsNr)) + "_medium.png")"/>
     </a></span>
-    <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(challenge.apply(3).asInstanceOf[Long])">@challenge.apply(0)</a></span>
+    <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(challenge.getChallengeId)">@challenge.getChallengeName</a></span>
   </div>
 }

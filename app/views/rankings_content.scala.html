@@ -1,5 +1,5 @@
 @(currentUsername: java.lang.String, topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
-        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[Array[Object]])
+        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr])
 
 <div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">
     Back</button></a></div>
@@ -58,8 +58,8 @@
             <table>
             @mostPopularChallenges.map { challenge =>
                 <tr>
-                    <td><a href="@routes.Application.showChallenge(challenge.apply(0).asInstanceOf[Long])">@challenge.apply(1)</a></td>
-                    <td><img src="@routes.Assets.at("images/speedometer.png")"/>@challenge.apply(2)</td>
+                    <td><a href="@routes.Application.showChallenge(challenge.getChallengeId)">@challenge.getChallengeName</a></td>
+                    <td><img src="@routes.Assets.at("images/speedometer.png")"/>@challenge.getParticipantsNr</td>
                 </tr>
             }
             </table>

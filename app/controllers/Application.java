@@ -14,6 +14,7 @@ import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.InternalNotificationsRepository;
 import repositories.UsersRepository;
+import repositories.dtos.ChallengeWithParticipantsNr;
 import services.*;
 import views.html.*;
 
@@ -23,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Application extends Controller {
@@ -63,7 +65,7 @@ public class Application extends Controller {
         List<User> topRatedUsers = getUsersService().getTopRatedUsers();
         List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
         List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
-        List mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+        List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
         return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
                 newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
@@ -121,7 +123,7 @@ public class Application extends Controller {
         List<User> topRatedUsers = getUsersService().getTopRatedUsers();
         List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
         List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
-        List mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+        List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
         return ok(rankings.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, unreadNotificationNr, newestNotifications,
                 topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
@@ -417,9 +419,9 @@ public class Application extends Controller {
         FacebookService fbService = Application.getFacebookService();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
 
-        List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
 
@@ -451,10 +453,10 @@ public class Application extends Controller {
         Integer points = currentUser.getAllPoints();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        List<ChallengeWithParticipantsNr> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
         long challengesNr = service.getChallengeNrForUser(getLoggedInUsername());
 
-        List<Object[]> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
@@ -701,8 +703,8 @@ public class Application extends Controller {
             List<ChallengeParticipation> challengeParticipants = getChallengeService().getParticipantsForChallenge(challengeId, 0);
             long participantsNr = service.getParticipantsNrForChallenge(challengeId);
 
-            List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
-            List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+            List<ChallengeWithParticipantsNr> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+            List<ChallengeWithParticipantsNr> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
             List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
             List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
             Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
@@ -729,8 +731,8 @@ public class Application extends Controller {
 
         ChallengeService service = Application.getChallengeService();
 
-        List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
-        List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
 
@@ -760,8 +762,8 @@ public class Application extends Controller {
         List<Notification> myNotifications = notificationService.getNotificationsFor(getLoggedInUser(), 0);
         long notificationsNr = notificationService.getNotificationsNrFor(getLoggedInUser());
 
-        List<Object[]> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
-        List<Object[]> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestChallenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> latestParticipations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
 
         String currentFirstName = currentUser.getFirstName();
@@ -838,7 +840,7 @@ public class Application extends Controller {
         ChallengeService service = Application.getChallengeService();
         User currentUser = Application.getLoggedInUser();
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        List<ChallengeWithParticipantsNr> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
         long challengesNr = service.getChallengeNrForUser(getLoggedInUsername());
 
         return ok(challenges_content.render(Application.getProfilePictureUrl(), challenges, challengesNr));
@@ -865,17 +867,28 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> challenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
 
         List<Object[]> myParticipations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        //TODO remove after fixing the getChallengeParticipationsWithParticipantsNrForUser Object array in return type
+        List<ChallengeWithParticipantsNr> participationsSummary = getSummaryFromFullParticipationData(myParticipations);
         long participationsNr = service.getParticipationsNrForUser(getLoggedInUsername());
 
         List<Notification> latestNotifications = getNotificationService().getNewestNotifications(currentUser);
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-        return ok(participations.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), myParticipations,
+        return ok(participations.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), myParticipations, participationsSummary,
                 challenges, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, participationsNr));
+    }
+
+    private static List<ChallengeWithParticipantsNr> getSummaryFromFullParticipationData(List<Object[]> myParticipations) {
+        List<ChallengeWithParticipantsNr> result = new ArrayList<ChallengeWithParticipantsNr>();
+        for (Object[] challengeWithParticipationsNrFull : myParticipations) {
+            result.add(new ChallengeWithParticipantsNr((String)challengeWithParticipationsNrFull[0], (Date)challengeWithParticipationsNrFull[1], (Long)challengeWithParticipationsNrFull[2], (Long)challengeWithParticipationsNrFull[3]));
+        }
+
+        return result;
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -903,8 +916,8 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
         Challenge currentChallenge = service.getChallenge(id);
 
-        List<Object[]> challenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
-        List<Object[]> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> challenges = service.getLatestChallengesWithParticipantsNrForUser(currentUser.getUsername());
+        List<ChallengeWithParticipantsNr> participations = service.getLatestChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername());
 
         Long challengeResponsesNr = service.getResponsesNrForChallenge(id);
         Boolean isCurrentUserRespondedToChallenge = service.isUserRespondedToChallenge(currentChallenge, currentUser.getUsername());
@@ -935,11 +948,13 @@ public class Application extends Controller {
         User currentUser = Application.getLoggedInUser();
         Form<CreateChallengeResponseForm> responseForm = Form.form(CreateChallengeResponseForm.class);
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        List<ChallengeWithParticipantsNr> challenges = service.getChallengesWithParticipantsNrForUser(currentUser.getUsername(), 0);
 
         Challenge currentChallenge = service.getChallenge(id);
 
         List<Object[]> participations = service.getChallengeParticipationsWithParticipantsNrForUser(currentUser.getUsername(), 0);
+        //TODO remove after fixing the getChallengeParticipationsWithParticipantsNrForUser Object array in return type
+        List<ChallengeWithParticipantsNr> participationsSummary = getSummaryFromFullParticipationData(participations);
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(id);
 
@@ -967,9 +982,8 @@ public class Application extends Controller {
         List<Notification> latestUnreadNotifications = getNotificationService().getNewestUnreadNotifications(currentUser);
         Long currentUnreadNotificationsNr = getNotificationService().getNumberOfUnreadNotifications(currentUser);
 
-
         return ok(challenge_responses.render(currentUser.getFirstName(), getLoggedInUsername(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges,
-                participations, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, responses, currentChallenge, video, currentResponse));
+                participations, participationsSummary, responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, responses, currentChallenge, video, currentResponse));
     }
 
     @play.db.jpa.Transactional
@@ -1026,7 +1040,7 @@ public class Application extends Controller {
 
         ChallengeService service = Application.getChallengeService();
 
-        List<Object[]> challenges = service.getChallengesWithParticipantsNrForUser(getLoggedInUsername(), offset);
+        List<ChallengeWithParticipantsNr> challenges = service.getChallengesWithParticipantsNrForUser(getLoggedInUsername(), offset);
 
         return ok(challenges_list.render(challenges));
     }

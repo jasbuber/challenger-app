@@ -15,7 +15,8 @@ public class Challenge {
     public static enum DifficultyLevel { easy, medium, hard, special }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "CHALLENGE_SEQ_GEN", sequenceName = "CHALLENGE_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_SEQ_GEN")
     private Long id;
 
     /**
@@ -58,7 +59,7 @@ public class Challenge {
     private Integer difficulty = 0;
 
     @Column(name = "RATING")
-    private float rating = 0;
+    private Float rating = 0F;
 
     @Column(name = "PARTICIPATORS_RATED")
     private Integer participatorsRatedNr = 0;

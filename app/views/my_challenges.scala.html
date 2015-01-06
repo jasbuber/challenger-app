@@ -1,4 +1,4 @@
-@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]],
+@(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestParticipations: java.util.List[repositories.dtos.ChallengeWithParticipantsNr],
         responseForm: Form[CreateChallengeResponseForm],unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification],
         challengesNr: Long)
 
@@ -9,7 +9,7 @@
             <div id="content-wrapper">
                 @challenges_content(bigProfilePicUrl, challenges, challengesNr)
             </div>
-            @glyphs_panel(challenges: java.util.List[Array[Object]], latestParticipations: java.util.List[Array[Object]], newestUnreadNotifications: java.util.List[domain.Notification])
+            @glyphs_panel(challenges, latestParticipations, newestUnreadNotifications: java.util.List[domain.Notification])
         </div>
     </div>
 

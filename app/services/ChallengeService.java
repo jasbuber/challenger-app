@@ -3,6 +3,7 @@ package services;
 import domain.*;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
+import repositories.dtos.ChallengeWithParticipantsNr;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -232,15 +233,15 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getChallengeParticipationsWithParticipantsNrForUser(username, offsetIndex);
     }
 
-    public List getLatestChallengeParticipationsWithParticipantsNrForUser(final String username) {
+    public List<ChallengeWithParticipantsNr> getLatestChallengeParticipationsWithParticipantsNrForUser(final String username) {
         return challengesRepository.getLastestParticipationsWithParticipantsNrForUser(username);
     }
 
-    public List getChallengesWithParticipantsNrForUser(final String username, final int offsetIndex) {
+    public List<ChallengeWithParticipantsNr> getChallengesWithParticipantsNrForUser(final String username, final int offsetIndex) {
         return challengesRepository.getChallengesWithParticipantsNrForUser(username, offsetIndex);
     }
 
-    public List getLatestChallengesWithParticipantsNrForUser(final String username) {
+    public List<ChallengeWithParticipantsNr> getLatestChallengesWithParticipantsNrForUser(final String username) {
         return challengesRepository.getLatestChallengesWithParticipantsNrForUser(username);
     }
 
@@ -317,7 +318,7 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getTrendingChallenges();
     }
 
-    public List getMostPopularChallenges() {
+    public List<ChallengeWithParticipantsNr> getMostPopularChallenges() {
         return challengesRepository.getMostPopularChallenges();
     }
 

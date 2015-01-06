@@ -366,7 +366,7 @@ div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-full-star{background: url('../images/star_small.png') no-repeat;}
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details a.active-no-star{background: url('../images/star_inactive_small.png') no-repeat;}
 
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; }
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists{margin-left: 3%; text-align: left; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists div.participants-list-wrapper,
     div#wrapper div#challenge-block-body div.form-wrapper div#challenge-participants-wrapper{
     padding: 1% 2% 2% 2%;

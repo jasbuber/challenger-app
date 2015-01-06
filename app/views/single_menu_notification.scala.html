@@ -1,0 +1,56 @@
+@(notification: domain.Notification)
+
+    <li>
+    @notification.getNotificationType match {
+        case domain.Notification.NotificationType.new_participant => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_sandals_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.participant_left => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_hat_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.new_response => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_duck_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.response_accepted => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_drink_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.response_refused => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeResponses(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_crab_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.challenge_completed => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_glasses_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+        case domain.Notification.NotificationType.challenge_invitation => {
+            <a class="@if(!notification.isRead){ notificationUnread }" href="@routes.Application.followNotificationToChallengeDetails(notification.getId, notification.getRelevantObjectId.toLong)">
+                <img src="@routes.Assets.at("images/glyph_sandals_small.png")"/>
+                @if(notification.getNotificationMsg.length < 50) { @notification.getNotificationMsg
+                }else{ @notification.getNotificationMsg.substring(0, 50)...}
+            </a>
+        }
+
+    }
+    </li>

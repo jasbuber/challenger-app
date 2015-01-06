@@ -1,0 +1,25 @@
+@(rating: java.lang.Float, participation: Option[domain.ChallengeParticipation], userResponded: Boolean)
+
+@activeRatingStar = @{
+  if(participation != None && !participation.get.isChallengeRated && userResponded) {
+    "active-rating-star"
+  } else {
+    ""
+  }
+}
+  @for( a <- 0 to 4 ) {
+
+  @if((rating.toFloat - a.toFloat) <= 0.3) {
+    <a class="rating-star @activeRatingStar"></a>
+  } else {
+    @if((rating.toFloat - a.toFloat) >= 0.8) {
+      <a class="rating-star full-star @activeRatingStar"></a>
+    } else {
+      <a class="rating-star half-star @activeRatingStar"></a>
+    }
+  }
+}
+
+
+
+

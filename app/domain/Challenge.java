@@ -4,6 +4,7 @@ import play.data.validation.Constraints;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,8 +12,11 @@ import java.util.Date;
 @Table(name = "CHALLENGES")
 public class Challenge {
 
+    public static enum DifficultyLevel { easy, medium, hard, special }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "CHALLENGE_SEQ_GEN", sequenceName = "CHALLENGE_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_SEQ_GEN")
     private Long id;
 
     /**
@@ -20,7 +24,7 @@ public class Challenge {
      */
 
 
-    @Column(name = "NAME", unique = true)
+    @Column(name = "NAME")
     @NotNull
     private String challengeName;
 
@@ -38,21 +42,55 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     public ChallengeCategory category;
 
+    @Column(name = "VIDEO_ID")
+    private String videoId;
+
+    @Column(name = "VISIBILITY")
+    private Boolean visibility;
+
+    @Column(name = "ACTIVE")
+    private Boolean active;
+
+    @Column(name = "ENDING_DATE" )
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endingDate;
+
+    @Column(name = "DIFFICULTY")
+    private Integer difficulty = 0;
+
+    @Column(name = "RATING")
+    private Float rating = 0F;
+
+    @Column(name = "PARTICIPATORS_RATED")
+    private Integer participatorsRatedNr = 0;
+
+    public static final int POPULARITY_LEVEL_1 = 3;
+    public static final int POPULARITY_LEVEL_2 = 8;
+    public static final int POPULARITY_LEVEL_3 = 15;
+    public static final int POPULARITY_LEVEL_4 = 25;
+
     protected Challenge(){}
 
-    public Challenge(User creator, String challengeName) {
-        assertCreatorAndName(creator, challengeName);
-        this.creator = creator;
-        this.challengeName = challengeName.toLowerCase();
-        this.creationDate = new Date(Calendar.getInstance().getTimeInMillis());
-    }
-
-    public Challenge(User creator, String challengeName, ChallengeCategory category) {
+    public Challenge(User creator, String challengeName, ChallengeCategory category, Integer difficulty) {
         assertCreatorAndName(creator, challengeName);
         this.creator = creator;
         this.challengeName = challengeName.toLowerCase();
         this.category = category;
         this.creationDate = new Date();
+        this.active = true;
+        this.difficulty = difficulty;
+    }
+
+    public Challenge(User creator, String challengeName, ChallengeCategory category, String videoId, Boolean visibility, Integer difficulty) {
+        assertCreatorAndName(creator, challengeName);
+        this.creator = creator;
+        this.challengeName = challengeName.toLowerCase();
+        this.category = category;
+        this.creationDate = new Date();
+        this.videoId = videoId;
+        this.visibility = visibility;
+        this.active = true;
+        this.difficulty = difficulty;
     }
 
     private void assertCreatorAndName(User creator, String challengeName) {
@@ -103,7 +141,76 @@ public class Challenge {
 
     public Long getId() { return id;}
 
-    public Date getCreationDate() {
-        return creationDate;
+    public String getCreationDate() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.creationDate);
     }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public Boolean getVisibility() {
+        return visibility;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setInactive(){
+        this.active = false;
+        this.endingDate = new Date();
+    }
+
+    public Date getEndingDate() {
+        return endingDate;
+    }
+
+    public static Integer getPopularityLevel(Long participantsNr){
+
+        if(participantsNr < POPULARITY_LEVEL_1){
+            return 1;
+        }else if(participantsNr < POPULARITY_LEVEL_2){
+            return 2;
+        }else if(participantsNr < POPULARITY_LEVEL_3){
+            return 3;
+        }else if(participantsNr < POPULARITY_LEVEL_4){
+            return 4;
+        }else{
+            return 5;
+        }
+
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
+
+    public Integer getDifficulty() {
+        return difficulty;
+    }
+
+    public String getFormattedDifficulty() {
+        if(DifficultyLevel.values().length <= difficulty || difficulty < 0){
+            return DifficultyLevel.easy.toString();
+        }
+
+        return DifficultyLevel.values()[difficulty].toString();
+    }
+
+    public float getRating() {
+        return this.rating;
+    }
+
+    public void addRating(int rating){
+        if(rating < 1 || rating > 5){
+            return;
+        }
+        this.rating = ((this.rating * this.participatorsRatedNr) + (float) rating)/ ++this.participatorsRatedNr;
+    }
+
+    public Integer getParticipatorsRatedNr() {
+        return participatorsRatedNr;
+    }
+
 }

@@ -1,6 +1,7 @@
 package repositories;
 
 import domain.Challenge;
+import domain.FacebookUser;
 import domain.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -16,6 +17,18 @@ public class UsersRepository {
 
     public User createUser(String username) {
         User user = new User(username);
+        JPA.em().persist(user);
+        return user;
+    }
+
+    public User createUser(FacebookUser fbUser, String profilePictureUrl) {
+        User user = new User(fbUser, profilePictureUrl);
+        JPA.em().persist(user);
+        return user;
+    }
+
+    public User createUser(String username, String firstName, String lastName, String profilePictureUrl) {
+        User user = new User(username, profilePictureUrl, firstName, lastName);
         JPA.em().persist(user);
         return user;
     }
@@ -53,7 +66,33 @@ public class UsersRepository {
         }
     }
 
-    public List<User> getParticipatorsFor(Challenge challenge) {
-        return new ArrayList<User>();
+    public User rewardCreationPoints(String username, int points){
+        User user = getUser(username);
+        user.addCreationPoints(points);
+        JPA.em().merge(user);
+        return user;
     }
+
+    public User rewardParticipationPoints(String username, int points){
+        User user = getUser(username);
+        user.addParticipationPoints(points);
+        JPA.em().merge(user);
+        return user;
+    }
+
+    public User rewardOtherPoints(String username, int points){
+        User user = getUser(username);
+        user.addOtherPoints(points);
+        JPA.em().merge(user);
+        return user;
+    }
+
+    public List<User> getTopRatedUsers() {
+        Query topUsersQuery = JPA.em().createQuery("SELECT u FROM User u " +
+                "ORDER BY (u.creationPoints + u.participationPoints + u.otherPoints) DESC");
+        topUsersQuery.setMaxResults(6);
+
+        return topUsersQuery.getResultList();
+    }
+
 }

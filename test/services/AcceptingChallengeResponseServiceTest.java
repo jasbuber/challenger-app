@@ -1,47 +1,36 @@
 package services;
 
-import domain.ChallengeCategory;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
-import integration.EmTestsBase;
-import org.junit.After;
-import org.junit.Before;
+import domain.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
+import services.stubs.ChallengesRepositoryStub;
+import services.stubs.UserRepositoryStub;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 
-public class AcceptingChallengeResponseServiceTest extends EmTestsBase {
+public class AcceptingChallengeResponseServiceTest {
 
-    private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
-    private final UsersRepository usersRepository = mock(UsersRepository.class);
-    private final NotificationService notificationService = mock(NotificationService.class);
+    private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
+    private final UsersRepository usersRepository = new UserRepositoryStub();
+    private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
 
-    private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
+    private final ChallengeService challengeService = new ChallengeService(challengesRepository, new UserService(usersRepository),
+            challengeNotificationService);
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
-    private final String challengeName = "challengeName";
 
-    private static ChallengeParticipation ANY_CHALLENGE_PARTICIPATION = mock(ChallengeParticipation.class);
-    private final ChallengeResponse challengeResponse = new ChallengeResponse(ANY_CHALLENGE_PARTICIPATION);
+    private final User challengeCreator = new User("creatorUsername");
+    private final User challengeParticipator = new User("creatorUsername");
+    private final Challenge challenge = new Challenge(challengeCreator, "challengeName", ChallengeCategory.ALL, 0);
+    private final ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, challengeParticipator);
+    private final ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    @Before
-    public void setUp() {
-        openTransaction();
-    }
-
-    @After
-    public void tearDown() {
-        closeTransaction();
-    }
 
     @Test
     public void shouldAcceptChallengeResponse() throws Exception {
@@ -62,14 +51,14 @@ public class AcceptingChallengeResponseServiceTest extends EmTestsBase {
         challengeService.acceptChallengeResponse(challengeResponse);
     }
 
-    private void decideOnResponseInAnyWay(ChallengeResponse challengeResponse) {
-        challengeService.acceptChallengeResponse(challengeResponse);
-    }
-
     @Test
     public void shouldThrowExceptionWhenTryToRefuseAlreadyDecidedResponse() throws Exception {
         decideOnResponseInAnyWay(challengeResponse);
         expectedException.expect(RuntimeException.class);
         challengeService.refuseChallengeResponse(challengeResponse);
+    }
+
+    private void decideOnResponseInAnyWay(ChallengeResponse challengeResponse) {
+        challengeService.acceptChallengeResponse(challengeResponse);
     }
 }

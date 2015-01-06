@@ -1,12 +1,25 @@
 package services;
 
+import domain.Notification;
 import domain.User;
 
 import java.util.List;
 
 public interface NotificationService {
 
-    void notifyUser(User user);
+    void notifyUser(User user, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId);
 
-    void notifyUsers(List<User> users);
+    void notifyUsers(List<User> users, String notificationMsg, String shortNotificationMsg, Notification.NotificationType notificationType, String relevantObjectId);
+
+    boolean hasUserUnreadNotification(User user);
+
+    List<Notification> getNotificationsFor(User user, int offsetIndex);
+
+    long getNotificationsNrFor(User user);
+
+    Notification readNotification(Notification notification);
+
+    Long getNumberOfUnreadNotifications(User user);
+
+    List<Notification> getNewestNotifications(final User user);
 }

@@ -5,16 +5,21 @@ package domain;
     needed in code.
  */
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "CHALLENGE_PARTICIPATIONS")
 public class ChallengeParticipation {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_PART_SEQ_GEN")
     private Long id;
 
     @ManyToOne
@@ -27,14 +32,31 @@ public class ChallengeParticipation {
     @NotNull
     private User participator;
 
+    @Column(name = "JOINED" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date joined;
+
+    @Column(name = "ENDING_DATE" )
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endingDate;
+
+    @Column(name = "IS_CHALLENGE_RATED")
+    private Character isChallengeRated;
+
+    @Column(name = "IS_RESPONSE_SUBMITTED")
+    private Character isResponseSubmitted;
+
     protected ChallengeParticipation() {
         //for jpa purposes...
+        this.endingDate = DateUtils.addHours(new Date(), 24);
     }
-
 
     public ChallengeParticipation(Challenge challenge, User participator) {
         this.challenge = challenge;
         this.participator = participator;
+        this.joined = new Date();
+        this.endingDate = DateUtils.addHours(new Date(), 24);
     }
 
     public Challenge getChallenge() {
@@ -67,5 +89,37 @@ public class ChallengeParticipation {
 
     public User getCreator() {
         return challenge.getCreator();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getJoined() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.joined);
+    }
+
+    public Date getEndingDate() {
+        return endingDate;
+    }
+
+    public Boolean isOverdue(){
+        return endingDate.getTime() <= new Date().getTime();
+    }
+
+    public void rateChallenge() {
+        this.isChallengeRated = 'Y';
+    }
+
+    public boolean isChallengeRated() {
+        return this.isChallengeRated != null;
+    }
+
+    public boolean isResponseSubmitted() {
+        return this.isResponseSubmitted != null;
+    }
+
+    public void submit() {
+        this.isResponseSubmitted = 'Y';
     }
 }

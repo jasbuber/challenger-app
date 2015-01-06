@@ -21,16 +21,18 @@ public class ChallengeFilter {
 
     private final int limit;
 
+    private Predicate predicate;
+
     public ChallengeFilter(int limit){
 
-        this.entityManager = JPA.em();
+        this.entityManager = JPA.em("default");
         this.builder = entityManager.getCriteriaBuilder();
         this.criteriaQuery = builder.createQuery(Challenge.class);
         this.root = criteriaQuery.from(Challenge.class);
         this.criteriaQuery.select(root);
         this.limit = limit;
+        this.predicate = null;
     }
-
 
     public CriteriaQuery<Challenge> getCriteriaQuery() {
         return criteriaQuery;
@@ -65,6 +67,36 @@ public class ChallengeFilter {
         subquery.where(builder.equal(subqueryRoot.get("participator"), u));
 
         return builder.not(builder.in(this.root.get("id")).value(subquery));
+    }
+
+    public Predicate excludePrivateChallenges(){
+        Expression<String> visibility = root.get("visibility");
+        return builder.notEqual(visibility, false);
+    }
+
+    public Expression<String> getField(String fieldName){
+        return this.getRoot().get(fieldName);
+    }
+
+    public Predicate andCond(Predicate p){
+        if(this.predicate == null){ this.predicate = p;}
+        else{ this.predicate = this.builder.and(this.predicate, p); }
+
+        return this.predicate;
+    }
+
+    public void prepareWhere(){
+        this.criteriaQuery.where(this.predicate);
+    }
+
+    public Predicate excludeInactiveChallenges(){
+        Expression<String> active = root.get("active");
+        return builder.notEqual(active, false);
+    }
+
+    public Predicate setCreator(User u){
+        Expression<String> creator = root.get("creator");
+        return builder.equal(creator, u);
     }
 
 }

@@ -1,0 +1,58 @@
+@( challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestParticipations: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestNotifications: java.util.List[domain.Notification])
+
+<div class="challenges-wrapper">
+    <div id="challenges-created" class="challenges-body created-tab-body">
+        <div class="glyph-header"><a class="show-challenges" href="#">Latest challenges</a></div>
+        @if(!challenges.isEmpty) {
+        <div class="glyph-challenges-wrapper">
+            @challenges.take(3).map { challenge =>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="@routes.Application.showChallenge(challenge.getChallengeId)"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.getChallengeId)">@challenge.getChallengeName</a></span>
+                    <a href="@routes.Application.showParticipators(challenge.getChallengeId)">
+                        <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@challenge.getParticipantsNr participants" alt="@challenge.getParticipantsNr participants"
+                            src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.getParticipantsNr)) + "_small.png")"/>
+                    </a>
+                </div>
+            }
+        </div>
+        <div class="glyph-show-more"><a class="show-challenges" href="#">see more</a></div>
+        }else{
+            <div class="no-elements-wrapper"><a href="@routes.Application.showCreateChallenge()">Create a new challenge!</a></div>
+        }
+    </div>
+    <div id="challenges-participating" class="challenges-body participating-tab-body">
+        <div class="glyph-header"><a class="show-participations" href="#">Latest participations</a></div>
+        @if(!latestParticipations.isEmpty) {
+            <div class="glyph-challenges-wrapper">
+            @latestParticipations.take(3).map { challenge =>
+                <div class="glyph-challenge">
+                    <a class="show-challenge" href="@routes.Application.showChallenge(challenge.getChallengeId)"><img src="@routes.Assets.at("images/arrow_left.png")"/></a>
+                    <span class="glyph-list-name"><a class="show-challenge" href="@routes.Application.showChallenge(challenge.getChallengeId)">@challenge.getChallengeName</a></span>
+                    <a>
+                        <img class="has-tooltip" data-togle="tooltip" data-placement="bottom" title="@challenge.getParticipantsNr participants" alt="@challenge.getParticipantsNr participants"
+                        src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(challenge.getParticipantsNr)) + "_small.png")"/>
+                    </a>
+                </div>
+            }
+            </div>
+
+            <div class="glyph-show-more"><a class="show-participations" href="show-glyph-data">see more</a></div>
+        } else {
+            <div class="no-elements-wrapper"><a href="@routes.Application.showBrowseChallenges()">Join a challenge!</a></div>
+        }
+    </div>
+    <div id="challenges-completed" class="challenges-body completed-tab-body">
+        <div class="glyph-header"><a class="show-glyph-data" href="@routes.Application.showMyNotifications()">New notifications</a></div>
+        @if(!latestNotifications.filter(n => n.getIsRead != 'Y').isEmpty) {
+            <div class="glyph-challenges-wrapper">
+                @latestNotifications.filter(n => n.getIsRead != 'Y').take(3).map{ notification =>
+                    @single_notification(notification)
+                }
+            </div>
+            <div class="glyph-show-more"><a href="@routes.Application.showMyNotifications()" class="show-glyph-data">see more</a></div>
+        } else {
+            <div class="no-elements-wrapper">No unread notifications</div>
+        }
+    </div>
+</div>

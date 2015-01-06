@@ -1,0 +1,65 @@
+@(challenges: java.util.List[domain.Challenge], currentUsername: java.lang.String)
+
+<div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+    <h2>Browse challenges</h2>
+    <div class="form-wrapper">
+        <form class="browse-challenges-form">
+            <div class="form-group">
+                <div class="input-group input-group-hg input-group-rounded">
+                    <input type="text" placeholder="Search" class="form-control input-lg challenge-search-phrase"/>
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn">
+                            <span class="fui-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <span>
+                <select name="category" class="challenge-category">
+                    <option value="@domain.ChallengeCategory.ALL" selected>Choose category...</option>
+                    <option value="@domain.ChallengeCategory.FOOD">Food related</option>
+                    <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
+                    <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
+                    <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
+                    <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
+                    <option value="@domain.ChallengeCategory.OTHER">Other</option>
+                </select>
+            </span>
+        </form>
+        <div class="challenge-search-results common-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th><div>Started By</div></th>
+                        <th><div>Name</div></th>
+                        <th><div>Rating</div></th>
+                        <th><div>Difficulty</div></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @challenges.map { challenge =>
+                        <tr>
+                            <td class="profilePicTd"><a href="@routes.Application.showProfile(challenge.getCreator.getUsername)">
+                                @if(challenge.getCreator.getProfilePictureUrl != null) {
+                                    <img class="smallProfilePicture" src="@challenge.getCreator.getProfilePictureUrl"/>
+                                } else {
+                                    <img src="@routes.Assets.at("images/avatar_small.png")"/>
+                                }
+                                @challenge.getCreator.getFormattedName</a></td>
+                            <td><a href="@routes.Application.showChallenge(challenge.getId)">@challenge.getChallengeName</a></td>
+                            <td>@rating(challenge.getRating, None, false)</td>
+                            <td>@challenge.getFormattedDifficulty</td>
+                            <td>
+                                @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
+                                    <input type="button" class="btn btn-hg btn-success browse-challenge-join-action" value="Join"/>
+                                }
+                                <input class="challenge-id" type="hidden" value="@challenge.getId"/>
+                            </td>
+                        </tr>
+                    }
+               </tbody>
+            </table>
+            <input class="current-username" type="hidden" value="@currentUsername"/>
+        </div>
+    </div>

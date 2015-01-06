@@ -1,0 +1,67 @@
+@(challengeForm: Form[controllers.CreateChallengeForm])
+<div class="padded-glyphs-top-panel"><span class="padded-glyph-header">Create a Challenge</span></div>
+<div class="form-wrapper">
+@helper.form(action = routes.Application.ajaxCreateChallenge(), 'method -> "POST", 'enctype -> "multipart/form-data", 'id -> "create-challenge-form") {
+    <div class="challenge-form-block">
+        <div class="challenge-name-wrapper inline-block">
+        @helper.inputText(challengeForm("challengeName"), 'placeholder -> "Name your challenge...", 'class -> "form-control input-hg challenge-name-input", '_label -> "", '_showConstraints -> false)
+        </div>
+        <div class="inline-block">
+            <select name="challengeCategory">
+                <option value="@domain.ChallengeCategory.FOOD">Food related</option>
+                <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
+                <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
+                <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
+                <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
+                <option value="@domain.ChallengeCategory.OTHER">Other</option>
+            </select>
+        </div>
+        <div class="difficulty-slider-wrapper">
+            <div class="difficulty-slider-levels">
+                <span>easy</span>
+                <span>medium</span>
+                <span>hard</span>
+                <span>insane!</span>
+            </div>
+            <div class="slider" class="ui-slider"></div>
+        </div>
+        <div><input type="button" class="btn btn-hg btn-primary go-to-step-two" value="next"/></div>
+    </div>
+    <div class="form-arrow-block step-one-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
+    <div class="challenge-form-block step-two-block" style="display: none;">
+        <div id="video-upload-wrapper">
+            <div id="video-input-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
+                Upload a video description...</button></div>
+            <input name="video-description" type="file" accept="video/*"/>
+        </div>
+        <div><input type="button" class="btn btn-hg btn-primary go-to-step-three" value="next" /></div>
+    </div>
+    <div class="form-arrow-block step-two-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
+    <div class="challenge-form-block step-three-block" style="display: none;">
+        <div class="visibility-block">
+            <div class="inline-block visibility-select-wrapper">
+                <select id="challenge-visibility" name="challengeVisibility">
+                    <option value="1" selected>Public</option>
+                    <option value="0">Private</option>
+                </select>
+            </div>
+            <div id="challenge-participants-wrapper" class="inline-block" style="display:none;">
+                <div class="form-group" id="search-facebook-friends">
+                    <div class="input-group input-group-hg input-group-rounded">
+                        <input id="friends-filter-input" type="text" placeholder="Search" class="form-control input-lg"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn">
+                                <span class="fui-search"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="challenge-participants-div">
+                </div>
+            </div>
+        </div>
+        <div><input type="submit" class="btn btn-hg btn-primary" value="Create!" /></div>
+    </div>
+    <input type="hidden" name="difficulty" value="1"/>
+}
+</div>

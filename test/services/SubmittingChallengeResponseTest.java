@@ -1,13 +1,9 @@
 package services;
 
-import domain.Challenge;
-import domain.ChallengeParticipation;
-import domain.ChallengeResponse;
-import domain.User;
-import integration.EmTestsBase;
-import org.junit.After;
+import domain.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import repositories.ChallengesRepository;
 import repositories.UsersRepository;
 
@@ -15,34 +11,32 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class SubmittingChallengeResponseTest extends EmTestsBase {
+public class SubmittingChallengeResponseTest {
 
+    private final static ChallengeCategory SOME_CHALLENGE_CATEGORY = ChallengeCategory.ALL;
 
-    private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
+    private final ChallengesRepository challengesRepository = mock(ChallengesRepository.class);
     private final UsersRepository usersRepository = mock(UsersRepository.class);
-    private final NotificationService notificationService = mock(NotificationService.class);
 
-    private final ChallengeService challengeService = new ChallengeService(challengesRepository, usersRepository, notificationService);
+    private final ChallengeNotificationsService challengeNotficiationService = mock(ChallengeNotificationsService.class);
 
+    private final ChallengeService challengeService = new ChallengeService(challengesRepository, new UserService(usersRepository),
+            challengeNotficiationService);
     private final String challengeName = "challengeName";
     private User creator = new User("creator");
     private User participator = new User("participator");
-    private Challenge challenge = new Challenge(creator, challengeName);
+    private Challenge challenge = new Challenge(creator, challengeName, SOME_CHALLENGE_CATEGORY, 0);
     private ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participator);
-
 
     @Before
     public void setUp() {
-        openTransaction();
-    }
-
-    @After
-    public void tearDown() {
-        closeTransaction();
+        when(challengesRepository.addChallengeResponse(Matchers.any(ChallengeResponse.class))).then(returnsFirstArg());
     }
 
     @Test
@@ -50,7 +44,7 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
         //given
 
         //when
-        ChallengeResponse challengeResponse = challengeService.submitChallengeResponse(challengeParticipation);
+        ChallengeResponse challengeResponse = challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
         assertTrue(challengeResponse != null);
@@ -59,10 +53,12 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
     @Test(expected = IllegalStateException.class)
     public void shouldDenySubmittingIfNotScoredResponseAlreadySubmittedForTheChallengeBySameUser() throws Exception {
         //given
+        given(challengesRepository.isNotEvaluatedChallengeResponseExistsFor(challengeParticipation)).willReturn(true);
+
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipation);
-        challengeService.submitChallengeResponse(challengeParticipation);
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then throw exception
     }
@@ -78,8 +74,8 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
         ChallengeParticipation challengeParticipationTwo = new ChallengeParticipation(challenge, participatorTwo);
 
         //when
-        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne);
-        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo);
+        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo, "test", "test");
 
         //then
         assertEquals(challengeParticipationOne, responseForParticipationOne.getChallengeParticipation());
@@ -89,16 +85,16 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
     @Test
     public void shouldSubmitChallengeResponseForTwoDifferentChallengesButSameParticipator() throws Exception {
         //given
-        Challenge challengeOne = new Challenge(creator, "challengeOne");
-        Challenge challengeTwo = new Challenge(creator, "challengeTwo");
+        Challenge challengeOne = new Challenge(creator, "challengeOne", SOME_CHALLENGE_CATEGORY, 0);
+        Challenge challengeTwo = new Challenge(creator, "challengeTwo", SOME_CHALLENGE_CATEGORY, 0);
 
         ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challengeOne, participator);
         ChallengeParticipation challengeParticipationTwo = new ChallengeParticipation(challengeTwo, participator);
 
 
         //when
-        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne);
-        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo);
+        ChallengeResponse responseForParticipationOne = challengeService.submitChallengeResponse(challengeParticipationOne, "test", "test");
+        ChallengeResponse responseForParticipationTwo = challengeService.submitChallengeResponse(challengeParticipationTwo, "test", "test");
 
         //then
         assertEquals(challengeParticipationOne, responseForParticipationOne.getChallengeParticipation());
@@ -108,10 +104,10 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
     @Test
     public void shouldNotifyChallengeCreatorWhenSubmittingForChallenge() throws Exception {
         //when
-        challengeService.submitChallengeResponse(challengeParticipation);
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
-        verify(notificationService).notifyUser(creator);
+        verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.<User>emptyList());
     }
 
     @Test
@@ -120,32 +116,14 @@ public class SubmittingChallengeResponseTest extends EmTestsBase {
         User participatorOne = new User("participatorOne");
         User participatorTwo = new User("participatorTwo");
 
-        ChallengeParticipation challengeParticipationOne = new ChallengeParticipation(challenge, participatorOne);
+        ChallengeParticipation challengeParticipation = new ChallengeParticipation(challenge, participatorOne);
 
-        given(usersRepository.getParticipatorsFor(challenge)).willReturn(Collections.singletonList(participatorTwo));
+        given(challengesRepository.getAllParticipatorsOf(challenge)).willReturn(Collections.singletonList(participatorTwo));
 
         //when
-        challengeService.submitChallengeResponse(challengeParticipationOne);
+        challengeService.submitChallengeResponse(challengeParticipation, "test", "test");
 
         //then
-        verify(notificationService).notifyUsers(Collections.singletonList(participatorTwo));
+        verify(challengeNotficiationService).notifyAboutSubmittingChallengeResponse(challengeParticipation, Collections.singletonList(participatorTwo));
     }
-
-    private class ChallengesRepositoryStub extends ChallengesRepository {
-
-        private ChallengeResponse lastlyAddedChallengeResponse;
-
-        @Override
-        public boolean isNotScoredChallengeResponseExistsFor(ChallengeParticipation challengeParticipation) {
-            return lastlyAddedChallengeResponse != null && challengeParticipation.equals(lastlyAddedChallengeResponse.getChallengeParticipation());
-        }
-
-        @Override
-        public ChallengeResponse addChallengeResponse(ChallengeParticipation challengeParticipation) {
-            ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation);
-            lastlyAddedChallengeResponse = challengeResponse;
-            return challengeResponse;
-        }
-    }
-
 }

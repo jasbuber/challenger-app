@@ -1,50 +1,12 @@
-<div id="browse-block-body" class="ui-block-body">
-    <div class="top-block"><button class="btn btn-inverse backAction">Back</button></div>
-    <h2>Browse challenges</h2>
-    <div class="form-wrapper">
-       <form>
-           <div class="form-group">
-                <div class="input-group input-group-hg input-group-rounded">
-                    <input type="text" placeholder="Search" class="form-control input-lg challenge-search-phrase"/>
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn">
-                            <span class="fui-search"></span>
-                        </button>
-                    </span>
-                </div>
-            </div>
-           <span>
-               <select name="category" class="challenge-category">
-                   <option value="@domain.ChallengeCategory.ALL" selected>Choose category...</option>
-                   <option value="@domain.ChallengeCategory.FOOD">Food related</option>
-                   <option value="@domain.ChallengeCategory.FREAK_MODE">Freak mode</option>
-                   <option value="@domain.ChallengeCategory.GETTING_INVOLVED">Getting involved</option>
-                   <option value="@domain.ChallengeCategory.STAYING_ACTIVE">Staying active</option>
-                   <option value="@domain.ChallengeCategory.USING_A_BRAIN">Using a brain</option>
-                   <option value="@domain.ChallengeCategory.OTHER">Other</option>
-               </select>
-           </span>
-       </form>
-       <div class="challenge-search-results">
-           <table>
-               <thead>
-                   <tr>
-                       <th><div>Started By</div></th>
-                       <th><div>Name</div></th>
-                       <th><div>Category</div></th>
-                       <th><div>Time left</div></th>
-                       <th>Join</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td>
-                       <td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>
-                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>
-                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>
-                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>
-                   <tr><td><a href="#"><img src="@routes.Assets.at("images/facebook.png")"/> User1</a></td><td>Challenge1</td><td>Category1</td><td>time left</td><td><div class="switch switch-square"><input type="checkbox" unchecked data-toggle="switch" /><input type="hidden" class="challenge-id" value="12345"/></div></td></tr>
-               </tbody>
-           </table>
-       </div>
+@(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer,
+        challenges: java.util.List[domain.Challenge], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification])
+
+@main("Welcome to Challenge Application") {
+    @menu(firstName, profilePicUrl, points, unreadNotificationsNr, newestNotifications)
+    <div id="wrapper">
+        <div id="browse-block-body" class="ui-block-body">
+        @browse_content(challenges, username)
+        </div>
     </div>
-</div>
+
+}

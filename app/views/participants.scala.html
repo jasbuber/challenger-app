@@ -1,0 +1,47 @@
+@(firstName: java.lang.String, username: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, participants: java.util.List[domain.ChallengeParticipation],
+        challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr],latestParticipations: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification],
+        newestUnreadNotifications: java.util.List[domain.Notification], challenge: domain.Challenge, participantsNr: Long)
+
+@main("Welcome to Challenge Application") {
+    @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
+    <div id="wrapper" class="video-block-wrapper">
+        <div class="single-body-block" id="challenge-body">
+            <div id="content-wrapper">
+                <div id="challenge-wrapper" class="account-content">
+                    <div class="padded-glyphs-wrapper">
+                        <div class="padded-glyphs-top-panel"><span><a href="@routes.Application.showChallenge(challenge.getId)">
+                            <button class="btn btn-inverse backAction">Back</button>
+                        </a></span>
+                        <span class="padded-glyph-header">@challenge.getChallengeName participants</span>
+                        </div>
+                        <div class="padded-glyph-challenge-data-wrapper">
+                            <div class="common-table-wrapper challenge-participants-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th><div>Joined</div></th>
+                                            <th><div>User</div></th>
+                                            <th><img src="@routes.Assets.at("images/trophy_small.png")"/></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @participants_list(challenge, username, participants)
+                                    </tbody>
+                                </table>
+                                @if(participants.size() < participantsNr) {
+                                    <div class="show-more-wrapper"><button class="btn btn-default show-more-participants">show more</button></div>
+                                    <input type="hidden" class="current-offset" value="1"/>
+                                    <input type="hidden" id="participants-number" value="@participantsNr"/>
+                                    <input type="hidden" id="current-participants-number" value="@participants.size()"/>
+                                }
+                                <input type="hidden" class="current-challenge-id" value="@challenge.getId"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @glyphs_panel(challenges, latestParticipations, newestUnreadNotifications: java.util.List[domain.Notification])
+        </div>
+    </div>
+}

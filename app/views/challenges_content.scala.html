@@ -1,0 +1,20 @@
+@(bigProfilePicUrl: java.lang.String, challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], challengesNr: Long)
+
+<div id="my-challenges-wrapper" class="account-content">
+    <div class="padded-glyphs-wrapper">
+        <div class="padded-glyphs-top-panel"><span><a class="show-profile" href="#"><img class="smallProfilePicture" src="@bigProfilePicUrl"/></a></span><span class="padded-glyph-header">My challenges</span></div>
+        @if(!challenges.isEmpty) {
+            <div class="padded-glyph-challenges-wrapper">
+            @challenges_list(challenges)
+        </div>
+            @if(challenges.size() < challengesNr) {
+                <div class="show-more-wrapper"><button class="btn btn-default show-more-challenges">show more</button></div>
+                <input type="hidden" class="current-offset" value="1"/>
+                <input type="hidden" id="challenges-number" value="@challengesNr"/>
+                <input type="hidden" id="current-challenges-number" value="@challenges.size()"/>
+            }
+        }else{
+        <div class="no-elements-wrapper"><a href="@routes.Application.showCreateChallenge()">Create a new challenge!</a></div>
+    }
+    </div>
+</div>

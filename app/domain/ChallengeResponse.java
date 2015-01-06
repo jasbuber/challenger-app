@@ -2,13 +2,16 @@ package domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name = "CHALLENGE_RESPONSES")
 public class ChallengeResponse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "CHALLENGE_RESP_SEQ_GEN", sequenceName = "CHALLENGE_RESP_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_RESP_SEQ_GEN")
     private Long id;
 
     @ManyToOne
@@ -19,6 +22,19 @@ public class ChallengeResponse {
     @Column(name = "ACCEPTANCE")
     private Character isAccepted;
 
+    @Column(name = "VIDEO_RESPONSE_URL")
+    private String videoResponseUrl;
+
+    @Column(name = "MESSAGE")
+    private String message;
+
+    @Column(name = "SUBMITTED" )
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date submitted = new Date();
+
+    @Transient
+    private String thumbnailUrl;
 
     protected ChallengeResponse() {
         //for jpa purposes...
@@ -26,6 +42,17 @@ public class ChallengeResponse {
 
     public ChallengeResponse(ChallengeParticipation challengeParticipation) {
         this.challengeParticipation = challengeParticipation;
+    }
+
+    public ChallengeResponse(ChallengeParticipation challengeParticipation, String videoResponseUrl) {
+        this.challengeParticipation = challengeParticipation;
+        this.videoResponseUrl = videoResponseUrl;
+    }
+
+    public ChallengeResponse(ChallengeParticipation challengeParticipation, String videoResponseUrl, String message) {
+        this.challengeParticipation = challengeParticipation;
+        this.videoResponseUrl = videoResponseUrl;
+        this.message = message;
     }
 
     public ChallengeParticipation getChallengeParticipation() {
@@ -51,4 +78,33 @@ public class ChallengeResponse {
     public Long getId() {
         return id;
     }
+
+    public Character getIsAccepted() {
+        return isAccepted;
+    }
+
+    public String getVideoResponseUrl() {
+        return videoResponseUrl;
+    }
+
+    public void setVideoResponseUrl(String videoResponseUrl) {
+        this.videoResponseUrl = videoResponseUrl;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getSubmitted() {
+        return new SimpleDateFormat("H:mm dd-MM-yyyy").format(this.submitted);
+    }
+
 }

@@ -26,7 +26,7 @@ div#menu-wrapper .navbar div.quick-challenge-search button span.fui-search{ top:
 
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper{ color: #debe81; font-weight: 800; font-size: 19px; padding: 8px 10px 8px 0; text-align: center; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper img{ margin-right: 5px; }
-div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ border-radius: 10px; border: 2px solid #bdc3c7; padding: 5px; height: 48px; }
+div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ border-radius: 10px; border: 2px solid #bdc3c7; padding: 5px; height: 48px; max-width: 300px; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper span.rewarded-points-number{ font-size: 26px; }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper div.points-number-content{ line-height: 32px; }
 div#wrapper{
@@ -476,6 +476,8 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     div.video-block-wrapper div.single-body-block .challenges-wrapper{ display: none!important; }
     div.account-wrapper div#content-wrapper, div.video-block-wrapper div#content-wrapper{ width: 98%!important; }
     div.rankings-wrapper{ width: 98%!important; }
+    .rewarded-points-message{ display: none; }
+    div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ max-width: 150px; }
 }
 
 @media screen and (max-width: 890px){
@@ -493,6 +495,8 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     }
     div#wrapper div.single-body-block #challenge-responses .challenge-response-wrapper{ display: inline-block; margin-bottom: 2%; }
     .padded-glyph-challenge-data-wrapper{padding: 0;}
+    div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ max-width: 100px; }
+    div#menu-wrapper .navbar div.quick-challenge-search{ margin-left: 2%; }
 }
 
 @media screen and (max-width: 768px){

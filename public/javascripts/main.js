@@ -741,7 +741,7 @@ $(document).ready(function () {
 
         $(".current-points-wrapper").fadeOut(300);
 
-        $(".points-number-wrapper").animate({width: "300px"}, 300, function(){
+        $(".points-number-wrapper").animate({width: $(".points-number-wrapper").css("max-width")}, 300, function(){
 
             $(".rewarded-points-message").text(message);
             $(".rewarded-points-number").text("+" + rewarded);

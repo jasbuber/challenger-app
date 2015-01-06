@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
-        <ul class="nav navbar-nav navbar-right">
+        <ul class="nav navbar-nav navbar-right hidden-xs">
             <li>
                 <div class="menu-points-wrapper">
                     <div class="points-number-wrapper">
@@ -70,6 +70,13 @@
                     </ul>
                 </div>
             </li>
-        </ul></div>
+        </ul>
+            <ul class="nav navbar-nav navbar-right visible-xs">
+                <li><a href="@routes.Application.showMyNotifications()">Notifications</a></li>
+                <li><a href="@routes.Application.showMyChallenges()">My Challenges</a></li>
+                <li><a href="@routes.Application.showMyParticipations()">My Participations</a></li>
+                <li><a href="@routes.Application.showCurrentProfile()">Profile</a></li>
+            </ul>
+        </div>
     </nav>
 </div>

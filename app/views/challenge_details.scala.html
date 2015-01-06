@@ -19,8 +19,10 @@
                             <div>
                                 <div id="video-panel">
                                     <div id="video-player-wrapper">
-                                        <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="650" height="360" data-setup="{}" poster="@videoDescription.getPicture">
+                                        <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="565" height="360" data-setup="{}" poster="@videoDescription.getPicture">
                                             <source src="@videoDescription.getSource" type="video/mp4"/>
+                                            <source src="@videoDescription.getSource" type="video/ogg"/>
+                                            <source src="@videoDescription.getSource" type="video/webm"/>
                                             <p class="vjs-no-js">
                                                 To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
                                                 supports HTML5 video</a></p>
@@ -108,7 +110,7 @@
                             <h4>Comments</h4>
                             <div class="new-comment">
                                 @helper.form(action = routes.Application.ajaxSubmitComment(), 'method -> "POST", 'enctype -> "multipart/form-data", 'class -> "new-comment-form") {
-                                    <textarea name="message"></textarea>
+                                    <textarea name="message" placeholder="Write your comment here..."></textarea>
                                     <div><input type="submit" class="btn btn-hg btn-primary" value="Submit" /></div>
                                     <input type="hidden" name="relevantObjectId" value="@challenge.getId"/>
                                     <input type="hidden" id="current-username" value="@firstName"/>

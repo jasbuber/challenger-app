@@ -38,6 +38,10 @@ $(document).ready(function () {
         NProgress.done();
     });
 
+    $uiBlock.find("a").click(function(e){
+        e.preventDefault();
+    });
+
     $uiBlock.click(function () {
         if($(this).attr("id") != "share-block") {
             $(this).parents("#wrapper").height($(this).parents("#wrapper").height());
@@ -239,6 +243,29 @@ $(document).ready(function () {
 
     $('#create-challenge-form').submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if(!$("#challengeName").val()) {
+            alertify.error("You forgot to type the challenge name, you know...");
+            $hasErrors = true;
+
+        } else if($("#challengeName").val().length < 5){
+            alertify.error("Challenge name should be at least 5 characters long. Just because :P");
+            $hasErrors = true;
+        }
+        if(!$("input[name='video-description']").val()){
+            alertify.error("Upload a video description...");
+            $hasErrors = true;
+        }
+        if($(".friend-item").size() == 0 && $("#challenge-visibility").val() == 0){
+            alertify.error("You didn't select any of your friends. Challenge someone or make the challenge public.");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         NProgress.start();
 
         $(this).ajaxSubmit({
@@ -270,7 +297,6 @@ $(document).ready(function () {
                 NProgress.done();
             }
         });
-        e.preventDefault();
 
     });
 
@@ -408,75 +434,6 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $(document).on("click", ".play-video-response", function (e) {
-
-        var $vid_obj = _V_("video-response-player"), responseId = $(this).attr("href"), $parent = $(this).parents(".challenge-response-wrapper");
-
-        NProgress.start();
-
-        jsRoutes.controllers.Application.ajaxGetResponse(responseId).ajax({
-            success: function (response) {
-                var challengeResponse = jQuery.parseJSON(response), $playerBody = $("#video-response-player_html5_api");
-
-                // hide the current loaded poster
-                $("img.vjs-poster").hide();
-
-                // hide the video UI
-                $playerBody.hide();
-
-                // and stop it from playing
-                $vid_obj.pause();
-
-                // assign the targeted videos to the source nodes
-                $("video:nth-child(1)").attr("src", challengeResponse.videoResponseUrl);
-
-                // replace the poster source
-                $playerBody.attr("poster", challengeResponse.thumbnailUrl);
-
-                // reset the UI states
-                //$(".vjs-big-play-button").show();
-
-                $("#video-response-player").removeClass("vjs-playing").addClass("vjs-paused");
-
-                // load the new sources
-                $vid_obj.load();
-                $playerBody.show();
-
-                NProgress.done();
-
-                $(".current-response").removeClass("current-response");
-                $parent.addClass("current-response");
-
-                var responseDetails = $(".challenge-response-details"), $username = challengeResponse.challengeParticipation.participator.username;
-
-                if(challengeResponse.challengeParticipation.participator.firstName) {
-                    $username = challengeResponse.challengeParticipation.participator.firstName + ' ' + challengeResponse.challengeParticipation.participator.lastName.substring(0, 3);
-                }
-
-                if(challengeResponse.challengeParticipation.participator.profilePictureUrl != null){
-                    responseDetails.find(".medium-profile-picture").attr("src", challengeResponse.challengeParticipation.participator.profilePictureUrl);
-                }else{
-                    responseDetails.find(".medium-profile-picture").attr("src", "/assets/images/avatar_big.png");
-                }
-                responseDetails.find(".medium-profile-picture").parents("a").attr('href', jsRoutes.controllers.Application.showProfile(challengeResponse.challengeParticipation.participator.username).url);
-
-                responseDetails.find(".current-response-submitted").html(challengeResponse.submitted);
-                responseDetails.find(".response-id").val(challengeResponse.id);
-                responseDetails.find(".current-response-author").html('<a href="' + jsRoutes.controllers.Application.showProfile(challengeResponse.challengeParticipation.participator.username).url + '">' + $username + '</a>');
-                responseDetails.find(".current-response-description").html(challengeResponse.message);
-
-                if(challengeResponse.isAccepted != 'Y' && challengeResponse.isAccepted != 'N' ){
-                    responseDetails.find(".rate-current-response").show();
-                }else{
-                    responseDetails.find(".rate-current-response").hide();
-                }
-
-            }
-        });
-
-        e.preventDefault();
-    });
-
     $(document).on("click", ".decline-response", function () {
         var $id = $(this).siblings(".response-id").val(), $parent = $(this).parents(".rate-response");
 
@@ -554,6 +511,17 @@ $(document).ready(function () {
 
     $('#upload-response-form').submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if(!$("input[name='video-description']").val()){
+            alertify.error("You need to choose a video response...");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         NProgress.start();
 
         $(this).ajaxSubmit({
@@ -598,7 +566,6 @@ $(document).ready(function () {
                 NProgress.done();
             }
         });
-        e.preventDefault();
 
     });
 
@@ -778,7 +745,7 @@ $(document).ready(function () {
 
         $(".current-points-wrapper").fadeOut(300);
 
-        $(".points-number-wrapper").animate({width: "300px"}, 300, function(){
+        $(".points-number-wrapper").animate({width: $(".points-number-wrapper").css("max-width")}, 300, function(){
 
             $(".rewarded-points-message").text(message);
             $(".rewarded-points-number").text("+" + rewarded);
@@ -843,6 +810,20 @@ $(document).ready(function () {
 
     $(".new-comment-form").submit(function (e) {
 
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if($("textarea[name='message']").val().length == 0){
+            alertify.error("If you want to post a comment, write it first -_-");
+            $hasErrors = true;
+        }else if($("textarea[name='message']").val().length > 250){
+            alertify.error("Only 250 characters allowed. It's just a comment, not a poem ;]");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
         $(this).ajaxSubmit({
             success: function (response) {
                 var customResponse = jQuery.parseJSON(response);
@@ -859,6 +840,7 @@ $(document).ready(function () {
 
                     $comments.prepend($newComment);
                     $comments.find(".newly-added-comment").show("slow");
+                    $(".new-comment").slideUp();
                 }
                 else {
                     var fields = jQuery.parseJSON(response);
@@ -872,7 +854,6 @@ $(document).ready(function () {
                 }
             }
         });
-        e.preventDefault();
     });
 
     $(document).on("click", ".show-more-participants", function(){

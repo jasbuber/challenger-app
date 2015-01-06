@@ -1,5 +1,6 @@
 @(firstName: java.lang.String, currentUsername: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestParticipations: java.util.List[Array[Object]], participationsSummary: java.util.List[repositories.dtos.ChallengeWithParticipantsNr],
-        responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video)
+        responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification], responses: java.util.List[domain.ChallengeResponse], currentChallenge: domain.Challenge, video: com.restfb.types.Video,
+        currentResponse: domain.ChallengeResponse)
 
 @main("Welcome to Challenge Application") {
     @menu(firstName, bigProfilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -17,8 +18,10 @@
                                 <div class="current-response-wrapper">
                                     <div id="video-panel">
                                         <div id="video-player-wrapper">
-                                            <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="535" height="360" data-setup="{}" poster="@if(!responses.isEmpty) { @responses.get(0).getThumbnailUrl }">
-                                                <source src="@if(!responses.isEmpty) { @video.getSource }" type="video/mp4"/>
+                                            <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="535" height="360" data-setup="{}" poster="@currentResponse.getThumbnailUrl">
+                                                <source src="@video.getSource" type="video/mp4"/>
+                                                <source src="@video.getSource" type="video/ogg"/>
+                                                <source src="@video.getSource" type="video/webm"/>
                                                 <p class="vjs-no-js">
                                                     To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
                                                     supports HTML5 video</a></p>
@@ -28,31 +31,29 @@
                                     <div class="challenge-response-details">
                                         <div>
                                             <div class="inline-block">
-                                            @if(responses.get(0).getChallengeParticipation.getParticipator.getProfilePictureUrl != null) {
-                                                <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@responses.get(0).getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
+                                            @if(currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl != null) {
+                                                <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
                                             } else {
-                                                <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
+                                                <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
                                             }
                                             </div>
                                             <div class="inline-block">
                                                 <div class="inline-block current-response-description">
-                                                @if(!responses.isEmpty) {
-                                                    <div>@responses.get(0).getMessage</div>
-                                                }
+                                                    <div>@currentResponse.getMessage</div>
                                                 </div>
                                                 <div class="inline-block rate-response rate-current-response"
-                                                @if(responses.isEmpty || responses.get(0).isDecided || currentChallenge.getCreator.getUsername.compareTo(currentUsername) != 0) { style="display: none;" }>
+                                                @if(currentResponse.isDecided || currentChallenge.getCreator.getUsername.compareTo(currentUsername) != 0) { style="display: none;" }>
                                                         <button class="btn btn-danger decline-response">Decline</button>
                                                         <button class="btn btn-success accept-response">Accept</button>
-                                                        <input class="response-id" type="hidden" value="@responses.get(0).getId"/>
+                                                        <input class="response-id" type="hidden" value="@currentResponse.getId"/>
                                                 </div>
                                             </div>
                                             <div>
                                                 <div class="current-response-author">
-                                                    <a href="@routes.Application.showProfile(responses.get(0).getChallengeParticipation.getParticipator.getUsername)">@responses.get(0).getChallengeParticipation.getParticipator.getFormattedName</a>
+                                                    <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)">@currentResponse.getChallengeParticipation.getParticipator.getFormattedName</a>
                                                 </div>
                                             @if(!responses.isEmpty) {
-                                                <div class="challenge-response-submitted">Submitted: @responses.get(0).getSubmitted</div>
+                                                <div class="challenge-response-submitted">Submitted: @currentResponse.getSubmitted</div>
                                             }
                                             </div>
                                         </div>
@@ -60,9 +61,9 @@
                                 </div>
                                 <div id="challenge-responses">
                                 @responses.map { response =>
-                                    <div class="challenge-response-wrapper @if(responses.get(0) == response) {current-response}">
+                                    <div class="challenge-response-wrapper @if(currentResponse == response) {current-response}">
                                         <div class="challenge-response-author"><a href="@routes.Application.showProfile(response.getChallengeParticipation.getParticipator.getUsername).url">@response.getChallengeParticipation.getParticipator.getFormattedName</a></div>
-                                        <div><a class="play-video-response" href="@response.getId"><img src="@response.getThumbnailUrl"/></a></div>
+                                        <div><a class="play-video-response" href="@routes.Application.showChallengeResponses(currentChallenge.getId, response.getId)"><img src="@response.getThumbnailUrl"/></a></div>
                                         <div>
                                         @if(!response.isDecided && currentChallenge.getCreator.getUsername.compareTo(currentUsername) == 0) {
                                             <div class="rate-response">

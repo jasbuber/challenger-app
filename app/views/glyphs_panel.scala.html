@@ -2,7 +2,7 @@
 
 <div class="challenges-wrapper">
     <div id="challenges-created" class="challenges-body created-tab-body">
-        <div class="glyph-header"><a class="show-challenges" href="#">Latest challenges</a></div>
+        <div class="glyph-header"><a class="show-challenges" href="@routes.Application.showMyChallenges()">Latest challenges</a></div>
         @if(!challenges.isEmpty) {
         <div class="glyph-challenges-wrapper">
             @challenges.take(3).map { challenge =>
@@ -16,13 +16,13 @@
                 </div>
             }
         </div>
-        <div class="glyph-show-more"><a class="show-challenges" href="#">see more</a></div>
+        <div class="glyph-show-more"><a class="show-challenges" href="@routes.Application.showMyChallenges()">see more</a></div>
         }else{
             <div class="no-elements-wrapper"><a href="@routes.Application.showCreateChallenge()">Create a new challenge!</a></div>
         }
     </div>
     <div id="challenges-participating" class="challenges-body participating-tab-body">
-        <div class="glyph-header"><a class="show-participations" href="#">Latest participations</a></div>
+        <div class="glyph-header"><a class="show-participations" href="@routes.Application.showMyParticipations()">Latest participations</a></div>
         @if(!latestParticipations.isEmpty) {
             <div class="glyph-challenges-wrapper">
             @latestParticipations.take(3).map { challenge =>
@@ -37,7 +37,7 @@
             }
             </div>
 
-            <div class="glyph-show-more"><a class="show-participations" href="show-glyph-data">see more</a></div>
+            <div class="glyph-show-more"><a class="show-participations" href="@routes.Application.showMyParticipations()" class="show-glyph-data">see more</a></div>
         } else {
             <div class="no-elements-wrapper"><a href="@routes.Application.showBrowseChallenges()">Join a challenge!</a></div>
         }

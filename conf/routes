@@ -7,6 +7,8 @@ GET         /account                                      controllers.Applicatio
 
 GET         /                                             controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 
+POST        /                                             controllers.Application.start(code: String ?= "", error_reason: String ?= "")
+
 GET         /browse/:phrase                               controllers.Application.showBrowseChallengesWithData(phrase: java.lang.String)
 
 GET         /browse                                       controllers.Application.showBrowseChallenges()

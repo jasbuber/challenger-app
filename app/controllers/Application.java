@@ -31,12 +31,14 @@ public class Application extends Controller {
 
     @Transactional
     public static Result start(String code, String error) {
-
         if (!error.equals("")) {
+            Logger.error("No permisions");
             return ok(error_view.render("You rejected the permissions!"));
         } else if (code.equals("")) {
+            Logger.error("Redirecting to facebook login page");
             return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()) + "&scope=publish_stream,user_videos");
         } else {
+            Logger.error("Other");
             String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
 
             session("fb_user_token", accessToken);

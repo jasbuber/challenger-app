@@ -19,7 +19,7 @@ div.dropdown span.navbar-new{ top: 35%; right: 22px; }
 
 div#menu-wrapper .navbar ul.nav ul.dropdown-menu li.more-elements a{ text-align: right; color: #34495e; }
 
-div#menu-wrapper .navbar div.quick-challenge-search{ float: left; width: 15%; min-width: 80px; margin-bottom: 0; margin-top: 10px; margin-left: 5%; }
+div#menu-wrapper .navbar div.quick-challenge-search{ float: left; width: 15%; min-width: 150px; margin-bottom: 0; margin-top: 10px; margin-left: 5%; }
 div#menu-wrapper .navbar div.quick-challenge-search input{ padding: 0 10px; height: 40px; }
 div#menu-wrapper .navbar div.quick-challenge-search button{ height: 40px; }
 div#menu-wrapper .navbar div.quick-challenge-search button span.fui-search{ top: -5px; }
@@ -36,12 +36,13 @@ div#wrapper{
     margin-top: 62px;
     overflow-x: auto;
     overflow-y: hidden;
+    min-width: 600px;
 }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div{ display: inline-block; }
 
 div.account-wrapper{ width: 100%!important; }
 
-div#wrapper div.main-blocks-wrapper{ margin-left: auto; margin-right: auto; width: 80%; height: 100%;}
+div#wrapper div.main-blocks-wrapper{ margin-left: auto; margin-right: auto; width: 80%; height: 100%; min-width: 570px; }
 
 div#wrapper div.ui-block{
     width: 48%;
@@ -49,6 +50,7 @@ div#wrapper div.ui-block{
     text-align: center;
     display: none;
     cursor: pointer;
+    min-height: 248px;
 }
 
 div#wrapper .top-block{ text-align: left; }
@@ -192,10 +194,10 @@ div#wrapper div#content-wrapper, div.video-block-wrapper .video-content-wrapper{
     min-width: 350px;
     padding-bottom: 20px;
 }
-div#wrapper #challenge-body div#content-wrapper{ min-width: 678px; }
+div#wrapper #challenge-body div#content-wrapper{ min-width: 590px; }
 
 div#wrapper div#profile-body div#content-wrapper{ min-width: 450px; }
-div#wrapper div#profile-wrapper{ overflow-x: auto; }
+div#wrapper div#profile-wrapper{ overflow-x: hidden; }
 div#wrapper div#profile-wrapper div#profile-picture, div#wrapper div#profile-wrapper div#profile-data{ display: inline-block; vertical-align: top; white-space: normal; }
 div#wrapper div#profile-wrapper div#profile-picture{ padding: 10% 5% 5% 10%; }
 div#wrapper div#profile-wrapper div#profile-picture img{ border-radius: 20px; border: 2px solid #bdc3c7;}
@@ -241,7 +243,9 @@ div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; wid
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
 div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
-div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper{ width: 88%; margin-left: 4%;}
+.padded-glyph-challenge-data-wrapper{ text-align: center;}
+.padded-glyph-challenge-data-wrapper .challenge-response-details{ text-align: left; }
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper{ width: 88%; margin-left: 4%; max-width: 600px; }
 div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .new-comment input.btn{ padding: 7px 15px; margin-left: 85%; }
 div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .new-comment textarea{
     resize: none;
@@ -307,7 +311,7 @@ div#wrapper div.single-body-block #challenge-responses > div img{ display: block
 div#wrapper div.single-body-block #challenge-responses > div.current-response{ background-color: #cfe3f3; }
 div#wrapper div.single-body-block #challenge-responses div div.challenge-response-author{ width: 170px; height: 30px; margin-left: auto; margin-right: auto; }
 
-div#wrapper div.single-body-block #video-panel{ margin: 2% auto 5% auto; width: 655px; position: relative; }
+div#wrapper div.single-body-block #video-panel{ margin: 2% auto 5% auto; width: 568px; position: relative; }
 div#wrapper div.single-body-block #send-response-wrapper{ width: 42%; left: 10%; height: 450px; margin-top: 10%; margin-left: auto; margin-right: auto; padding: 25px; text-align: center; min-width: 460px; }
 div#wrapper div.single-body-block #send-response-wrapper form > div{ padding: 15px; }
 div#wrapper div.single-body-block #send-response-wrapper form dt, div#wrapper div.single-body-block #send-response-wrapper form dd{ height: 20px; }
@@ -332,7 +336,7 @@ div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px;
 
 .notificationUnread{ font-weight: 800!important;}
 
-div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 380px; white-space: normal; }
+div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 50%; white-space: normal; text-align: left; }
 
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu{ padding: 10px 0 30px 10px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu span{ display: inline-block; margin-right: 20px; }
@@ -456,3 +460,44 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
 .palette-belize-hole:hover{ background-color: #3498DB; }
 .palette-pumpkin:hover{ background-color: #E67E22;}
 .palette-midnight-blue:hover{ background-color: #34495E;}
+
+@media screen and (max-width: 1024px){
+    div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(4),
+    div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(5),
+    div#wrapper div.form-wrapper div.challenge-search-results table th:nth-of-type(4),
+    div#wrapper div.form-wrapper div.challenge-search-results table th:nth-of-type(5)
+    { display: none;}
+
+    div#wrapper div#challenge-block-body div.form-wrapper{ width: 85%; }
+    div#wrapper div.main-blocks-wrapper{ width: auto; margin: 0 10px;}
+    div.account-wrapper div.single-body-block .challenges-wrapper,
+    div.video-block-wrapper div.single-body-block .challenges-wrapper{ display: none!important; }
+    div.account-wrapper div#content-wrapper, div.video-block-wrapper div#content-wrapper{ width: 98%!important; }
+    div.rankings-wrapper{ width: 98%!important; }
+}
+
+@media screen and (max-width: 890px){
+    div#wrapper div#content-wrapper, div.video-block-wrapper .video-content-wrapper{ width: 98%;}
+    div#wrapper div.single-body-block #challenge-responses{
+        display: block;
+        height: auto;
+        margin: 3% auto 0 auto;
+        width: 98%;
+        white-space: normal;
+        border-radius: 20px;
+        justify-content: space-around;
+        display: flex;
+        flex-flow: row wrap;
+    }
+    div#wrapper div.single-body-block #challenge-responses .challenge-response-wrapper{ display: inline-block; margin-bottom: 2%; }
+    .padded-glyph-challenge-data-wrapper{padding: 0;}
+}
+
+@media screen and (max-width: 768px){
+    div#wrapper{ width: 100%; }
+    div#wrapper div#challenge-block-body div.form-wrapper,
+    div#wrapper div#browse-block-body div.form-wrapper{ width: 98%; }
+    div#wrapper div.single-body-block .challenges-wrapper{ display: none; }
+
+}
+

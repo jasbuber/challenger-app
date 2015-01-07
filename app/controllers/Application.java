@@ -36,7 +36,7 @@ public class Application extends Controller {
             return ok(error_view.render("You rejected the permissions!"));
         } else if (code.equals("")) {
             Logger.error("Redirecting to facebook login page");
-            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()) + "&scope=publish_stream,user_videos");
+            return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()).replace("http", "https") + "&scope=publish_stream,user_videos");
         } else {
             Logger.error("Other");
             String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));

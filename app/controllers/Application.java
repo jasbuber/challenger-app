@@ -39,7 +39,7 @@ public class Application extends Controller {
             return redirect("https://www.facebook.com/dialog/oauth?client_id=471463259622297&redirect_uri=" + routes.Application.start("", "").absoluteURL(request()).replace("http", "https") + "&scope=publish_stream,user_videos");
         } else {
             Logger.error("Other");
-            String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request()));
+            String accessToken = FacebookService.generateAccessToken(code, controllers.routes.Application.start("", "").absoluteURL(request())).replace("http", "https");
 
             session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();

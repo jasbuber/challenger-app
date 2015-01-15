@@ -1077,4 +1077,11 @@ public class Application extends Controller {
         return ok(notifications_list.render(notifications));
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result showPrivacy() {
+
+        return ok(privacy_policy.render());
+
+    }
+
 }

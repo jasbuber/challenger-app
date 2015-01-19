@@ -66,7 +66,8 @@ public class FacebookService {
     public String publishAVideo(String challengeName, InputStream videoPath,String  fileName){
             FacebookType video = this.client.publish("me/videos", FacebookType.class,
                     BinaryAttachment.with(fileName, videoPath),
-                    Parameter.with("message", challengeName));
+                    Parameter.with("message", challengeName),
+                    Parameter.with("privacy", "{'value': 'EVERYONE'}"));
 
         return video.getId();
     }

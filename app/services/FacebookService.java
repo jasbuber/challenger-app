@@ -1,6 +1,7 @@
 package services;
 
 import com.restfb.*;
+import com.restfb.batch.BatchHeader;
 import com.restfb.batch.BatchRequest;
 import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonObject;
@@ -134,9 +135,9 @@ public class FacebookService {
 
             if(batchResponses.get(i).getBody() != null) {
 
-                users.add(jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class));
-
-                users.get(i).setPicture(batchResponses.get(i + 1).getHeaders().get(6).getValue());
+                FacebookUser user = jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class);
+                user.setPicture(batchResponses.get(i + 1).getHeaders().get(3).getValue());
+                users.add(user);
             }
         }
 

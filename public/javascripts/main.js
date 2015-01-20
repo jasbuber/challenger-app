@@ -334,6 +334,8 @@ $(document).ready(function () {
                             NProgress.done()
                         }
                     });
+                }else{
+                    $("#challenge-participants-wrapper").show();
                 }
             });
         }

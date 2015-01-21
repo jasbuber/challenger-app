@@ -49,8 +49,32 @@ public class Application extends Controller {
             session("name", user.getFormattedName());
             session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
 
-            return redirect(routes.Application.index());
+            return redirect(routes.Application.firstLogIn(accessToken));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public static Result firstLogIn(String token) {
+
+        if(session("fb_user_token") == null){
+            return ok(cookie_fix.render(token));
+        }
+
+        Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
+
+        User currentUser = getLoggedInUser();
+        String firstName = currentUser.getFirstName();
+        Integer points = currentUser.getAllPoints();
+        long unreadNotificationNr = (long) getNotificationService().getNumberOfUnreadNotifications(currentUser);
+        List<Notification> newestNotifications = getNotificationService().getNewestNotifications(currentUser);
+
+        List<User> topRatedUsers = getUsersService().getTopRatedUsers();
+        List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
+        List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
+        List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+
+        return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
+                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
     }
 
     @Transactional(readOnly = true)
@@ -71,6 +95,18 @@ public class Application extends Controller {
 
         return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
                 newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges));
+    }
+
+    @Transactional
+    public static Result setCookies(String aToken){
+        session("fb_user_token", aToken);
+        FacebookUser user = Application.getFacebookService().getFacebookUser();
+
+        session("username", user.getId());
+        session("name", user.getFormattedName());
+        session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
+
+        return ok(reloader.render());
     }
 
     @play.db.jpa.Transactional(readOnly = true)

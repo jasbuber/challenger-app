@@ -10,7 +10,8 @@
             <div id="content-wrapper">
                 <div id="challenge-wrapper" class="account-content">
                     <div class="padded-glyphs-wrapper">
-                        <div class="timer-parent">
+                        <div class="timer-parent top-block">
+                            <a class="backAction" href="@routes.Application.showMyChallenges()"><button class="btn btn-inverse">Back</button></a>
                         @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted) && ((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000) > 0) {
                             <div class="small-counter"></div>
                             <input class="time-left" type="hidden" value="@((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000)"/>
@@ -31,15 +32,16 @@
                                 </div>
                             </div>
                             <div id="challenge-lists">
+                                <div class="challenge-details-name">
+                                    @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted )){
+                                        <a class="challenge-details-leave-action" href="#">
+                                            <img class="has-tooltip" src="@routes.Assets.at("images/trash_small.png")" data-togle="tooltip" data-placement="top" title="Leave the challenge."/>
+                                        </a>
+                                    }
+                                    @challenge.getChallengeName
+                                </div>
                                 <div id="challenge-details">
                                     <div class="challenge-details-name-wrapper">
-                                        <span class="challenge-details-name">
-                                            @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted )){
-                                                <a class="challenge-details-leave-action" href="#">
-                                                    <img class="has-tooltip" src="@routes.Assets.at("images/trash_small.png")" data-togle="tooltip" data-placement="top" title="Leave the challenge."/>
-                                                </a>
-                                            }
-                                            @challenge.getChallengeName</span>
                                         <span>
                                             @if(challenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
                                                 @if(currentUserResponded == true) {

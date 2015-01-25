@@ -203,7 +203,7 @@ div#wrapper div#content-wrapper, div.video-block-wrapper .video-content-wrapper,
 div#wrapper #challenge-body div#content-wrapper{ min-width: 590px; }
 
 div#wrapper div#profile-body div#content-wrapper{ min-width: 450px; }
-div#wrapper div#profile-wrapper{ overflow-x: hidden; }
+div#wrapper div#profile-wrapper{ overflow-x: hidden; padding: 2%; }
 div#wrapper div#profile-wrapper div#profile-picture, div#wrapper div#profile-wrapper div#profile-data{ display: inline-block; vertical-align: top; white-space: normal; }
 div#wrapper div#profile-wrapper div#profile-picture{ padding: 10% 5% 5% 10%; }
 div#wrapper div#profile-wrapper div#profile-picture img{ border-radius: 20px; border: 2px solid #bdc3c7;}
@@ -241,6 +241,7 @@ div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-colo
 div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
 div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; word-break: break-all; white-space: normal; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
+div#wrapper .padded-glyphs-top-panel .backAction{ float: left; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span img{ vertical-align: top;}
 div#wrapper div.single-body-block span.padded-glyph-time-left{ display: inline-block; line-height: 48px; height: 33px; vertical-align: top; width: 150px;}
@@ -249,6 +250,8 @@ div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; wid
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
 div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
+div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .top-block .backAction{ float: left;}
+div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .top-block .small-counter{ float: right;}
 .padded-glyph-challenge-data-wrapper{ text-align: center;}
 .padded-glyph-challenge-data-wrapper .challenge-response-details{ text-align: left; }
 div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper{ width: 88%; margin-left: 4%; max-width: 600px; }
@@ -342,15 +345,15 @@ div#menu-wrapper .navbar ul.nav li a.notificationUnread img{ margin-right : 5px;
 
 .notificationUnread{ font-weight: 800!important;}
 
-div#challenge-details{ display: inline-block; height: 250px; vertical-align: top; width: 50%; white-space: normal; text-align: left; }
+div#challenge-details{ display: inline-block; min-height: 250px; vertical-align: top; width: 50%; white-space: normal; text-align: left; }
 
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu{ padding: 10px 0 30px 10px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-submenu span{ display: inline-block; margin-right: 20px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details > div{ font-size: 18px; font-weight: 700; }
 
+div#wrapper div.single-body-block div#challenge-wrapper div#challenge-lists .challenge-details-name{ word-wrap: break-word; white-space: normal; max-width: 750px; font-size: 30px; font-weight: 700; line-height: 52px; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span { display: inline-block; font-size: 30px; font-weight: 700; line-height: 52px; overflow: hidden; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span input{ vertical-align: top; margin-left: 20px;}
-div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.challenge-details-name-wrapper span.challenge-details-name{ max-width: 250px; word-wrap: break-word; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper{ padding: 3%; }
 div#wrapper div.single-body-block div#challenge-wrapper div#challenge-details div.show-responses-wrapper a{ font-size: 20px; }
 

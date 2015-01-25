@@ -842,7 +842,7 @@ $(document).ready(function () {
 
                     $comments.prepend($newComment);
                     $comments.find(".newly-added-comment").show("slow");
-                    $(".new-comment").slideUp();
+                    $(".new-comment").find("textarea").val("");
                 }
                 else {
                     var fields = jQuery.parseJSON(response);

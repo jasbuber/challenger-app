@@ -2,6 +2,7 @@ package domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -72,8 +73,8 @@ public class Comment {
         return author;
     }
 
-    public Date getCreationTimestamp() {
-        return creationTimestamp;
+    public String getCreationTimestamp() {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+01:00").format(creationTimestamp);
     }
 
     public String getMessage() {

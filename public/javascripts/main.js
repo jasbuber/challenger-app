@@ -26,11 +26,9 @@ $(document).ready(function () {
     }
 
     var $uiBlock = $(".ui-block");
-    $uiBlock.css("height", $uiBlock.width() / 1.6);
-    $uiBlock.show();
 
     $(window).on("resize", function () {
-        $uiBlock.css("height", $(".ui-block").width() / 1.2);
+        $uiBlock.css("height", $uiBlock.width() / 1.2);
     });
 
     $(document).ajaxError(function() {
@@ -992,4 +990,10 @@ $(document).ready(function () {
         });
     });
 
+});
+
+$(window).load(function(){
+    var $uiBlock = $(".ui-block");
+    $uiBlock.css("height", $uiBlock.width()/ 1.2);
+    $uiBlock.show();
 });

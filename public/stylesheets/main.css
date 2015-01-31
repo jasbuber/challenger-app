@@ -108,7 +108,6 @@ div#wrapper div#browse-block-body div.form-wrapper form div.btn-group{ vertical-
 div#wrapper div.common-table-wrapper{
     width: 100%;
     min-height: 400px;
-    max-height: 600px;
     overflow-y: auto;
     padding: 15px;
 }
@@ -131,8 +130,8 @@ div#wrapper div.form-wrapper div.challenge-search-results table tbody tr{ font-w
 div#wrapper div.form-wrapper div.challenge-search-results table tbody input.btn{ padding: 7px 15px; }
 div#wrapper div.form-wrapper div.challenge-search-results table tbody td:nth-of-type(1){ white-space: nowrap; overflow: hidden; padding-right: 10px; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(1),
-div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; }
-div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ word-break: break-all;}
+div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2){ text-align: left; overflow-y: hidden; word-break: break-all;}
+div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(2) a{ display: inline-block; overflow-y: hidden; max-height: 70px; }
 div#wrapper div.form-wrapper div.challenge-search-results table td:nth-of-type(3){ min-width: 115px; }
 
 div#wrapper div.form-wrapper div.challenge-search-results table td a.rating-star{
@@ -441,7 +440,8 @@ div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header{
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table{ margin-left: auto; margin-right: auto; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr:first-of-type{ font-size: 20px; font-weight: 800; height: 40px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td{ padding: 2%; line-height: 36px; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type{ text-align: left; min-width: 220px; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type{ text-align: left; min-width: 220px; overflow-x: hidden; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type a{ display: inline-block; vertical-align: middle; white-space: nowrap; overflow-x: hidden; max-width: 220px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2){ color: #debe81; font-weight: 800; min-width: 66px; white-space: nowrap; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2) img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }
 
@@ -485,6 +485,8 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     div.rankings-wrapper{ width: 98%!important; }
     .rewarded-points-message{ display: none; }
     div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ max-width: 150px; }
+    div#wrapper div#challenge-block-body div.form-wrapper,
+    div#wrapper div#browse-block-body div.form-wrapper{ width: 98%; }
 }
 
 @media screen and (max-width: 890px){
@@ -504,12 +506,12 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     .padded-glyph-challenge-data-wrapper{padding: 0;}
     div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ max-width: 100px; }
     div#menu-wrapper .navbar div.quick-challenge-search{ margin-left: 2%; }
+    div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type a{ max-width: 315px;}
+    div#wrapper .rankings-wrapper .ranking-row .ranking-glyph{ width: 55%; min-width: 430px;}
 }
 
 @media screen and (max-width: 768px){
     div#wrapper{ width: 100%; }
-    div#wrapper div#challenge-block-body div.form-wrapper,
-    div#wrapper div#browse-block-body div.form-wrapper{ width: 98%; }
     div#wrapper div.single-body-block .challenges-wrapper{ display: none; }
     div#wrapper div.single-body-block .padded-glyph-list-name{ width: 40%; }
     div#wrapper div.challenge-participants-wrapper table thead tr th:nth-of-type(3){ display: none; }

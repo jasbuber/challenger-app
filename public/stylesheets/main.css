@@ -150,7 +150,15 @@ div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper input{
 
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper > div{ display: inline-block; }
 div#wrapper div.ui-block-body div.form-wrapper div#video-upload-wrapper div#video-input-wrapper{ margin-bottom: 30px;  }
-div#wrapper div.form-wrapper div#video-upload-wrapper div#video-screenshot{ cursor: pointer; font-size: 28px; font-weight: bold; overflow: hidden; vertical-align: middle; }
+div#wrapper div.form-wrapper div#video-upload-wrapper div#video-screenshot{
+    cursor: pointer;
+    font-size: 28px;
+    font-weight: bold;
+    overflow: hidden;
+    vertical-align: middle;
+    word-break: break-all;
+    white-space: normal;
+}
 div#wrapper div.ui-block-body div.form-wrapper div#video-input-wrapper{ display: none;}
 div#wrapper div.ui-block-body div.form-wrapper input[type="file"]{ display: none;}
 

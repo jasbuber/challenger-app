@@ -328,6 +328,10 @@ public class Application extends Controller {
         filter.orderDescBy("creationDate");
         Expression<String> challengeNameField = filter.getField("challengeName");
 
+        if(phrase.length() > 25){
+            phrase = phrase.substring(0, 24);
+        }
+
         filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase + "%"));
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());

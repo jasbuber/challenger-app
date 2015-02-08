@@ -9,6 +9,7 @@ public class CreateChallengeForm {
 
     @Constraints.Required(message = "You forgot to type the challenge name, you know...")
     @Constraints.MinLength(value = 5, message = "Challenge name should be at least 5 characters long. Just because :P")
+    @Constraints.MaxLength(value = 250, message = "Name longer than 250 characters ? Seriously ? ;]")
     private String challengeName;
 
     private String creatorUsername;

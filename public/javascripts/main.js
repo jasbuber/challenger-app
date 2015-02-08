@@ -787,14 +787,16 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".active-rating-star", function(){
-        var $challengeId = $(".challenge-id").val(), $rating = $(".active-full-star").size();
+        var $challengeId = $(".challenge-id").val(), $rating = $(".active-full-star").size(), $this = $(this);
 
         $(document).off("mouseenter", ".active-rating-star");
         $(document).off("mouseleave", ".active-rating-star");
         $(document).off("click", ".active-rating-star");
 
         jsRoutes.controllers.Application.ajaxRateChallenge($challengeId, $rating).ajax({
-            success: function (response) {}
+            success: function (response) {
+                $this.parents('div').tooltip('destroy');
+            }
         });
     });
 

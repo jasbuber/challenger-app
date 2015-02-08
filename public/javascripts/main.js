@@ -103,7 +103,7 @@ $(document).ready(function () {
     var formatDifficulty = function(index){
         var levels = ["easy", "medium", "hard", "special"];
         return levels[index];
-    }
+    };
 
     var formatRating = function(rating){
         var $stars = "";
@@ -118,12 +118,11 @@ $(document).ready(function () {
             }
         }
         return $stars;
-    }
+    };
 
-    $(".browse-challenges-form").submit(function (e) {
-
-        var phrase = $(this).find(".challenge-search-phrase").val(), category = $(".challenge-category").val(), username = $(".current-username").val();
-
+    var searchChallenges = function(){
+        var phrase = $("form").find("input.challenge-search-phrase").val(), category = $(".challenge-category").val(), username = $(".current-username").val();
+        
         NProgress.start();
 
         jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category).ajax({
@@ -135,6 +134,10 @@ $(document).ready(function () {
 
             }
         });
+    };
+
+    $(".browse-challenges-form").submit(function (e) {
+        searchChallenges();
 
         e.preventDefault();
     });
@@ -349,20 +352,7 @@ $(document).ready(function () {
     });
 
     $(".challenge-category").change(function () {
-
-        var category = $(".challenge-category").val(), username = $(".current-username").val();
-
-        NProgress.start();
-
-        jsRoutes.controllers.Application.ajaxGetChallengesForCategory(category).ajax({
-            success: function (response) {
-                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
-
-                $(".challenge-search-results table tbody").html(body);
-                $(".switch").bootstrapSwitch();
-                NProgress.done();
-            }
-        });
+        searchChallenges();
     });
 
     $("#friends-filter-input").keyup(function (e) {

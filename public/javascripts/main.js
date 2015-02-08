@@ -101,7 +101,7 @@ $(document).ready(function () {
     };
 
     var formatDifficulty = function(index){
-        var levels = ["easy", "medium", "hard", "special"];
+        var levels = ["easy", "medium", "hard", "insane"];
         return levels[index];
     };
 

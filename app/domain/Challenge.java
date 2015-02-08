@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "CHALLENGES")
 public class Challenge {
 
-    public static enum DifficultyLevel { easy, medium, hard, special }
+    public static enum DifficultyLevel { easy, medium, hard, insane }
 
     @Id
     @SequenceGenerator(name = "CHALLENGE_SEQ_GEN", sequenceName = "CHALLENGE_SEQ", allocationSize = 1)

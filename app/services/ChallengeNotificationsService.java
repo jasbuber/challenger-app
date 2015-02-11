@@ -23,7 +23,7 @@ public class ChallengeNotificationsService {
         notificationService.notifyUsers(participators, notificationMsg, shortNotificationMsg, notificationType, relevantObjectId);
     }
 
-    public void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorId, String participatorName, List<User> participators) {
+    public void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorName, List<User> participators, boolean isPopular) {
         String challengeCreatorMsg = "New participation was added to your challenge " + challenge.getChallengeName() + "." +
                 " Participator username is " + participatorName;
         String shortChallengeCreatorMsg = "User joined a challenge";
@@ -34,7 +34,10 @@ public class ChallengeNotificationsService {
         String shortChallengeParticipatorsMsg = "User is also participating.";
 
         notifyChallengeCreator(challenge, challengeCreatorMsg, shortChallengeCreatorMsg, Notification.NotificationType.new_participant, String.valueOf(challenge.getId()));
-        notifyAllParticipators(participators, challenge, challengeParticipatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.new_participant, String.valueOf(challenge.getId()));
+
+        if(isPopular) {
+            notifyAllParticipators(participators, challenge, challengeParticipatorsMsg, shortChallengeParticipatorsMsg, Notification.NotificationType.new_participant, String.valueOf(challenge.getId()));
+        }
     }
 
     public void notifyAboutChallengeLeaving(Challenge challenge, String participatorId, String participatorName, List<User> participators) {

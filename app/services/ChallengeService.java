@@ -103,9 +103,7 @@ public class ChallengeService extends TransactionalBase {
         Challenge refreshedChallenge = challengesRepository.getChallenge(challenge.getId());
         ChallengeParticipation challengeParticipation = challengesRepository.persistChallengeParticipation(new ChallengeParticipation(refreshedChallenge, participator));
 
-        if (hasChallengeBecamePopular(challenge)) {
-            notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
-        }
+        notificationService.notifyAboutNewChallengeParticipation(challenge, participatorName, findAllParticipatorsOf(challenge), hasChallengeBecamePopular(challenge));
 
         return challengeParticipation;
     }

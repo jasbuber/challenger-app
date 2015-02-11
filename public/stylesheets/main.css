@@ -274,7 +274,7 @@ div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .new-comm
     font-weight: 600;
 }
 div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment{ padding: 10px 0 10px 0;}
-div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment .comment-message{ margin-left: 40px; white-space:normal; }
+div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment .comment-message{ margin-left: 40px; white-space:normal; word-break: break-all; }
 div#wrapper div.single-body-block #challenge-wrapper .comments-wrapper .comment .timeago{ color: gray; font-size: 16px; margin-left: 20px; }
 
 div#wrapper div.single-body-block .challenges-body{

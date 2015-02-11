@@ -2,7 +2,10 @@
 
 <div id="participations-wrapper" class="account-content">
     <div class="padded-glyphs-wrapper">
-        <div class="padded-glyphs-top-panel"><span><a class="show-profile" href="#"><img class="smallProfilePicture" src="@bigProfilePicUrl"/></a></span><span class="padded-glyph-header">My Participations</span></div>
+        <div class="padded-glyphs-top-panel">
+            <a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a>
+            <span class="padded-glyph-header">My Participations</span>
+        </div>
         <div class="padded-glyph-challenges-wrapper">
         @if(!participations.isEmpty) {
             @participations_list(participations)

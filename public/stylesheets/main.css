@@ -54,7 +54,6 @@ div#wrapper div.ui-block{
     height: 300px;
     float: left;
     text-align: center;
-    display: none;
     cursor: pointer;
     min-height: 248px;
 }

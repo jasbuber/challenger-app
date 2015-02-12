@@ -35,8 +35,9 @@ div#wrapper{
     margin-right: auto;
     margin-top: 62px;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     min-width: 600px;
+    min-height: 500px;
 }
 div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div{ display: inline-block; }
 
@@ -471,6 +472,7 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
 .visibility-select-wrapper{ vertical-align: top;}
 .back-action-wrapper{ vertical-align: top; display: inline-block; }
 .show-more-wrapper{ text-align: center; margin-top: 20px; }
+.select .btn{ width: 240px!important; }
 
 .palette-nephritis:hover{ background-color: #2ECC71; }
 .palette-belize-hole:hover{ background-color: #3498DB; }

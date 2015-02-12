@@ -69,9 +69,6 @@ GET         /response/ajax/response                       controllers.Applicatio
 
 GET         /javascriptRoutes                             controllers.Application.javascriptRoutes()
 
-#to be removed very soon
-GET         /generate                                     controllers.Application.generateData()
-
 GET         /currentprofile                               controllers.Application.showCurrentProfile()
 
 GET         /profile                                      controllers.Application.showProfile(username: String)

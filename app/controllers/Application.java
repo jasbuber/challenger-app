@@ -409,41 +409,6 @@ public class Application extends Controller {
 
     }
 
-    /**
-     * Will be removed after filling data is not necessary anymore.
-     */
-    @play.db.jpa.Transactional
-    public static Result generateData() {
-
-        UserService userService = new UserService(new UsersRepository());
-        ChallengeService service = new ChallengeService(new ChallengesRepository(), userService, createNotificationService());
-        InternalNotificationService notificationService = new InternalNotificationService(new InternalNotificationsRepository());
-
-        User testUser = creteTestUser(userService, getLoggedInUsername());
-        User otherUser = creteTestUser(userService, "12122112");
-        User otherUser2 = creteTestUser(userService, "12122113");
-        User otherUser3 = creteTestUser(userService, "12122114");
-        User otherUser4 = creteTestUser(userService, "12122115");
-        User otherUser5 = creteTestUser(userService, "12122116");
-
-        Challenge challenge = service.createAndPersistChallenge(testUser.getUsername(), "test challenge", ChallengeCategory.FOOD, "543763142406586", true, 1);
-        service.createAndPersistChallenge(testUser.getUsername(), "testce", ChallengeCategory.FOOD, "543758585740375", true, 2);
-        service.createAndPersistChallenge(testUser.getUsername(), "testchjhjgfallenge", ChallengeCategory.OTHER, "543763142406586", true, 2);
-
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122112", "otherUser"), "fsfdsdss", "543763142406586");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122113", "otherUser2"), "fsdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122114", "otherUser3"), "fsfdshhjhjjhjdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122115", "otherUser4"), "fsfdss", "544923992290501");
-        service.submitChallengeResponse(service.participateInChallenge(challenge, "12122116", "otherUser5"), "fsfddfgfdgfddgfdgfgfgfsdss", "544923992290501");
-
-        service.createAndPersistChallenge(otherUser.getUsername(), "test challenge2", ChallengeCategory.FOOD, "543763142406586", true, 1);
-        service.createAndPersistChallenge(otherUser2.getUsername(), "test challenge3", ChallengeCategory.FOOD, "543763142406586", false, 4);
-        service.createAndPersistChallenge(otherUser.getUsername(), "test challenge4", ChallengeCategory.FOOD, "543763142406586", false, 2);
-        service.createAndPersistChallenge(otherUser2.getUsername(), "test challenge5", ChallengeCategory.FOOD, "543763142406586", true, 2);
-
-        return redirect(routes.Application.index());
-    }
-
     private static User creteTestUser(UserService userService, String id) {
         return userService.createNewOrGetExistingUser(id, null, null, null);
     }

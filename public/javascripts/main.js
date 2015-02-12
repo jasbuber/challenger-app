@@ -50,6 +50,7 @@ $(document).ready(function () {
                 $(this).removeClass("active");
                 $blockBody.removeClass('hide');
                 $blockBody.fadeIn(1000);
+                $blockBody.find(".back-action").removeClass("real-back-action");
 
                 $(this).parents("#wrapper").removeAttr("style");
             });
@@ -64,15 +65,12 @@ $(document).ready(function () {
     }).on('blur', '.form-control', function () {
         $(this).closest('.input-group, .form-group').removeClass('focus');
     });
-/*
-    $(".backAction").click(function (e) {
-        $(".ui-block-body").hide();
-        $uiBlock.removeClass('hide');
-        $uiBlock.fadeIn(1000);
 
+    $(document).on("click", ".real-back-action", function (e) {
+        window.history.back()
         e.preventDefault();
     });
-*/
+
     var formChallengesRows = function (challenges, username) {
         var $body = "";
 

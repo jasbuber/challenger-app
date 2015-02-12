@@ -247,7 +247,6 @@ div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-colo
 div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
 div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; word-break: break-all; white-space: normal; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
-div#wrapper .padded-glyphs-top-panel .backAction{ float: left; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span img{ vertical-align: top;}
 div#wrapper div.single-body-block span.padded-glyph-time-left{ display: inline-block; line-height: 48px; height: 33px; vertical-align: top; width: 150px;}
@@ -256,7 +255,6 @@ div#wrapper div.single-body-block .padded-glyph-list-name{ overflow: hidden; wid
 div#wrapper div.single-body-block .padded-glyph-list-name a{ height: 33px; line-height: 33px; }
 div#wrapper div.single-body-block .padded-glyphs-wrapper{ padding: 2%; }
 div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .timer-parent{ text-align: right; height: 35px; }
-div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .top-block .backAction{ float: left;}
 div#wrapper div.single-body-block #challenge-wrapper .padded-glyphs-wrapper .top-block .small-counter{ float: right;}
 .padded-glyph-challenge-data-wrapper{ text-align: center;}
 .padded-glyph-challenge-data-wrapper .challenge-response-details{ text-align: left; }
@@ -464,6 +462,7 @@ div#wrapper .glyph{
 }
 
 .inline-block{ display: inline-block; }
+.back-action{ float: left;}
 
 label.fb-feed-label{ width: 180px; margin-left: auto; margin-right: auto; font-size: 20px; font-weight: 700; }
 label.fb-feed-label > span{ line-height: 1.5!important; }

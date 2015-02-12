@@ -1,5 +1,8 @@
 @(challengeForm: Form[controllers.CreateChallengeForm])
-<div class="padded-glyphs-top-panel"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a><span class="padded-glyph-header">Create a Challenge</span></div>
+<div class="padded-glyphs-top-panel">
+    <a class="back-action real-back-action" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a>
+    <span class="padded-glyph-header">Create a Challenge</span>
+</div>
 <div class="form-wrapper">
 @helper.form(action = routes.Application.ajaxCreateChallenge(), 'method -> "POST", 'enctype -> "multipart/form-data", 'id -> "create-challenge-form") {
     <div class="challenge-form-block">

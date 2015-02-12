@@ -1,7 +1,10 @@
 @(name: java.lang.String, bigProfilePicUrl: java.lang.String, createdChallengesNr: Long, joinedChallengesNr: Long, completedChallengesNr: Long, points: java.lang.Integer)
 
 <div id="profile-wrapper" class="account-content">
-    <div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+    <div class="top-block">
+        <a class="back-action real-back-action" href="@routes.Application.index()">
+            <button class="btn btn-inverse">Back</button></a>
+    </div>
     <div id="profile-picture">
         @if(bigProfilePicUrl != null) {
             <img src="@bigProfilePicUrl"/>

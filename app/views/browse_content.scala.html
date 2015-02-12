@@ -1,6 +1,8 @@
 @(challenges: java.util.List[domain.Challenge], currentUsername: java.lang.String)
 
-<div class="top-block"><a class="backAction" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a></div>
+<div class="top-block">
+    <a class="back-action real-back-action" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a>
+</div>
     <h2>Browse challenges</h2>
     <div class="form-wrapper">
         <form class="browse-challenges-form">

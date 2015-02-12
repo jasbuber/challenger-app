@@ -7,14 +7,14 @@
         <div id="wrapper" class="account-wrapper">
             <div class="main-blocks-wrapper">
                 <div id="challenge-block" class="ui-block palette-nephritis">
-                    <a href="@routes.Application.showCreateChallenge()"><span class="ui-block-title">Create a challenge</span></a>
+                    <a href="@routes.Application.showCreateChallenge()"><span class="ui-block-title">Create a Challenge</span></a>
                 </div>
                 <div id="browse-block" class="ui-block palette-belize-hole">
-                    <a href="@routes.Application.showBrowseChallenges()"><span class="ui-block-title">Browse challenges</span></a></div>
+                    <a href="@routes.Application.showBrowseChallenges()"><span class="ui-block-title">Discover Challenges</span></a></div>
                 <div id="rank-block" class="ui-block palette-pumpkin">
                     <a href="@routes.Application.showRankings()"><span class="ui-block-title">Rankings</span></a></div>
                 <a href="@routes.Application.showMyChallenges()"><div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">
-                    My challenges</span></div></a>
+                    My Challenges</span></div></a>
                 <div id="challenge-block-body" class="ui-block-body" style="display : none">
                 @new_challenge_content(challengeForm: Form[controllers.CreateChallengeForm])
                 </div>

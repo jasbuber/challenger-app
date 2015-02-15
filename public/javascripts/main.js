@@ -8,6 +8,35 @@ $(document).ready(function () {
     var $slider = $(".slider");
     jQuery("span.timeago").timeago();
 
+    var loadingMessages = [
+            '"We are no longer the knights who say ni! We are now the knights who ' +
+            'say ekki-ekki-ekki-pitang-zoom-boing!"',
+        '"We apologise for the fault in the subtitles. Those responsible have been sacked."',
+        '"Is the video that big or your connection just sucks ? O.O"',
+        '"Wi not trei a holiday in Sweeden this yer ?"',
+        '"A moose once bit my sister..."',
+            '"Are you sure you\'re not an encyclopedia salesman? ' +
+            'No, Ma\'am. Just a burglar, come to ransack the flat."',
+        '"Mate, this parrot wouldn\'t VOOM if you put four million volts through it! "'
+
+    ], getRandomIndex = function() {
+            return Math.floor((Math.random() * 7))
+        },
+    showInstantMessage = function(message, delay){
+        window.setTimeout(function(){
+            alertify.success(message, 8000)
+        }, delay);
+    },
+    displayInstantMessages = function() {
+        showInstantMessage(loadingMessages[getRandomIndex()], 15000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 30000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 60000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 90000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 120000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 180000);
+        showInstantMessage(loadingMessages[getRandomIndex()], 300000);
+    };
+
     if ($slider.length > 0) {
         $slider.slider({
             min: 0,
@@ -297,6 +326,7 @@ $(document).ready(function () {
             }
         });
 
+        displayInstantMessages();
     });
 
     $("#challenge-visibility").change(function () {
@@ -511,6 +541,8 @@ $(document).ready(function () {
         if($hasErrors) return;
 
         NProgress.start();
+
+        displayInstantMessages();
 
         $(this).ajaxSubmit({
             success: function (response) {

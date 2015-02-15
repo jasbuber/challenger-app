@@ -494,7 +494,7 @@ label.fb-feed-label > span{ line-height: 1.5!important; }
     div.rankings-wrapper{ width: 98%!important; }
     .rewarded-points-message{ display: none; }
     div#menu-wrapper .navbar ul.nav li div.menu-points-wrapper div.points-number-wrapper{ max-width: 150px; }
-    div#wrapper div#challenge-block-body div.form-wrapper,
+    div#wrapper, div#wrapper div#challenge-block-body div.form-wrapper,
     div#wrapper div#browse-block-body div.form-wrapper{ width: 98%; }
 }
 

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.restfb.FacebookClient;
 import com.restfb.types.Video;
 import domain.*;
 import play.Logger;
@@ -31,6 +32,11 @@ public class Application extends Controller {
 
     @Transactional
     public static Result start(String code, String error) {
+
+        if(session("fb_user_token") != null && !isTokenExpired()){
+            return redirect(routes.Application.index());
+        }
+
         if (!error.equals("")) {
             Logger.error("No permisions");
             return ok(error_view.render("You rejected the permissions!"));
@@ -39,9 +45,13 @@ public class Application extends Controller {
             return ok(facebook_redirect.render());
         } else {
             Logger.error("Other");
-            String accessToken = FacebookService.generateAccessToken(code, "https://apps.facebook.com/vchallenger/");
+
+            FacebookClient.AccessToken token = FacebookService.generateAccessToken(code, "https://apps.facebook.com/vchallenger/");
+            String accessToken = token.getAccessToken();
+            String expires = String.valueOf(token.getExpires().getTime());
 
             session("fb_user_token", accessToken);
+            session("fb_user_token_expires", expires);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
             Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
 
@@ -49,15 +59,20 @@ public class Application extends Controller {
             session("name", user.getFormattedName());
             session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
 
-            return redirect(routes.Application.firstLogIn(accessToken));
+            return redirect(routes.Application.firstLogIn(accessToken, expires));
         }
     }
 
+    public static boolean isTokenExpired(){
+        return (session("fb_user_token_expires") == null
+                || Long.parseLong(session("fb_user_token_expires")) <= new Date().getTime());
+    }
+
     @Transactional(readOnly = true)
-    public static Result firstLogIn(String token) {
+    public static Result firstLogIn(String token, String expires) {
 
         if(session("fb_user_token") == null){
-            return ok(cookie_fix.render(token));
+            return ok(cookie_fix.render(token, expires));
         }
 
         Form<CreateChallengeForm> challengeForm = Form.form(CreateChallengeForm.class);
@@ -98,8 +113,9 @@ public class Application extends Controller {
     }
 
     @Transactional
-    public static Result setCookies(String aToken){
+    public static Result setCookies(String aToken, String expires){
         session("fb_user_token", aToken);
+        session("fb_user_token_expires", expires);
         FacebookUser user = Application.getFacebookService().getFacebookUser();
 
         session("username", user.getId());

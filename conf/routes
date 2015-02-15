@@ -5,9 +5,9 @@
 # Home page
 GET         /account                                      controllers.Application.index()
 
-GET         /cookies                                      controllers.Application.setCookies(aToken: java.lang.String)
+GET         /cookies                                      controllers.Application.setCookies(aToken: java.lang.String, expires: java.lang.String)
 
-GET         /login                                        controllers.Application.firstLogIn(aToken: java.lang.String)
+GET         /login                                        controllers.Application.firstLogIn(aToken: java.lang.String, expires: java.lang.String)
 
 GET         /                                             controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 

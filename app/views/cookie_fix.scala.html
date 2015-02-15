@@ -1,11 +1,11 @@
-@(accessToken: java.lang.String)
+@(accessToken: java.lang.String, expires: java.lang.String)
 
 @main("Welcome to Challenge Application") {
     <div id="wrapper">
         <div id="policy-content-wrapper">
             <h2>Let the cookies in!</h2>
             <p>In order to work, the application needs to set up a couple of cookies. Click the button below to create cookies.</p>
-            <p><a href="@routes.Application.setCookies(accessToken).absoluteURL().replace("http", "https")" target="_blank">
+            <p><a href="@routes.Application.setCookies(accessToken, expires).absoluteURL().replace("http", "https")" target="_blank">
                 <div><input type="button" class="btn btn-hg btn-primary" value="Give me more cookies!"/></div>
             </a></p>
         </div>

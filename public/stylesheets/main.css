@@ -35,7 +35,7 @@ div#wrapper{
     margin-right: auto;
     margin-top: 62px;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
     min-width: 600px;
     min-height: 500px;
 }
@@ -87,7 +87,7 @@ div#wrapper div.ui-block-body{
 }
 
 div#wrapper div#browse-block-body{
-    padding-bottom: 120px;
+    padding-bottom: 20px;
     border-radius: 20px;
     border: 2px solid #bdc3c7;
     margin: 1% auto 0 auto;

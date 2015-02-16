@@ -31,8 +31,8 @@ import java.util.List;
 public class Application extends Controller {
     
     private static final String fbAppAdress = Play.application().configuration().getString("fb.app.address");
-    private final static String fbAppId = Play.application().configuration().getString("fb.app.id"); //"471463259622297";
-    private final static String fbSecret = Play.application().configuration().getString("fb.secret"); //"a8d1db17c5add29872d79dd35bf793dc";
+    private final static String fbAppId = Play.application().configuration().getString("fb.app.id");
+    private final static String fbSecret = Play.application().configuration().getString("fb.secret");
 
     @Transactional
     public static Result start(String code, String error) {

@@ -216,8 +216,10 @@ div#wrapper div#profile-wrapper div#profile-picture{ padding: 10% 5% 5% 10%; }
 div#wrapper div#profile-wrapper div#profile-picture img{ border-radius: 20px; border: 2px solid #bdc3c7;}
 div#wrapper div#profile-wrapper div#profile-data{ width: 60%; padding: 10% 5% 5% 5%; }
 div#wrapper div#profile-wrapper div#profile-data ul{ list-style-type: none;  font-size: 20px; }
+div#wrapper div#profile-wrapper div#profile-data li{ padding-bottom: 5px; }
 div#wrapper div#profile-wrapper div#profile-data li.profile-points-wrapper{ color: #debe81; font-weight: 800; font-size: 20px; }
-div#wrapper div#profile-wrapper div#profile-data li.profile-points-wrapper img{ margin-right: 5px; }
+div#wrapper div#profile-wrapper div#profile-data li.profile-points-wrapper img,
+    div#wrapper div#profile-wrapper div#profile-data li.profile-share-wrapper img{ margin-right: 5px; }
 
 div#wrapper div#profile-wrapper div#profile-stats{ overflow: hidden; text-align: center; padding-top: 10%; padding-bottom: 20%; }
 div#wrapper div#profile-wrapper div#profile-stats .stats-glyph{

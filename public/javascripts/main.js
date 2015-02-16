@@ -1012,6 +1012,14 @@ $(document).ready(function () {
         });
     });
 
+    $(".share-action").click(function(e){
+        FB.ui({method: 'apprequests',
+            message: "Hey, check out this app. And I'm not just saying it because I'm an automatic message :P"
+        }, function(fbresponse){});
+        
+        e.preventDefault() ;
+    });
+
 });
 
 $(window).load(function(){

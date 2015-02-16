@@ -247,7 +247,8 @@ div#wrapper div.single-body-block .padded-glyph-challenge{
 }
 
 div#wrapper div.single-body-block .padded-glyph-challenge:hover{ background-color: #f6fbff; cursor: pointer;}
-div#wrapper div.single-body-block .padded-glyph-challenge a img{ vertical-align: top; }
+div#wrapper div.single-body-block .padded-glyph-challenge a img,
+    div#wrapper div.single-body-block .padded-glyph-challenge img{ vertical-align: top; }
 div#wrapper .padded-glyph-header{ text-align: center; margin-bottom: 3%; font-size: 30px; font-weight: 700; width: 90%; word-break: break-all; white-space: normal; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel{ margin-bottom: 2%; margin-top: 1%; }
 div#wrapper div.single-body-block .padded-glyphs-top-panel span{ display: inline-block; line-height: 34px; }

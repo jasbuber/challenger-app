@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.restfb.types.Video;
 import domain.*;
 import play.Logger;
+import play.Play;
 import play.Routes;
 import play.data.Form;
 import play.db.jpa.Transactional;
@@ -28,6 +29,10 @@ import java.util.Date;
 import java.util.List;
 
 public class Application extends Controller {
+    
+    private static final String fbAppAdress = Play.application().configuration().getString("fb.app.address");
+    private final static String fbAppId = Play.application().configuration().getString("fb.app.id"); //"471463259622297";
+    private final static String fbSecret = Play.application().configuration().getString("fb.secret"); //"a8d1db17c5add29872d79dd35bf793dc";
 
     @Transactional
     public static Result start(String code, String error) {
@@ -39,7 +44,7 @@ public class Application extends Controller {
             return ok(facebook_redirect.render());
         } else {
             Logger.error("Other");
-            String accessToken = FacebookService.generateAccessToken(code, "https://apps.facebook.com/vchallenger/");
+            String accessToken = FacebookService.generateAccessToken(code, fbAppId, fbSecret, fbAppAdress);
 
             session("fb_user_token", accessToken);
             FacebookUser user = Application.getFacebookService().getFacebookUser();
@@ -288,7 +293,7 @@ public class Application extends Controller {
     }
 
     private static FacebookService getFacebookService() {
-        return new FacebookService(Application.getAccessToken());
+        return new FacebookService(Application.getAccessToken(), fbSecret);
     }
 
     private static String getProfilePictureUrl() {

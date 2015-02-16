@@ -24,30 +24,22 @@ import java.util.List;
  */
 public class FacebookService {
 
-    private final static String secret = "a8d1db17c5add29872d79dd35bf793dc";
-
-    private final static String applicationId = "471463259622297";
-
-    private final static String appUrl = "https://apps.facebook.com/471463259622297";
-
     private final DefaultFacebookClient client;
 
-    public FacebookService(String token){
-
-        this.client = new DefaultFacebookClient(token, this.secret, Version.VERSION_2_1);
-
+    public FacebookService(String token, String secret){
+        this.client = new DefaultFacebookClient(token, secret, Version.VERSION_2_1);
     }
 
     public DefaultFacebookClient getClient() {
         return client;
     }
 
-    public static String generateAccessToken(String code, String redirectUrl){
+    public static String generateAccessToken(String code, String applicationId, String secret, String redirectUrl){
         try {
             WebRequestor wr = new DefaultWebRequestor();
             WebRequestor.Response accessTokenResponse = wr.executeGet(
-                "https://graph.facebook.com/oauth/access_token?client_id=" + FacebookService.applicationId + "&redirect_uri=" + redirectUrl
-                        + "&client_secret=" + FacebookService.secret + "&code=" + code);
+                "https://graph.facebook.com/oauth/access_token?client_id=" + applicationId + "&redirect_uri=" + redirectUrl
+                        + "&client_secret=" + secret + "&code=" + code);
             return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody()).getAccessToken();
         } catch (IOException e) {
         }

@@ -10,7 +10,7 @@
         <img src="@routes.Assets.at("images/avatar_small.png")"/>
       }
       <span class="participant-name-span">@participation.getParticipator.getFormattedName</span></a>
-      @if(challenge.getCreator.getUsername.compareTo(username) == 0) {
+      @if(challenge.getCreator.getUsername.compareTo(username) == 0 && !participation.isResponseSubmitted()) {
         <a class="remove-participant" href="#">
           <img class="has-tooltip" data-togle="tooltip" data-placement="right" title="Throw out the guy." src="@routes.Assets.at("images/trash_small.png")"/>
         </a>

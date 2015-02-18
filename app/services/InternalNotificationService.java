@@ -7,7 +7,7 @@ import repositories.InternalNotificationsRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InternalNotificationService extends TransactionalBase implements NotificationService {
+public class InternalNotificationService implements NotificationService {
 
     private final InternalNotificationsRepository internalNotificationsRepository;
 

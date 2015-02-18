@@ -9,7 +9,7 @@ import repositories.UsersRepository;
 
 import java.util.List;
 
-public class UserService extends TransactionalBase {
+public class UserService {
 
     private final UsersRepository usersRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);

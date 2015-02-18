@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChallengeService extends TransactionalBase {
+public class ChallengeService {
     
     private static final Logger logger = LoggerFactory.getLogger(ChallengeService.class);
 

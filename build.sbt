@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "commons-net" % "commons-net" % "3.2"
 
-libraryDependencies += "commons-net" % "commons-lang" % "3.2"
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.3.2"
 
 libraryDependencies += "com.restfb" % "restfb" % "1.6.16"
 

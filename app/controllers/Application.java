@@ -33,10 +33,6 @@ public class Application extends Controller {
     @Transactional
     public static Result start(String code, String error) {
 
-        if(session("fb_user_token") != null && !isTokenExpired()){
-            return redirect(routes.Application.index());
-        }
-
         if (!error.equals("")) {
             Logger.error("No permisions");
             return ok(error_view.render("You rejected the permissions!"));

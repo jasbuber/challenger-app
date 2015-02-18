@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class FacebookService {
 
-    private static Logger logger = LoggerFactory.getLogger(FacebookService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacebookService.class);
 
     private final DefaultFacebookClient client;
 

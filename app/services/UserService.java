@@ -2,6 +2,8 @@ package services;
 
 import domain.FacebookUser;
 import domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.db.jpa.Transactional;
 import repositories.UsersRepository;
 
@@ -10,6 +12,7 @@ import java.util.List;
 public class UserService extends TransactionalBase {
 
     private final UsersRepository usersRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
@@ -21,9 +24,11 @@ public class UserService extends TransactionalBase {
 
     public User createNewOrGetExistingUser(final String username, final String firstName, final String lastName, final String profilePictureUrl) {
         if (usersRepository.isUserExist(username)) {
+            logger.debug("Getting user with username {}", username);
             return usersRepository.getUser(username);
         }
 
+        logger.info("Creating new user with username {}", username);
         return usersRepository.createUser(username, firstName, lastName, profilePictureUrl);
     }
 
@@ -38,6 +43,7 @@ public class UserService extends TransactionalBase {
      *                               RuntimeException for any other exception
      */
     public User getExistingUser(final String userId) {
+        logger.debug("Getting user with username {}", userId);
         return usersRepository.getUser(userId);
     }
 

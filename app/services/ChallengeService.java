@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ChallengeService extends TransactionalBase {
     
-    private static Logger logger = LoggerFactory.getLogger(ChallengeService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChallengeService.class);
 
     public static final int POPULARITY_INDICATOR = 10;
 
@@ -156,7 +156,6 @@ public class ChallengeService extends TransactionalBase {
         User participator = userService.getExistingUser(participatorUsername);
         Boolean challengeRemovalResult = challengesRepository.deleteChallengeParticipation(challenge, participator);
 
-        logger.debug("Notifying about challenge leaving of {}", participatorUsername);
         notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
 
         return challengeRemovalResult;
@@ -190,7 +189,6 @@ public class ChallengeService extends TransactionalBase {
         ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation, videoDescriptionUrl, message);
         challengeResponse = challengesRepository.addChallengeResponse(challengeResponse);
 
-        logger.debug("Notifying about submitting challenge response {}", challengeResponse.getId());
         notificationService.notifyAboutSubmittingChallengeResponse(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
 
         return challengeResponse;
@@ -231,7 +229,6 @@ public class ChallengeService extends TransactionalBase {
 
         ChallengeParticipation challengeParticipation = acceptedResponse.getChallengeParticipation();
         
-        logger.debug("Notifying about challenge response {} acceptance", challengeResponse.getId());
         notificationService.notifyAboutChallengeResponseAcceptance(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return acceptedResponse;
     }
@@ -246,7 +243,6 @@ public class ChallengeService extends TransactionalBase {
 
         ChallengeParticipation challengeParticipation = refusedResponse.getChallengeParticipation();
         
-        logger.debug("Notifying about challenge response {} refusal", challengeResponse.getId());
         notificationService.notifyAboutChallengeResponseRefusal(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return refusedResponse;
     }

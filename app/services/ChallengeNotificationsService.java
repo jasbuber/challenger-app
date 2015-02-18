@@ -4,12 +4,15 @@ import domain.Challenge;
 import domain.ChallengeParticipation;
 import domain.Notification;
 import domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ChallengeNotificationsService {
 
     private final NotificationService notificationService;
+    private static final Logger logger = LoggerFactory.getLogger(ChallengeNotificationsService.class);
 
     public ChallengeNotificationsService(NotificationService notificationService) {
         this.notificationService = notificationService;
@@ -24,6 +27,8 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutNewChallengeParticipation(Challenge challenge, String participatorId, String participatorName, List<User> participators) {
+        logger.debug("Notifying about new challenge participation in challenge {} by user {}", challenge.getChallengeName(), participatorName);
+        
         String challengeCreatorMsg = "New participation was added to your challenge " + challenge.getChallengeName() + "." +
                 " Participator username is " + participatorName;
         String shortChallengeCreatorMsg = "User joined a challenge";
@@ -38,6 +43,8 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutChallengeLeaving(Challenge challenge, String participatorId, String participatorName, List<User> participators) {
+        logger.debug("Notifying about challenge leaving of {}", participatorName);
+        
         String challengeCreatorMsg = "Participator " + participatorName + " has left your challenge " + challenge.getChallengeName();
         String shortChallengeCreatorMsg = "User left a challenge";
 
@@ -50,6 +57,8 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutSubmittingChallengeResponse(ChallengeParticipation challengeParticipation, List<User> participators) {
+        logger.debug("Notifying about submitting challenge response for challenge participation {}", challengeParticipation.getId());
+        
         Challenge challenge = challengeParticipation.getChallenge();
 
         String challengeCreatorMsg = "User " + challengeParticipation.getParticipator().getFormattedName() + " has just submitted response to your challenge " + challenge.getChallengeName();
@@ -65,6 +74,8 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutChallengeResponseAcceptance(ChallengeParticipation challengeParticipation, List<User> participators) {
+        logger.debug("Notifying about challenge response acceptance for challenge participation {}", challengeParticipation.getId());
+        
         Challenge challenge = challengeParticipation.getChallenge();
 
         String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
@@ -81,6 +92,8 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutChallengeResponseRefusal(ChallengeParticipation challengeParticipation, List<User> participators) {
+        logger.debug("Notifying about challenge response refusal for challenge participation {}", challengeParticipation.getId());
+        
         Challenge challenge = challengeParticipation.getChallenge();
 
         String challengeParticipatorMsg = "Your challenge participation in challenge " + challenge.getChallengeName() +
@@ -97,6 +110,7 @@ public class ChallengeNotificationsService {
     }
 
     public void notifyAboutNewPrivateChallenge(Challenge challenge, List<User> participators) {
+        logger.debug("Notifying about creation of private challenge {}" + challenge.getChallengeName());
 
         String participatorsMsg = "You have been invited to challenge: " + challenge.getChallengeName() +
                 " by " + challenge.getCreator().getFormattedName();

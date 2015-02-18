@@ -1,6 +1,9 @@
 package services;
 
 import domain.*;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.dtos.ChallengeWithParticipantsNr;
@@ -14,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChallengeService extends TransactionalBase {
+    
+    private static Logger logger = LoggerFactory.getLogger(ChallengeService.class);
 
     public static final int POPULARITY_INDICATOR = 10;
 
@@ -32,7 +37,8 @@ public class ChallengeService extends TransactionalBase {
                                      final ChallengeCategory category, final Boolean visibility,
                                      final List<String> challengeParticipants, final File resourceFile, String filename,
                                      final Integer difficulty, VideoUploadingStrategy videoUploadingStrategy) throws UploadVideoFileException {
-
+        
+        logger.debug("Creating challenge with name {} for user {}", challengeName, creatorUsername);
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
             throw new IllegalStateException("Challenge with given name: " + challengeName +
@@ -53,11 +59,26 @@ public class ChallengeService extends TransactionalBase {
         }
 
         //upload video to fb
-        String videoId = videoUploadingStrategy.uploadVideo(challenge, filename, resourceFile);
-
+        String videoId = uploadVideo(resourceFile, filename, videoUploadingStrategy, challenge);
         challenge.setVideoId(videoId);
+        
+        logger.debug("After uploading video with id {} the challenge with id {} is going to be updated", videoId, challenge.getId());
         updateChallenge(challenge);
+        logger.debug("The challenge {} has been updated", challenge.getId());
+        
         return challenge;
+    }
+
+    private String uploadVideo(File resourceFile, String filename, VideoUploadingStrategy videoUploadingStrategy, Challenge challenge) {
+        logger.info("Start video upload");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        
+        String videoId = videoUploadingStrategy.uploadVideo(challenge, filename, resourceFile);
+        
+        stopWatch.stop();
+        logger.info("Video upload finished in: " + stopWatch.getTime() + " ms");
+        return videoId;
     }
 
     private boolean isAnyParticipantSelect(List<String> challengeParticipants) {
@@ -95,6 +116,8 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public ChallengeParticipation participateInChallenge(final Challenge challenge, final String participatorUsername, final String participatorName) {
+        logger.debug("{} is participating in challenge {}", participatorUsername, challenge.getChallengeName());
+        
         if (isUserParticipatingInChallenge(challenge, participatorUsername)) {
             throw new IllegalStateException("User " + participatorUsername + " is participating in challenge " + challenge);
         }
@@ -104,6 +127,7 @@ public class ChallengeService extends TransactionalBase {
         ChallengeParticipation challengeParticipation = challengesRepository.persistChallengeParticipation(new ChallengeParticipation(refreshedChallenge, participator));
 
         if (hasChallengeBecamePopular(challenge)) {
+            logger.info("Notifying about new challenge participation as challenge {} has become popular", challenge.getChallengeName());
             notificationService.notifyAboutNewChallengeParticipation(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
         }
 
@@ -122,6 +146,8 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public Boolean leaveChallenge(final Challenge challenge, final String participatorUsername, String participatorName) {
+        
+        logger.debug("{} is leaving challenge {}", participatorUsername, challenge.getChallengeName());
 
         if (!isUserParticipatingInChallengeButNotResponded(challenge, participatorUsername)) {
             throw new IllegalStateException("User " + participatorUsername + " is not participating in challenge or already responded" + challenge);
@@ -130,6 +156,7 @@ public class ChallengeService extends TransactionalBase {
         User participator = userService.getExistingUser(participatorUsername);
         Boolean challengeRemovalResult = challengesRepository.deleteChallengeParticipation(challenge, participator);
 
+        logger.debug("Notifying about challenge leaving of {}", participatorUsername);
         notificationService.notifyAboutChallengeLeaving(challenge, participatorUsername, participatorName, findAllParticipatorsOf(challenge));
 
         return challengeRemovalResult;
@@ -156,11 +183,14 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public ChallengeResponse submitChallengeResponse(final ChallengeParticipation challengeParticipation, final String message, final String videoDescriptionUrl) {
+        logger.debug("Submitting challenge response with msg {} for challenge participation {}", message, challengeParticipation.getId());
+        
         assertThatResponseCanBeSubmittedForParticipation(challengeParticipation);
 
         ChallengeResponse challengeResponse = new ChallengeResponse(challengeParticipation, videoDescriptionUrl, message);
         challengeResponse = challengesRepository.addChallengeResponse(challengeResponse);
 
+        logger.debug("Notifying about submitting challenge response {}", challengeResponse.getId());
         notificationService.notifyAboutSubmittingChallengeResponse(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
 
         return challengeResponse;
@@ -192,6 +222,7 @@ public class ChallengeService extends TransactionalBase {
     }
 
     public ChallengeResponse acceptChallengeResponse(final ChallengeResponse challengeResponse) {
+        logger.debug("Challenge response {} has been accepted", challengeResponse.getId());
 
         assertThatResponseIsNotEvaluatedYet(challengeResponse);
 
@@ -199,11 +230,14 @@ public class ChallengeService extends TransactionalBase {
         ChallengeResponse acceptedResponse = challengesRepository.updateChallengeResponse(challengeResponse);
 
         ChallengeParticipation challengeParticipation = acceptedResponse.getChallengeParticipation();
+        
+        logger.debug("Notifying about challenge response {} acceptance", challengeResponse.getId());
         notificationService.notifyAboutChallengeResponseAcceptance(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return acceptedResponse;
     }
 
     public ChallengeResponse refuseChallengeResponse(final ChallengeResponse challengeResponse) {
+        logger.debug("Challenge response {} has been refused", challengeResponse.getId());
 
         assertThatResponseIsNotEvaluatedYet(challengeResponse);
 
@@ -211,6 +245,8 @@ public class ChallengeService extends TransactionalBase {
         ChallengeResponse refusedResponse = challengesRepository.updateChallengeResponse(challengeResponse);
 
         ChallengeParticipation challengeParticipation = refusedResponse.getChallengeParticipation();
+        
+        logger.debug("Notifying about challenge response {} refusal", challengeResponse.getId());
         notificationService.notifyAboutChallengeResponseRefusal(challengeParticipation, findAllParticipatorsOf(challengeParticipation.getChallenge()));
         return refusedResponse;
     }
@@ -221,6 +257,7 @@ public class ChallengeService extends TransactionalBase {
         }
     }
 
+    //TODO extract read methods to new class (CQS?)
     public Long countCreatedChallengesForUser(final String username) {
         return challengesRepository.countCreatedChallengesForUser(username);
     }

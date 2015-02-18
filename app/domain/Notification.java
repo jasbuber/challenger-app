@@ -1,7 +1,5 @@
 package domain;
 
-import services.ChallengeEvent;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

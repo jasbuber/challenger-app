@@ -1,18 +1,17 @@
 package services;
 
 import com.restfb.*;
-import com.restfb.batch.BatchHeader;
 import com.restfb.batch.BatchRequest;
 import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
-import com.restfb.types.Message;
-import com.restfb.types.User;
 import com.restfb.types.Video;
 import domain.ChallengeResponse;
 import domain.FacebookUser;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,9 +23,11 @@ import java.util.List;
  */
 public class FacebookService {
 
+    private static Logger logger = LoggerFactory.getLogger(FacebookService.class);
+
     private final DefaultFacebookClient client;
 
-    public FacebookService(String token, String secret){
+    public FacebookService(String token, String secret) {
         this.client = new DefaultFacebookClient(token, secret, Version.VERSION_2_1);
     }
 
@@ -34,14 +35,16 @@ public class FacebookService {
         return client;
     }
 
-    public static String generateAccessToken(String code, String applicationId, String secret, String redirectUrl){
+    public static String generateAccessToken(String code, String applicationId, String secret, String redirectUrl) {
+        logger.debug("Generating access token for code {}", code);
         try {
             WebRequestor wr = new DefaultWebRequestor();
             WebRequestor.Response accessTokenResponse = wr.executeGet(
-                "https://graph.facebook.com/oauth/access_token?client_id=" + applicationId + "&redirect_uri=" + redirectUrl
-                        + "&client_secret=" + secret + "&code=" + code);
+                    "https://graph.facebook.com/oauth/access_token?client_id=" + applicationId + "&redirect_uri=" + redirectUrl
+                            + "&client_secret=" + secret + "&code=" + code);
             return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody()).getAccessToken();
         } catch (IOException e) {
+            logger.error("Exception has been thrown during generating access token", e);
         }
 
         return null;
@@ -51,39 +54,51 @@ public class FacebookService {
         return this.client.fetchObject("me", FacebookUser.class, Parameter.with("fields", "id, first_name, last_name, name"));
     }
 
-    public String getProfilePictureUrl(){
-        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","150"), Parameter.with("height","150"));
+    public String getProfilePictureUrl() {
+        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect", "0"), Parameter.with("width", "150"), Parameter.with("height", "150"));
         return photo.getJsonObject("data").getString("url");
     }
 
-    public String publishAVideo(String challengeName, InputStream videoPath,String  fileName){
-            FacebookType video = this.client.publish("me/videos", FacebookType.class,
-                    BinaryAttachment.with(fileName, videoPath),
-                    Parameter.with("message", challengeName),
-                    Parameter.with("privacy", "{'value': 'EVERYONE'}"));
+    public String publishAVideo(String challengeName, InputStream videoPath, String fileName) {
+        logger.info("Publishing video to fb with name {} for challenge {}", fileName, challengeName);
 
-        return video.getId();
+        return publishVideoToFb(challengeName, videoPath, fileName, "{'value': 'EVERYONE'}");
     }
 
-    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName){
+    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName) {
+        logger.info("Publishing video to fb with name {} for challenge {}", fileName, challengeName);
+        
+        return publishVideoToFb(challengeName, videoPath, fileName, "{'value': 'ALL_FRIENDS'}");
+    }
 
-        FacebookType video = this.client.publish("me/videos", FacebookType.class,
+    private String publishVideoToFb(String challengeName, InputStream videoPath, String fileName, String privacyParam) {
+        StopWatch videoPublishingTime = new StopWatch();
+        videoPublishingTime.start();
+
+        FacebookType publishedVideo = this.client.publish("me/videos", FacebookType.class,
                 BinaryAttachment.with(fileName, videoPath),
                 Parameter.with("message", challengeName),
-                Parameter.with("privacy", "{'value': 'ALL_FRIENDS'}"));
+                Parameter.with("privacy", privacyParam));
+        
+        videoPublishingTime.stop();
+        
+        String videoId = publishedVideo.getId();
+        
+        logger.info("Video with name {} for challenge {} has been published to fb with id {} in time of {} ms",
+                fileName, challengeName, videoId, videoPublishingTime.getTime());
 
-        return video.getId();
+        return videoId;
     }
 
-    public Video getVideo(String videoId){
-
+    public Video getVideo(String videoId) {
+        logger.debug("Getting video {} from fb", videoId);
         Video video = this.client.fetchObject(videoId, Video.class, Parameter.with("fields", "source, picture"));
 
         return video;
     }
 
-    public List<ChallengeResponse> getThumbnailsForResponses(List<ChallengeResponse> responses){
-
+    public List<ChallengeResponse> getThumbnailsForResponses(List<ChallengeResponse> responses) {
+        logger.trace("Getting thumbnails for responses");
         List<BatchRequest> requests = new ArrayList<BatchRequest>();
 
         JsonMapper jsonMapper = new DefaultJsonMapper();
@@ -105,13 +120,14 @@ public class FacebookService {
 
     }
 
-    public List<FacebookUser> getFacebookUsers(List<String> userIds){
-
+    public List<FacebookUser> getFacebookUsers(List<String> userIds) {
+        logger.trace("Getting facebook users for given ids");
+        
         List<BatchRequest> requests = new ArrayList<BatchRequest>();
 
         JsonMapper jsonMapper = new DefaultJsonMapper();
 
-        for ( String friendId : userIds) {
+        for (String friendId : userIds) {
             BatchRequest request = new BatchRequest.BatchRequestBuilder(friendId).body(Parameter.with("fields", "id, name")).build();
             requests.add(request);
 
@@ -123,9 +139,9 @@ public class FacebookService {
 
         List<FacebookUser> users = new ArrayList<FacebookUser>(batchResponses.size());
 
-        for (int i = 0; i < batchResponses.size(); i +=2) {
+        for (int i = 0; i < batchResponses.size(); i += 2) {
 
-            if(batchResponses.get(i).getBody() != null) {
+            if (batchResponses.get(i).getBody() != null) {
 
                 FacebookUser user = jsonMapper.toJavaObject(batchResponses.get(i).getBody(), FacebookUser.class);
                 user.setPicture(batchResponses.get(i + 1).getHeaders().get(3).getValue());

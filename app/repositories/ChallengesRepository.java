@@ -338,8 +338,7 @@ public class ChallengesRepository {
         Query completedChallengesQuery = JPA.em().createQuery("SELECT count(r) " +
                 "FROM ChallengeResponse r " +
                 "WHERE LOWER(r.challengeParticipation.participator.username) = LOWER(:username) " +
-                "AND r.isAccepted = 'Y' " +
-                "AND r.challengeParticipation.challenge.active = false");
+                "AND r.isAccepted = 'Y'");
         completedChallengesQuery.setParameter("username", username);
         return (Long) completedChallengesQuery.getSingleResult();
     }

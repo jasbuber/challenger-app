@@ -102,7 +102,7 @@ div#wrapper div.ui-block-body div.form-wrapper{
 
 div#wrapper div.ui-block-body div.form-wrapper form > div{ padding: 15px; }
 
-div#wrapper div#browse-block-body div.form-wrapper div.form-group{ display: inline-block; width: 50%;}
+div#wrapper div#browse-block-body div.form-wrapper div.form-group{ display: inline-block; width: 45%;}
 div#wrapper div#browse-block-body div.form-wrapper form input{ display: inline; }
 div#wrapper div#browse-block-body div.form-wrapper form div.btn-group{ vertical-align: top; padding-top: 15px;}
 div#wrapper div.common-table-wrapper{
@@ -143,6 +143,10 @@ div#wrapper div.form-wrapper div.challenge-search-results table td a.rating-star
 }
 div#wrapper div.form-wrapper div.challenge-search-results table td a.full-star{background: url('../images/star_smaller.png') no-repeat; }
 div#wrapper div.form-wrapper div.challenge-search-results table td a.half-star{background: url('../images/star_half_smaller.png') no-repeat; }
+
+div#wrapper div.form-wrapper form span.search-scope-wrapper { display: inline-block; vertical-align: top; padding-top: 10px; }
+div#wrapper div.form-wrapper form span.search-scope-wrapper label{ text-align: left; cursor: pointer; font-weight: 600;}
+div#wrapper div.form-wrapper form span.search-scope-wrapper input{ display: none!important; }
 
 div#wrapper div#challenge-block-body{ margin-left: auto; margin-right: auto; min-height: 400px; padding-bottom: 50px;  }
 div#wrapper div.ui-block-body div.form-wrapper div.challenge-name-wrapper{ padding: 0 5px 5px 5px; vertical-align: top; }

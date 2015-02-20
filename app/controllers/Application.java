@@ -20,6 +20,7 @@ import services.*;
 import views.html.*;
 
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -124,7 +125,7 @@ public class Application extends Controller {
     @play.db.jpa.Transactional(readOnly = true)
     public static Result showBrowseChallenges() {
 
-        List<Challenge> challenges = prepareChallengesForCriteria("", ChallengeCategory.ALL.name());
+        List<Challenge> challenges = prepareChallengesForCriteria("", ChallengeCategory.ALL.name(), 0, 1);
 
         User currentUser = getLoggedInUser();
         String firstName = currentUser.getFirstName();
@@ -138,7 +139,7 @@ public class Application extends Controller {
     @play.db.jpa.Transactional(readOnly = true)
     public static Result showBrowseChallengesWithData(String phrase) {
 
-        List<Challenge> challenges = prepareChallengesForCriteria(phrase, ChallengeCategory.ALL.name());
+        List<Challenge> challenges = prepareChallengesForCriteria(phrase, ChallengeCategory.ALL.name(), 0, 1);
         User currentUser = getLoggedInUser();
         String firstName = currentUser.getFirstName();
         Integer points = currentUser.getAllPoints();
@@ -324,27 +325,38 @@ public class Application extends Controller {
     }
 
     @play.db.jpa.Transactional(readOnly = true)
-    public static Result ajaxGetChallengesForCriteria(String phrase, String category) {
+    public static Result ajaxGetChallengesForCriteria(String phrase, String category, int offset, int scope) {
 
-        List<Challenge> challenges = prepareChallengesForCriteria(phrase, category);
+        List<Challenge> challenges = prepareChallengesForCriteria(phrase, category, offset, scope);
 
         return ok(new Gson().toJson(challenges));
     }
 
     @Transactional(readOnly = true)
-    public static List<Challenge> prepareChallengesForCriteria(String phrase, String category) {
+    public static List<Challenge> prepareChallengesForCriteria(String phrase, String category, int page, int scope) {
         ChallengeService service = Application.getChallengeService();
-        ChallengeFilter filter = new ChallengeFilter(20);
+        ChallengeFilter filter = new ChallengeFilter(10);
         User currentUser = Application.getLoggedInUser();
 
         filter.orderDescBy("creationDate");
         Expression<String> challengeNameField = filter.getBuilder().lower(filter.getField("challengeName"));
 
-        if(phrase.length() > 25){
-            phrase = phrase.substring(0, 24);
+        phrase = phrase.trim();
+
+        if(!phrase.isEmpty()) {
+            if (phrase.length() > 25) {
+                phrase = phrase.substring(0, 24);
+            }
+
+            if(scope == 2) {
+                Expression<String> userNameField = filter.getRoot().join("creator").get("fullName");
+                filter.andCond(filter.getBuilder().like(filter.getBuilder().lower(userNameField), "%" + phrase.toLowerCase() + "%"));
+                Logger.error(filter.getQuery().toString());
+            }else{
+                filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase.toLowerCase() + "%"));
+            }
         }
 
-        filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase.toLowerCase() + "%"));
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
 
@@ -354,7 +366,7 @@ public class Application extends Controller {
         }
 
         filter.prepareWhere();
-        return service.findChallenges(filter);
+        return service.findChallenges(filter, page);
 
     }
 
@@ -376,7 +388,7 @@ public class Application extends Controller {
         }
 
         filter.prepareWhere();
-        List<Challenge> challenges = service.findChallenges(filter);
+        List<Challenge> challenges = service.findChallenges(filter, 0);
 
         return ok(new Gson().toJson(challenges));
     }
@@ -394,7 +406,7 @@ public class Application extends Controller {
         filter.andCond(filter.excludePrivateChallenges());
         filter.prepareWhere();
 
-        List<Challenge> challenges = service.findChallenges(filter);
+        List<Challenge> challenges = service.findChallenges(filter, 0);
 
         return ok(new Gson().toJson(challenges));
     }

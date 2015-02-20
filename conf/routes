@@ -25,7 +25,7 @@ GET         /challenge/shownew                            controllers.Applicatio
 
 POST        /challenge/create                             controllers.Application.ajaxCreateChallenge()
 
-GET         /challenge/ajax/search                        controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String)
+GET         /challenge/ajax/search                        controllers.Application.ajaxGetChallengesForCriteria(phrase: String, category: String, page: Integer, scope: Integer)
 
 GET         /challenge/ajax/more                          controllers.Application.ajaxShowMoreChallenges(offset: Integer)
 

@@ -73,6 +73,7 @@ public class User {
         this.joined = new Date();
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
     }
 
     public User(FacebookUser user, String profilePictureUrl) {

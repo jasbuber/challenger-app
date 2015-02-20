@@ -147,12 +147,12 @@ $(document).ready(function () {
         return $stars;
     };
 
-    var searchChallenges = function(){
-        var phrase = $("form").find("input.challenge-search-phrase").val(), category = $(".challenge-category").val(), username = $(".current-username").val();
-        
+    var searchChallenges = function(page){
+        var $form = $("form.browse-challenges-form"), phrase = $form.find("input.challenge-search-phrase").val(), category = $(".challenge-category").val(),
+            username = $(".current-username").val(), scope = $("input[name='search-scope']:checked", ".browse-challenges-form").val();
         NProgress.start();
 
-        jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category).ajax({
+        jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category, page, scope).ajax({
             success: function (response) {
                 var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
 
@@ -164,10 +164,76 @@ $(document).ready(function () {
     };
 
     $(".browse-challenges-form").submit(function (e) {
-        searchChallenges();
+        searchChallenges(0);
+
+        resetPager();
 
         e.preventDefault();
     });
+
+    $(document).on("click", ".browse-page-action", function (e) {
+
+        var $active = $("div.pagination").find("li.active");
+
+        handleBlankPages($active);
+
+        var $parent = $(this).parents("li");
+        if(!$parent.hasClass("disabled") && !$parent.hasClass("active")) {
+            searchChallenges($(this).index(".browse-page-action"));
+
+            $active.removeClass("active");
+            $(this).parents("li").addClass("active");
+        }
+        e.preventDefault();
+    });
+
+    $(document).on("click", "li.previous", function (e) {
+
+        var $active = $("div.pagination").find("li.active");
+
+        if($active.index("li.page-index") > 0){
+            searchChallenges($active.index(".page-index") - 1);
+            $active.removeClass("active");
+            $active.prev(".page-index").addClass("active");
+        }
+
+        e.preventDefault();
+    });
+
+    $(document).on("click", "li.next", function (e) {
+
+        var $active = $("div.pagination").find("li.active");
+
+        handleBlankPages($active);
+
+        if($active.index("li.page-index") < 8 && !$(this).hasClass("disabled")){
+            searchChallenges($active.index(".page-index") + 1);
+            $active.removeClass("active");
+            $active.next(".page-index").addClass("active");
+        }
+
+        e.preventDefault();
+    });
+
+    var handleBlankPages = function(active){
+        var $pagination = $("div.pagination"), active = $pagination.find("li.active"),
+            $next = $pagination.find("li.next");
+
+        if($(".challenge-search-results").find("tbody tr").length < 10){
+            active.nextAll("li.page-index").addClass("disabled");
+            $next.addClass("disabled");
+        }else{
+            $next.removeClass("disabled");
+        }
+    };
+
+    var resetPager = function(){
+        var  $pagination = $("div.pagination"), $listItems = $pagination.find("li");
+
+        $listItems.removeClass("disabled");
+        $listItems.removeClass("active");
+        $pagination.find("li.page-index").first().addClass("active");
+    };
 
     $("#browse-block").click(function (e) {
 
@@ -343,8 +409,7 @@ $(document).ready(function () {
                 exclude_ids: ids
             }, function(fbresponse){
 
-
-                if(fbresponse != undefined && !jQuery.isEmptyObject(fbresponse)) {
+                if(fbresponse != undefined && !jQuery.isEmptyObject(fbresponse) && !fbresponse.error_code) {
                     NProgress.start();
                     jsRoutes.controllers.Application.ajaxGetFacebookUsers(fbresponse.to.join()).ajax({
                         success: function (response) {
@@ -380,7 +445,8 @@ $(document).ready(function () {
     });
 
     $(".challenge-category").change(function () {
-        searchChallenges();
+        searchChallenges(0);
+        resetPager();
     });
 
     $("#friends-filter-input").keyup(function (e) {
@@ -1019,6 +1085,8 @@ $(document).ready(function () {
         
         e.preventDefault() ;
     });
+
+    
 
 });
 

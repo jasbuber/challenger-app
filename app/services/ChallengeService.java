@@ -181,8 +181,8 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getChallengeParticipation(challenge, participatorUsername);
     }
 
-    public List<Challenge> findChallenges(final ChallengeFilter challengeFilter) {
-        return challengesRepository.findChallenges(challengeFilter);
+    public List<Challenge> findChallenges(final ChallengeFilter challengeFilter, int page) {
+        return challengesRepository.findChallenges(challengeFilter, page);
     }
 
     public Challenge getChallenge(final long id) {

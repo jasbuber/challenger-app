@@ -138,8 +138,8 @@ public class ChallengesRepository {
 
     public Challenge getChallenge(long id){ return JPA.em().find(Challenge.class, id); }
 
-    public List<Challenge> findChallenges(ChallengeFilter challengeFilter){
-        return challengeFilter.getQuery().getResultList();
+    public List<Challenge> findChallenges(ChallengeFilter challengeFilter, int page){
+        return challengeFilter.getQuery().setFirstResult(page * pagingRowNumber).getResultList();
     }
 
     public ChallengeResponse updateChallengeResponse(ChallengeResponse challengeResponse) {

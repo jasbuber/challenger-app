@@ -150,8 +150,13 @@ $(document).ready(function () {
     var searchChallenges = function(page){
         var $form = $("form.browse-challenges-form"), phrase = $form.find("input.challenge-search-phrase").val(), category = $(".challenge-category").val(),
             username = $(".current-username").val(), scope = $("input[name='search-scope']:checked", ".browse-challenges-form").val();
-        NProgress.start();
 
+        if(phrase.length > 0 && phrase.length < 3){
+            alertify.error("You won't get anywhere with a phrase that short -_-");
+            return;
+        }
+
+        NProgress.start();
         jsRoutes.controllers.Application.ajaxGetChallengesForCriteria(phrase, category, page, scope).ajax({
             success: function (response) {
                 var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
@@ -359,6 +364,8 @@ $(document).ready(function () {
         }
 
         if($hasErrors) return;
+
+        $(this).find('input[type="submit"]').attr('disabled','disabled');
 
         NProgress.start();
 
@@ -605,6 +612,8 @@ $(document).ready(function () {
         }
 
         if($hasErrors) return;
+
+        $(this).find('input[type="submit"]').attr('disabled','disabled');
 
         NProgress.start();
 

@@ -343,7 +343,7 @@ public class Application extends Controller {
 
         phrase = phrase.trim();
 
-        if(!phrase.isEmpty()) {
+        if(phrase.length() >=3) {
             if (phrase.length() > 25) {
                 phrase = phrase.substring(0, 24);
             }

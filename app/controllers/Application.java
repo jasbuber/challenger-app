@@ -44,6 +44,11 @@ public class Application extends Controller {
             Logger.error("Other");
 
             FacebookClient.AccessToken token = FacebookService.generateAccessToken(code, "https://apps.facebook.com/vchallenger/");
+
+            if(token == null){
+                return ok(facebook_redirect.render());
+            }
+            
             String accessToken = token.getAccessToken();
             String expires = String.valueOf(token.getExpires().getTime());
 

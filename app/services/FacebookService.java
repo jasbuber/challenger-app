@@ -49,7 +49,7 @@ public class FacebookService {
                 "https://graph.facebook.com/oauth/access_token?client_id=" + FacebookService.applicationId + "&redirect_uri=" + redirectUrl
                         + "&client_secret=" + FacebookService.secret + "&code=" + code);
             return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody());
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
 
         return null;

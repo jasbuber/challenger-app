@@ -390,7 +390,11 @@ public class ChallengesRepository {
     }
 
     public List<Challenge> getTopRatedChallenges(){
-        Query topChallengesQuery = JPA.em().createQuery("SELECT c FROM Challenge c ORDER BY c.rating DESC");
+        Query topChallengesQuery = JPA.em().createQuery(
+                "SELECT c " +
+                "FROM Challenge c " +
+                "WHERE c.visibility = true " +
+                "ORDER BY c.rating DESC");
         topChallengesQuery.setMaxResults(6);
         return topChallengesQuery.getResultList();
     }
@@ -403,7 +407,7 @@ public class ChallengesRepository {
 
         Query trendingChallengesQuery = JPA.em().createQuery("SELECT c " +
                 "FROM Challenge c " +
-                "WHERE c.creationDate > :trendingDate " +
+                "WHERE c.creationDate > :trendingDate AND c.visibility = true " +
                 "ORDER BY c.rating DESC");
         trendingChallengesQuery.setParameter("trendingDate", trendingDate.toDate(), TemporalType.DATE);
         trendingChallengesQuery.setMaxResults(6);
@@ -416,7 +420,7 @@ public class ChallengesRepository {
                 "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, count(p), c.id)" +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
-                "WHERE c.active = true " +
+                "WHERE c.active = true AND c.visibility = true " +
                 "GROUP BY c.challengeName, c.id " +
                 "ORDER BY count(p) DESC");
         mostPopularChallenges.setMaxResults(6);

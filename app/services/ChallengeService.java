@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import repositories.ChallengeFilter;
 import repositories.ChallengesRepository;
 import repositories.dtos.ChallengeWithParticipantsNr;
+import technical.Loggable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -270,6 +271,7 @@ public class ChallengeService {
         return challengesRepository.getLastestParticipationsWithParticipantsNrForUser(username);
     }
 
+    @Loggable
     public List<ChallengeWithParticipantsNr> getChallengesWithParticipantsNrForUser(final String username, final int offsetIndex) {
         return challengesRepository.getChallengesWithParticipantsNrForUser(username, offsetIndex);
     }

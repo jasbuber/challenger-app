@@ -1,3 +1,6 @@
+import com.typesafe.sbt.SbtAspectj._
+import com.typesafe.sbt.SbtAspectj.AspectjKeys._
+
 name := "challenge-app"
 
 version := "1.0-SNAPSHOT"
@@ -20,4 +23,41 @@ libraryDependencies += "com.google.code.gson" % "gson" % "2.2.2"
 
 libraryDependencies += "org.postgresql" % "postgresql" % "9.3-1102-jdbc4"
 
+libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.8.4"
+
+libraryDependencies += "org.aspectj" % "aspectjrt"     % "1.8.4"
+
 play.Project.playJavaSettings
+
+javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
+
+// splitting sources:
+// *.scala --> scalac
+// *.java --> AspectJ compiler
+// all class files come back together at "products in Compile"
+// TODO: managedSources are dropped right now
+Seq(aspectjSettings: _*)
+
+verbose in Aspectj := true
+
+showWeaveInfo in Aspectj := true
+
+sourceLevel in Aspectj := "-1.7"
+
+// let all unmanaged java sources be compiled by ajc
+//sources in Aspectj <<= (unmanagedSources in Compile).map(_.filter(_.name.endsWith(".java")))
+
+//sources in Compile <<= (unmanagedSources in Compile).map(_.filterNot(_.name.endsWith(".java")))
+
+
+//sources in Compile <++= managedSources in Compile
+
+inputs in Aspectj <+= compiledClasses
+
+// add compiled aspectj class files to the rest
+
+products in Compile <<= products in Aspectj
+
+products in Runtime <<= products in Compile
+
+//logLevel := Level.Debug

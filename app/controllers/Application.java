@@ -17,6 +17,7 @@ import repositories.InternalNotificationsRepository;
 import repositories.UsersRepository;
 import repositories.dtos.ChallengeWithParticipantsNr;
 import services.*;
+import technical.Loggable;
 import views.html.*;
 
 import javax.persistence.criteria.Expression;
@@ -35,15 +36,14 @@ public class Application extends Controller {
     private final static String fbSecret = Play.application().configuration().getString("fb.secret");
 
     @Transactional
+    @Loggable
     public static Result start(String code, String error) {
         if (!error.equals("")) {
-            Logger.error("No permisions");
+            Logger.error("No permissions to log into the application");
             return ok(error_view.render("You rejected the permissions!"));
         } else if (code.equals("")) {
-            Logger.error("Redirecting to facebook login page");
             return ok(facebook_redirect.render());
         } else {
-            Logger.error("Other");
             String accessToken = FacebookService.generateAccessToken(code, fbAppId, fbSecret, fbAppAdress);
 
             session("fb_user_token", accessToken);

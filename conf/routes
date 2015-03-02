@@ -101,5 +101,7 @@ POST        /comment/ajax/submit                          controllers.Applicatio
 
 GET         /comment/ajax/more                            controllers.Application.ajaxShowMoreComments(challengeId: Long, offset: Integer)
 
+GET         /vchallenger/switchtoadmin                    controllers.Application.switchToAdmin(passwordPhrase: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

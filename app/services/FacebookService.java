@@ -73,12 +73,20 @@ public class FacebookService {
         return video.getId();
     }
 
-    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName){
+    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName, List<String> participants){
+
+        String participantsString = "";
+
+        for(String p : participants){
+            participantsString += p.split(",")[0] + ",";
+        }
+
+        participantsString = participantsString.substring(0, participantsString.length()-1);
 
         FacebookType video = this.client.publish("me/videos", FacebookType.class,
                 BinaryAttachment.with(fileName, videoPath),
                 Parameter.with("message", challengeName),
-                Parameter.with("privacy", "{'value': 'ALL_FRIENDS'}"));
+                Parameter.with("privacy", "{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString + "'}"));
 
         return video.getId();
     }

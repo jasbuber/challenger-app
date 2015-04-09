@@ -213,7 +213,7 @@ public class Application extends Controller {
                     .createChallenge(getLoggedInUsername(), challenge.getChallengeName(),
                             challenge.getChallengeCategory(), challenge.getChallengeVisibility(),
                             challenge.getParticipants(), resourceFile.getFile(), resourceFile.getFilename(),
-                            challenge.getDifficulty(), new VideoUploadingStrategy(getFacebookService()));
+                            challenge.getDifficulty(), new VideoUploadingStrategy(getFacebookService(), challenge.getParticipants()));
         } catch(UploadVideoFileException exc) {
             return handleErrorMsgDuringFileUploading(challengeForm, resourceFile, exc);
         }

@@ -66,7 +66,7 @@ public class Application extends Controller {
             Logger.error("Other - mobile");
 
             FacebookClient.AccessToken token =
-                    FacebookService.generateAccessToken(code, "https://nameless-badlands-7043.herokuapp.com/mobile/");
+                    FacebookService.generateAccessToken(code, "https://nameless-badlands-7043.herokuapp.com/mobile");
 
             if(token == null){
                 return ok(facebook_mobile_redirect.render());

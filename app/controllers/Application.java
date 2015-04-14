@@ -35,7 +35,7 @@ public class Application extends Controller {
     public static Result start(String code, String error) {
 
         if (!error.equals("")) {
-            Logger.error("No permisions");
+            Logger.error("No permissions");
             return ok(error_view.render("You rejected the permissions!"));
         } else if (code.equals("")) {
             Logger.error("Redirecting to facebook login page");
@@ -49,20 +49,48 @@ public class Application extends Controller {
                 return ok(facebook_redirect.render());
             }
 
-            String accessToken = token.getAccessToken();
-            String expires = String.valueOf(token.getExpires().getTime());
-
-            session("fb_user_token", accessToken);
-            session("fb_user_token_expires", expires);
-            FacebookUser user = Application.getFacebookService().getFacebookUser();
-            Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
-
-            session("username", user.getId());
-            session("name", user.getFormattedName());
-            session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
-
-            return redirect(routes.Application.firstLogIn(accessToken, expires));
+            return initializeApp(token);
         }
+    }
+
+    @Transactional
+    public static Result startMobile(String code, String error) {
+
+        if (!error.equals("")) {
+            Logger.error("No permissions");
+            return ok(error_view.render("You rejected the permissions!"));
+        } else if (code.equals("")) {
+            Logger.error("Redirecting to facebook login page");
+            return ok(facebook_mobile_redirect.render());
+        } else {
+            Logger.error("Other");
+
+            FacebookClient.AccessToken token =
+                    FacebookService.generateAccessToken(code, "https://nameless-badlands-7043.herokuapp.com/mobile/");
+
+            if(token == null){
+                return ok(facebook_redirect.render());
+            }
+
+            return initializeApp(token);
+        }
+    }
+
+    private static Result initializeApp(FacebookClient.AccessToken token){
+
+        String accessToken = token.getAccessToken();
+        String expires = String.valueOf(token.getExpires().getTime());
+
+        session("fb_user_token", accessToken);
+        session("fb_user_token_expires", expires);
+        FacebookUser user = Application.getFacebookService().getFacebookUser();
+        Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
+
+        session("username", user.getId());
+        session("name", user.getFormattedName());
+        session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
+
+        return redirect(routes.Application.firstLogIn(accessToken, expires));
     }
 
     public static boolean isTokenExpired(){

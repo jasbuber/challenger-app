@@ -13,6 +13,10 @@ GET         /                                             controllers.Applicatio
 
 POST        /                                             controllers.Application.start(code: String ?= "", error_reason: String ?= "")
 
+GET         /mobile                                       controllers.Application.startMobile(code: String ?= "", error_reason: String ?= "")
+
+POST        /mobile                                       controllers.Application.startMobile(code: String ?= "", error_reason: String ?= "")
+
 GET         /privacy                                      controllers.Application.showPrivacy()
 
 GET         /browse/:phrase                               controllers.Application.showBrowseChallengesWithData(phrase: java.lang.String)

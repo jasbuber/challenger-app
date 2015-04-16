@@ -4,7 +4,6 @@ import domain.Notification;
 import domain.User;
 import org.junit.Test;
 import repositories.InternalNotificationsRepository;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -131,32 +130,32 @@ public class SendingInternalNotificationsTest {
 
         @Override
         public Long getNumberOfUnreadNotifications(User user) {
-            throw new NotImplementedException();
+            throw new RuntimeException("getNumberOfUnreadNotifications is not implemented");
         }
 
         @Override
         public List<Notification> addNotifications(List<Notification> notifications) {
-            throw new NotImplementedException();
+            throw new RuntimeException("addNotifications is not implemented");
         }
 
         @Override
         public long getNotificationsNrFor(User user) {
-            throw new NotImplementedException();
+            throw new RuntimeException("getNotificationsNrFor is not implemented");
         }
 
         @Override
         public List<Notification> getNewestNotificationsForUser(User user) {
-            throw new NotImplementedException();
+            throw new RuntimeException("getNewestNotificationsForUser");
         }
 
         @Override
         public List<Notification> getNewestUnreadNotificationsForUser(User user) {
-            throw new NotImplementedException();
+            throw new RuntimeException("getNewestUnreadNotificationsForUser");
         }
 
         @Override
         public Notification getNotification(long id) {
-            throw new NotImplementedException();
+            throw new RuntimeException("getNotification");
         }
     }
 }

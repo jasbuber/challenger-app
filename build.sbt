@@ -45,19 +45,19 @@ showWeaveInfo in Aspectj := true
 sourceLevel in Aspectj := "-1.7"
 
 // let all unmanaged java sources be compiled by ajc
-//sources in Aspectj <<= (unmanagedSources in Compile).map(_.filter(_.name.endsWith(".java")))
+//sources in Aspectj <<= (sources in Compile).map(_.filter(_.name.endsWith(".java")))
 
-//sources in Compile <<= (unmanagedSources in Compile).map(_.filterNot(_.name.endsWith(".java")))
+//sources in Compile <<= (sources in Compile).map(_.filterNot(_.name.endsWith(".java")))
 
 
 //sources in Compile <++= managedSources in Compile
 
-inputs in Aspectj <+= compiledClasses
+inputs in Aspectj += compiledClasses.value
 
 // add compiled aspectj class files to the rest
 
-products in Compile <<= products in Aspectj
+products in Compile := (products in Aspectj).value
 
-products in Runtime <<= products in Compile
+products in Runtime := (products in Compile).value
 
 //logLevel := Level.Debug

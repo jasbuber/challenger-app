@@ -401,7 +401,7 @@ $(document).ready(function () {
 
                                     alertify.alert("Challenge created and ready to join ! ", function (e) {
                                         if (e) {
-                                            window.location = "/";
+                                            window.location = "/account";
                                         }
                                     });
 

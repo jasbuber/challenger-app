@@ -18,10 +18,12 @@
                                 <div class="current-response-wrapper">
                                     <div id="video-panel">
                                         <div id="video-player-wrapper">
-                                            <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="535" height="360" data-setup="{}" poster="@currentResponse.getThumbnailUrl">
-                                                <source src="@video.getSource" type="video/mp4"/>
-                                                <source src="@video.getSource" type="video/ogg"/>
-                                                <source src="@video.getSource" type="video/webm"/>
+                                            <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="535" height="360" data-setup="{}" poster=" @if(currentResponse != null){ @currentResponse.getThumbnailUrl }">
+                                                @if(currentResponse != null) {
+                                                    <source src="@video.getSource" type="video/mp4"/>
+                                                    <source src="@video.getSource" type="video/ogg"/>
+                                                    <source src="@video.getSource" type="video/webm"/>
+                                                }
                                                 <p class="vjs-no-js">
                                                     To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
                                                     supports HTML5 video</a></p>
@@ -30,32 +32,36 @@
                                     </div>
                                     <div class="challenge-response-details">
                                         <div>
-                                            <div class="inline-block">
-                                            @if(currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl != null) {
-                                                <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
-                                            } else {
-                                                <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
-                                            }
-                                            </div>
-                                            <div class="inline-block">
-                                                <div class="inline-block current-response-description">
-                                                    <div>@currentResponse.getMessage</div>
+                                            @if(currentResponse != null) {
+                                                <div class="inline-block">
+                                                @if(currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl != null) {
+                                                    <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@currentResponse.getChallengeParticipation.getParticipator.getProfilePictureUrl"/></a>
+                                                } else {
+                                                    <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)"><img class="medium-profile-picture" src="@routes.Assets.at("images/avatar_big.png")"/></a>
+                                                }
                                                 </div>
-                                                <div class="inline-block rate-response rate-current-response"
-                                                @if(currentResponse.isDecided || currentChallenge.getCreator.getUsername.compareTo(currentUsername) != 0) { style="display: none;" }>
+                                                <div class="inline-block">
+                                                    <div class="inline-block current-response-description">
+                                                        <div>@currentResponse.getMessage</div>
+                                                    </div>
+                                                    <div class="inline-block rate-response rate-current-response"
+                                                        @if(currentResponse.isDecided || currentChallenge.getCreator.getUsername.compareTo(currentUsername) != 0) {
+                                                            style="display: none;" }>
                                                         <button class="btn btn-danger decline-response">Decline</button>
                                                         <button class="btn btn-success accept-response">Accept</button>
                                                         <input class="response-id" type="hidden" value="@currentResponse.getId"/>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div class="current-response-author">
-                                                    <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)">@currentResponse.getChallengeParticipation.getParticipator.getFormattedName</a>
+                                                <div>
+                                                    <div class="current-response-author">
+                                                        <a href="@routes.Application.showProfile(currentResponse.getChallengeParticipation.getParticipator.getUsername)">@currentResponse.getChallengeParticipation.getParticipator.getFormattedName</a>
+                                                    </div>
+                                                    @if(!responses.isEmpty) {
+                                                        <div class="challenge-response-submitted">
+                                                            Submitted: @currentResponse.getSubmitted</div>
+                                                    }
                                                 </div>
-                                            @if(!responses.isEmpty) {
-                                                <div class="challenge-response-submitted">Submitted: @currentResponse.getSubmitted</div>
                                             }
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

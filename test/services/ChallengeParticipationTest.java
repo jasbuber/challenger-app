@@ -19,7 +19,6 @@ public class ChallengeParticipationTest {
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
-    private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
@@ -40,7 +39,7 @@ public class ChallengeParticipationTest {
     public void setUp() {
         this.challengeCreator = usersRepository.createUser(user);
         this.challenge = challengeService.createChallenge(challengeCreator.getUsername(), challengeName, SOME_CATEGORY,
-                true, new ArrayList<String>(), null, null, 0, videoUploadingStrategy);
+                true, new ArrayList<String>(), 0);
     }
 
     @Test

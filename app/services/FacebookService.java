@@ -60,35 +60,8 @@ public class FacebookService {
     }
 
     public String getProfilePictureUrl(){
-        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect","0"), Parameter.with("width","150"), Parameter.with("height","150"));
+        JsonObject photo = this.client.fetchObject("me/picture", JsonObject.class, Parameter.with("redirect", "0"), Parameter.with("width", "150"), Parameter.with("height", "150"));
         return photo.getJsonObject("data").getString("url");
-    }
-
-    public String publishAVideo(String challengeName, InputStream videoPath,String  fileName){
-            FacebookType video = this.client.publish("me/videos", FacebookType.class,
-                    BinaryAttachment.with(fileName, videoPath),
-                    Parameter.with("message", challengeName),
-                    Parameter.with("privacy", "{'value': 'EVERYONE'}"));
-
-        return video.getId();
-    }
-
-    public String publishAPrivateVideo(String challengeName, InputStream videoPath, String fileName, List<String> participants){
-
-        String participantsString = "";
-
-        for(String p : participants){
-            participantsString += p.split(",")[0] + ",";
-        }
-
-        participantsString = participantsString.substring(0, participantsString.length()-1);
-
-        FacebookType video = this.client.publish("me/videos", FacebookType.class,
-                BinaryAttachment.with(fileName, videoPath),
-                Parameter.with("message", challengeName),
-                Parameter.with("privacy", "{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString + "'}"));
-
-        return video.getId();
     }
 
     public Video getVideo(String videoId){
@@ -111,13 +84,20 @@ public class FacebookService {
         }
         List<BatchResponse> batchResponses = this.client.executeBatch(requests);
 
+        List<ChallengeResponse> visibleResponses = new ArrayList<ChallengeResponse>();
+
         for (int i = 0; i < responses.size(); i++) {
 
+
             Video video = jsonMapper.toJavaObject(batchResponses.get(i).getBody(), Video.class);
-            responses.get(i).setThumbnailUrl(video.getPicture());
+
+            if(video.getId() != null){
+                responses.get(i).setThumbnailUrl(video.getPicture());
+                visibleResponses.add(responses.get(i));
+            }
         }
 
-        return responses;
+        return visibleResponses;
 
     }
 

@@ -30,8 +30,7 @@ public class ChallengeService extends TransactionalBase {
 
     public Challenge createChallenge(final String creatorUsername, final String challengeName,
                                      final ChallengeCategory category, final Boolean visibility,
-                                     final List<String> challengeParticipants, final File resourceFile, String filename,
-                                     final Integer difficulty, VideoUploadingStrategy videoUploadingStrategy) throws UploadVideoFileException {
+                                     final List<String> challengeParticipants, final Integer difficulty){
 
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
@@ -51,12 +50,6 @@ public class ChallengeService extends TransactionalBase {
             notificationService.notifyAboutNewPrivateChallenge(challenge, participants);
 
         }
-
-        //upload video to fb
-        String videoId = videoUploadingStrategy.uploadVideo(challenge, filename, resourceFile);
-
-        challenge.setVideoId(videoId);
-        updateChallenge(challenge);
         return challenge;
     }
 

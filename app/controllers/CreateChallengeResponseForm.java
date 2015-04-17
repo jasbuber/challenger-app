@@ -13,6 +13,8 @@ public class CreateChallengeResponseForm {
 
     private String message;
 
+    private String videoId;
+
     public long getChallengeParticipationId() {
         return challengeParticipationId;
     }
@@ -43,5 +45,13 @@ public class CreateChallengeResponseForm {
 
     public void setChallengeId(String challengeId) {
         this.challengeId = challengeId;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 }

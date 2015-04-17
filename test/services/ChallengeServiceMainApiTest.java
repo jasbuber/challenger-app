@@ -20,7 +20,6 @@ public class ChallengeServiceMainApiTest {
     private final ChallengesRepository challengesRepository = new ChallengesRepositoryStub();
     private final UsersRepository usersRepository = new UserRepositoryStub();
     private final ChallengeNotificationsService challengeNotificationService = mock(ChallengeNotificationsService.class);
-    private final VideoUploadingStrategy videoUploadingStrategy = mock(VideoUploadingStrategy.class);
 
     private final static ChallengeCategory SOME_CATEGORY = ChallengeCategory.ALL;
 
@@ -45,7 +44,7 @@ public class ChallengeServiceMainApiTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreatePrivateChallengeWithoutParticipants(){
         usersRepository.createUser("username");
-        challengeService.createChallenge("username", challengeName, SOME_CATEGORY, false, Collections.<String>emptyList(), null, null, 0, videoUploadingStrategy);
+        challengeService.createChallenge("username", challengeName, SOME_CATEGORY, false, Collections.<String>emptyList(), 0);
     }
 
     @Test
@@ -56,8 +55,7 @@ public class ChallengeServiceMainApiTest {
         usersRepository.createUser("notParticipant");
 
         Challenge challenge = challengeService.createChallenge("username", challengeName, SOME_CATEGORY, false,
-                Arrays.asList(new String[]{"participant1,Guy,One,photo1","participant2,Guy,Two,photo2"}), null, null,
-                0, videoUploadingStrategy);
+                Arrays.asList(new String[]{"participant1,Guy,One,photo1","participant2,Guy,Two,photo2"}), 0);
 
         assertTrue(challengeService.isUserParticipatingInChallenge(challenge, "participant1"));
         assertTrue(challengeService.isUserParticipatingInChallenge(challenge, "participant1"));
@@ -100,7 +98,7 @@ public class ChallengeServiceMainApiTest {
 
     private Challenge createChallenge(String user) {
         usersRepository.createUser(user);
-        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, true, Collections.<String>emptyList(), null, null, 0, videoUploadingStrategy);
+        return challengeService.createChallenge(user, challengeName, SOME_CATEGORY, true, Collections.<String>emptyList(), 0);
     }
 
 }

@@ -63,6 +63,8 @@ GET         /challenge/participators                      controllers.Applicatio
 
 POST        /challenge/ajax/rate                          controllers.Application.ajaxRateChallenge(challengeId: Long, rating: Integer)
 
+POST        /challenge/ajax/updatevideo                   controllers.Application.ajaxUpdateChallengeVideo(challengeId: Long, videoId: String)
+
 POST        /response/ajax/decline                        controllers.Application.ajaxDeclineResponse(id: Long)
 
 POST        /response/ajax/accept                         controllers.Application.ajaxAcceptResponse(id: Long)

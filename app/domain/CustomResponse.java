@@ -18,6 +18,8 @@ public class CustomResponse {
 
     private List<Integer> points = new ArrayList<Integer>();
 
+    private long challengeId;
+
     public CustomResponse(){}
 
     public CustomResponse(int points, String message){
@@ -67,5 +69,13 @@ public class CustomResponse {
         this.points.add(points);
         this.rewardedPoints += points;
         return this.points;
+    }
+
+    public long getChallengeId() {
+        return challengeId;
+    }
+
+    public void setChallengeId(long challengeId) {
+        this.challengeId = challengeId;
     }
 }

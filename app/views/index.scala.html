@@ -1,6 +1,6 @@
 @(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer, challengeForm: Form[controllers.CreateChallengeForm],
         unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], searchChallenges: java.util.List[domain.Challenge], topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
-        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr])
+        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], accessToken: java.lang.String)
 
     @main("Welcome to Challenge Application") {
         @menu(firstName, profilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -16,7 +16,7 @@
                 <a href="@routes.Application.showMyChallenges()"><div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">
                     My Challenges</span></div></a>
                 <div id="challenge-block-body" class="ui-block-body" style="display : none">
-                @new_challenge_content(challengeForm: Form[controllers.CreateChallengeForm])
+                @new_challenge_content(challengeForm: Form[controllers.CreateChallengeForm], accessToken, username)
                 </div>
                 <div id="browse-block-body" class="ui-block-body" style="display : none ;">
                 @browse_content(searchChallenges, username)

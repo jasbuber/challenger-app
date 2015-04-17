@@ -24,7 +24,9 @@ $(document).ready(function () {
         },
     showInstantMessage = function(message, delay){
         window.setTimeout(function(){
-            alertify.success(message, 8000)
+            if(NProgress.status != null) {
+                alertify.success(message, 8000)
+            }
         }, delay);
     },
     displayInstantMessages = function() {
@@ -340,13 +342,13 @@ $(document).ready(function () {
         uploadResponse.click();
     }).show();
 
-    $('#create-challenge-form').submit(function (e) {
+    $('#create-challenge-action').click(function (e) {
 
         e.preventDefault();
 
-        var $hasErrors = false;
+        var $hasErrors = false, challengeName = $("#challengeName").val(), friends = $(".friend-item");
 
-        if(!$("#challengeName").val()) {
+        if(!challengeName) {
             alertify.error("You forgot to type the challenge name, you know...");
             $hasErrors = true;
 
@@ -354,36 +356,61 @@ $(document).ready(function () {
             alertify.error("Challenge name should be at least 5 characters long. Just because :P");
             $hasErrors = true;
         }
-        if(!$("input[name='video-description']").val()){
+        if(!$("input[name='file']").val()){
             alertify.error("Upload a video description...");
             $hasErrors = true;
         }
-        if($(".friend-item").size() == 0 && $("#challenge-visibility").val() == 0){
+        if(friends.size() == 0 && $("#challenge-visibility").val() == 0){
             alertify.error("You didn't select any of your friends. Challenge someone or make the challenge public.");
             $hasErrors = true;
         }
-
+        
         if($hasErrors) return;
 
-        $(this).find('input[type="submit"]').attr('disabled','disabled');
+        var $this = $("#create-challenge-form");
+
+        $("#upload-video-action").attr('disabled','disabled');
+
+        $("#upload-video-form").find("input[name='description']").val(challengeName);
 
         NProgress.start();
 
-        $(this).ajaxSubmit({
+        $this.ajaxSubmit({
             success: function (response) {
                 var customResponse = jQuery.parseJSON(response);
 
                 if (customResponse.hasOwnProperty("status")) {
 
-                    if(customResponse.rewardedPoints > 0) {
-                        rewardAllPoints(customResponse.messages, customResponse.points);
-                    }
+                    if($("#challenge-visibility").val() == 0) {
+                        var participantsString = "", privacy = $("#upload-video-form").find("input[name='privacy']")
+                            , friendsData = $(".selected-user-data");
 
-                    alertify.alert("Challenge created and ready to join ! ", function (e) {
-                        if (e) {
-                            window.location = "/";
+                        $.each(friendsData, function (i) {
+                            participantsString += friendsData[i].value.split(",")[0] + ",";
+                        });
+
+                        privacy.val("{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString.slice(0, -1) + "'}");
+                    }
+                    $("#upload-video-form").ajaxSubmit({
+                        success: function (response) {
+                            jsRoutes.controllers.Application.ajaxUpdateChallengeVideo(customResponse.challengeId, response.id).ajax({
+                                success: function (response) {
+                                    if(customResponse.rewardedPoints > 0) {
+                                        rewardAllPoints(customResponse.messages, customResponse.points);
+                                    }
+
+                                    alertify.alert("Challenge created and ready to join ! ", function (e) {
+                                        if (e) {
+                                            window.location = "/";
+                                        }
+                                    });
+
+                                    NProgress.done();
+                                }
+                            });
                         }
                     });
+                    displayInstantMessages();
                 }
                 else {
                     var fields = jQuery.parseJSON(response);
@@ -395,15 +422,16 @@ $(document).ready(function () {
                         });
                     });
                 }
-                NProgress.done();
             }
         });
 
-        displayInstantMessages();
+        e.preventDefault();
+
     });
 
     $("#challenge-visibility").change(function () {
 
+        var privacyInput = $("#upload-video-form").find("input[name='privacy']");
         if ($(this).val() == 0) {
 
             var ids = [];
@@ -429,7 +457,7 @@ $(document).ready(function () {
                                     '</span></a><input class="selected-user-data" type="hidden" name="participants[]" value="' + participants[i].id + ',' + participants[i].firstName + ',' + participants[i].lastName + ',' + participants[i].picture + '"/>' +
                                         '<a class="remove-selected" href="#"><img src="/assets/images/close.png"/></a></div>';
                             });
-                            $(".challenge-participants-div").html($body);
+                            $(".challenge-participants-div").append($body);
                             $(':checkbox').checkbox();
                             $("#challenge-participants-wrapper").show();
                             NProgress.done()
@@ -442,6 +470,7 @@ $(document).ready(function () {
         }
         else {
             $("#challenge-participants-wrapper").hide();
+            privacyInput.val('{"value":"EVERYONE"}');
         }
     });
 
@@ -600,7 +629,7 @@ $(document).ready(function () {
         $("#send-response-wrapper").show();
     });
 
-    $('#upload-response-form').submit(function (e) {
+    $('#create-response-action').click(function (e) {
 
         e.preventDefault();
 
@@ -613,55 +642,61 @@ $(document).ready(function () {
 
         if($hasErrors) return;
 
-        $(this).find('input[type="submit"]').attr('disabled','disabled');
+        $("#create-response-action").attr('disabled','disabled');
 
         NProgress.start();
 
         displayInstantMessages();
 
-        $(this).ajaxSubmit({
+        $("#upload-video-response-form").ajaxSubmit({
             success: function (response) {
-                var customResponse = jQuery.parseJSON(response);
+                console.log(response.id);
+                $("#response-video-id").val(response.id);
 
-                if (customResponse.hasOwnProperty("status")) {
+                $("#upload-response-form").ajaxSubmit({
+                    success: function (response) {
+                        var customResponse = jQuery.parseJSON(response);
 
-                    var $activeParticipation = $(".active-participation"), $parentTd = $activeParticipation.find(".leave-challenge").parents("td"),
-                        $star = $(".rating-star");
+                        if (customResponse.hasOwnProperty("status")) {
 
-                    $("#send-response-wrapper").hide();
-                    $activeParticipation.find(".leave-challenge").remove();
-                    $activeParticipation.find(".show-upload-response").remove();
+                            var $activeParticipation = $(".active-participation"), $parentTd = $activeParticipation.find(".leave-challenge").parents("td"),
+                                $star = $(".rating-star");
 
-                    $(".show-upload-response").parents("span").remove();
-                    $(".challenge-details-name-wrapper").append('<span><img src="/assets/images/correct.png"></span>');
-                    $(".timer-parent").remove();
+                            $("#send-response-wrapper").hide();
+                            $activeParticipation.find(".leave-challenge").remove();
+                            $activeParticipation.find(".show-upload-response").remove();
 
-                    $parentTd.html('<img src="/assets/images/done.png"/>');
-                    alertify.alert("Response send!");
+                            $(".show-upload-response").parents("span").remove();
+                            $(".challenge-details-name-wrapper").append('<span><img src="/assets/images/correct.png"></span>');
+                            $(".timer-parent").remove();
 
-                    $star.parents('div').tooltip('show');
-                    $star.addClass("active-rating-star");
+                            $parentTd.html('<img src="/assets/images/done.png"/>');
+                            alertify.alert("Response send!");
 
-                    $(".challenge-details-leave-action").remove();
+                            $star.parents('div').tooltip('show');
+                            $star.addClass("active-rating-star");
 
-                    if(customResponse.rewardedPoints > 0) {
-                        rewardAllPoints(customResponse.messages, customResponse.points);
+                            $(".challenge-details-leave-action").remove();
+
+                            if(customResponse.rewardedPoints > 0) {
+                                rewardAllPoints(customResponse.messages, customResponse.points);
+                            }
+                        }
+                        else {
+                            var fields = jQuery.parseJSON(response);
+
+                            $.each(fields, function (i) {
+                                var errors = fields[i];
+                                $.each(errors, function (j) {
+                                    alertify.error(errors[j].message);
+                                });
+                            });
+                        }
+                        NProgress.done();
                     }
-                }
-                else {
-                    var fields = jQuery.parseJSON(response);
-
-                    $.each(fields, function (i) {
-                        var errors = fields[i];
-                        $.each(errors, function (j) {
-                            alertify.error(errors[j].message);
-                        });
-                    });
-                }
-                NProgress.done();
+                });
             }
         });
-
     });
 
     $(document).on("click", ".stop-player", function (e) {
@@ -1095,7 +1130,7 @@ $(document).ready(function () {
         e.preventDefault() ;
     });
 
-    
+
 
 });
 

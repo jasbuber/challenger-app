@@ -1,4 +1,4 @@
-@(challengeForm: Form[controllers.CreateChallengeForm])
+@(challengeForm: Form[controllers.CreateChallengeForm], accessToken: java.lang.String, userId: java.lang.String)
 <div class="padded-glyphs-top-panel">
     <a class="back-action real-back-action" href="@routes.Application.index()"><button class="btn btn-inverse">Back</button></a>
     <span class="padded-glyph-header">Create a Challenge</span>
@@ -34,17 +34,8 @@
         </div>
         <div><input type="button" class="btn btn-hg btn-primary go-to-step-two" value="next"/></div>
     </div>
-    <div class="form-arrow-block step-one-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
-    <div class="challenge-form-block step-two-block" style="display: none;">
-        <div id="video-upload-wrapper">
-            <div id="video-input-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
-                Upload a video challenge...</button></div>
-            <input name="video-description" type="file" accept="video/*"/>
-        </div>
-        <div><input type="button" class="btn btn-hg btn-primary go-to-step-three" value="next" /></div>
-    </div>
-    <div class="form-arrow-block step-two-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
-    <div class="challenge-form-block step-three-block" style="display: none;">
+    <div class="form-arrow-block step-one-arrow" style="display : none ;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
+    <div class="challenge-form-block step-two-block" style="display : none ;">
         <div class="visibility-block">
             <div class="inline-block visibility-select-wrapper">
                 <select id="challenge-visibility" name="challengeVisibility">
@@ -52,7 +43,7 @@
                     <option value="0">Private</option>
                 </select>
             </div>
-            <div id="challenge-participants-wrapper" class="inline-block" style="display:none;">
+            <div id="challenge-participants-wrapper" class="inline-block" style="display : none ;">
                 <div class="form-group" id="search-facebook-friends">
                     <div class="input-group input-group-hg input-group-rounded">
                         <input id="friends-filter-input" type="text" placeholder="Search" class="form-control input-lg"/>
@@ -66,9 +57,24 @@
                 <div class="challenge-participants-div">
                 </div>
             </div>
+            <div><input type="button" class="btn btn-hg btn-primary go-to-step-three" value="next" /></div>
         </div>
-        <div><input type="submit" class="btn btn-hg btn-primary" value="Create!" /></div>
     </div>
     <input type="hidden" name="difficulty" value="0"/>
 }
+    <div class="form-arrow-block step-two-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
+    <div class="challenge-form-block step-three-block" style="display: none;">
+        <form id="upload-video-form" method="POST" enctype="multipart/form-data"
+            action="https://graph-video.facebook.com/@userId/videos?access_token=@accessToken">
+                <div id="video-upload-wrapper">
+                    <div id="video-input-wrapper"><button id="upload-video-action" type="button" class="btn btn-warning btn-hg">
+                        Upload a video challenge...</button></div>
+                    <input name="file" type="file" accept="video/*"/>
+                </div>
+                <div><input id="create-challenge-action" type="button" class="btn btn-hg btn-primary" value="Create!" /></div>
+                <input type="hidden" name="privacy" value='{"value":"EVERYONE"}'/>
+                <input type="hidden" name="description" value=""/>
+        </form>
+    </div>
+
 </div>

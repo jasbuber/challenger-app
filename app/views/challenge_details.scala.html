@@ -20,14 +20,39 @@
                             <div>
                                 <div id="video-panel">
                                     <div id="video-player-wrapper">
-                                        <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="565" height="360" data-setup="{}" poster="@videoDescription.getPicture">
-                                            <source src="@videoDescription.getSource" type="video/mp4"/>
-                                            <source src="@videoDescription.getSource" type="video/ogg"/>
-                                            <source src="@videoDescription.getSource" type="video/webm"/>
-                                            <p class="vjs-no-js">
-                                                To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                supports HTML5 video</a></p>
-                                        </video>
+                                        @if(videoDescription != null) {
+                                            <video id="video-response-player" class="video-js vjs-default-skin" controls preload="auto" width="565" height="360" data-setup="{}" poster="@videoDescription.getPicture">
+                                                <source src="@videoDescription.getSource" type="video/mp4"/>
+                                                <source src="@videoDescription.getSource" type="video/ogg"/>
+                                                <source src="@videoDescription.getSource" type="video/webm"/>
+                                                <p class="vjs-no-js">
+                                                    To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                    supports HTML5 video</a></p>
+                                            </video>
+                                        }else{
+                                            @if(challenge.getCreator.getUsername.equals(currentUsername)) {
+                                                <div class="progress" style="display : none ;">
+                                                    <div id="upload-video-progress-bar" class="progress-bar progress-bar-success"
+                                                    style="width : 0 % ;">0%</div>
+                                                </div>
+                                                <form id="reupload-video-form" method="POST" enctype="multipart/form-data"
+                                                    action="https://graph-video.facebook.com/@currentUsername/videos?access_token=@accessToken">
+                                                    <div id="video-reupload-wrapper">
+                                                        <p>It seems that video decription was not uploaded. Try again, please...</p>
+                                                        <div id="video-reupload-input-wrapper"><button id="reupload-video-action" type="button" class="btn btn-warning btn-hg">
+                                                            Upload a video...</button></div>
+                                                        <input name="file" type="file" accept="video/*"/>
+                                                    </div>
+                                                    <div><input id="reupload-video-action" type="submit" class="btn btn-hg btn-primary" value="Submit" /></div>
+                                                    @if(challenge.getVisibility){
+                                                        <input type="hidden" name="privacy" value='{"value":"EVERYONE"}'/>
+                                                    }else{
+                                                        <input type="hidden" name="privacy" value="{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '@participantsString'}"/>
+                                                    }
+                                                    <input type="hidden" name="description" value=""/>
+                                                </form>
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </div>

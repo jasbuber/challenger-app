@@ -309,7 +309,7 @@ $(document).ready(function () {
 
     });
 
-    var wrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'}), $file = $(':file');
+    var wrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'}), $file = $("#video-upload-wrapper").find(':file');
     var fileInput = $file.wrap(wrapper);
 
     fileInput.change(function () {
@@ -340,6 +340,24 @@ $(document).ready(function () {
 
     $('#upload-response-wrapper').click(function () {
         uploadResponse.click();
+    }).show();
+
+    var reWrapper = $('<div/>').css({height: 0, width: 0, 'display': 'none'}), $reFile = $("#video-reupload-wrapper").find(':file');
+    var reVideoInput = $reFile.wrap(reWrapper);
+
+    reVideoInput.change(function () {
+        var $this = $(this);
+        $("#video-reupload-wrapper").find("p").hide();
+        if ($this.val() != '') {
+            $('#video-reupload-input-wrapper').html('<div id="video-screenshot">' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
+        }
+        else {
+            $('#video-reupload-input-wrapper').html('<button id="reupload-video-action" type="button" class="btn btn-warning btn-hg">Upload a video...</button>');
+        }
+    });
+
+    $('#video-reupload-input-wrapper').click(function () {
+        reVideoInput.click();
     }).show();
 
     $('#create-challenge-action').click(function (e) {
@@ -713,6 +731,46 @@ $(document).ready(function () {
                                 });
                             });
                         }
+                        NProgress.done();
+                    }
+                });
+            }
+        });
+    });
+
+    $('#reupload-video-form').submit(function (e) {
+
+        e.preventDefault();
+
+        var $hasErrors = false;
+
+        if(!$("#video-reupload-wrapper").find(":file").val()){
+            alertify.error("You need to choose a video response...");
+            $hasErrors = true;
+        }
+
+        if($hasErrors) return;
+
+        $("#reupload-video-action").attr('disabled','disabled');
+
+        NProgress.start();
+
+        var progressBar = $("#upload-video-progress-bar");
+        $(".progress").show();
+
+        $(this).ajaxSubmit({
+            uploadProgress: function(event, position, total, percentComplete) {
+                var percentVal = Math.floor(percentComplete * 0.99) + '%';
+                progressBar.width(percentVal)
+                progressBar.html(percentVal);
+            },
+            success: function (response) {
+                jsRoutes.controllers.Application.ajaxUpdateChallengeVideo($(".challenge-id").val(), response.id).ajax({
+                    success: function (response) {
+                        progressBar.width("100%");
+                        progressBar.html("100%");
+
+                        alertify.success("Video was uploaded! It will be available in a couple of moments.");
                         NProgress.done();
                     }
                 });

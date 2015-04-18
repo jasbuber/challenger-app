@@ -705,9 +705,10 @@ public class Application extends Controller {
 
         Challenge challenge = service.getChallenge(challengeId);
 
-        if(challenge.getCreator().getUsername().equals(getLoggedInUsername())) {
+        if(challenge.getCreator().getUsername().equals(getLoggedInUsername()) && challenge.getVideoId() == null) {
             challenge.setVideoId(videoId);
             service.updateChallenge(challenge);
+
             return ok("success");
         }
 
@@ -970,7 +971,11 @@ public class Application extends Controller {
         Long challengeResponsesNr = service.getResponsesNrForChallenge(id);
         Boolean isCurrentUserRespondedToChallenge = service.isUserRespondedToChallenge(currentChallenge, currentUser.getUsername());
 
-        Video video = facebookService.getVideo(currentChallenge.getVideoId());
+        Video video = null;
+
+        if(currentChallenge.getVideoId() != null) {
+            video = facebookService.getVideo(currentChallenge.getVideoId());
+        }
 
         List<ChallengeParticipation> participants = service.getLatestParticipantsForChallenge(id);
         long participantsNr = service.getParticipantsNrForChallenge(id);

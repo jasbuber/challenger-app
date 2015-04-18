@@ -391,13 +391,24 @@ $(document).ready(function () {
 
                         privacy.val("{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString.slice(0, -1) + "'}");
                     }
+
+                    var progressBar = $("#upload-video-progress-bar");
+                    $(".progress").show();
                     $("#upload-video-form").ajaxSubmit({
+                        uploadProgress: function(event, position, total, percentComplete) {
+                            var percentVal = Math.floor(percentComplete * 0.99) + '%';
+                            progressBar.width(percentVal)
+                            progressBar.html(percentVal);
+                        },
                         success: function (response) {
                             jsRoutes.controllers.Application.ajaxUpdateChallengeVideo(customResponse.challengeId, response.id).ajax({
                                 success: function (response) {
                                     if(customResponse.rewardedPoints > 0) {
                                         rewardAllPoints(customResponse.messages, customResponse.points);
                                     }
+
+                                    progressBar.width("100%");
+                                    progressBar.html("100%");
 
                                     alertify.alert("Challenge created and ready to join ! ", function (e) {
                                         if (e) {
@@ -648,9 +659,16 @@ $(document).ready(function () {
 
         displayInstantMessages();
 
+        var progressBar = $("#upload-video-progress-bar");
+        $(".progress").show();
+
         $("#upload-video-response-form").ajaxSubmit({
+            uploadProgress: function(event, position, total, percentComplete) {
+                var percentVal = Math.floor(percentComplete * 0.99) + '%';
+                progressBar.width(percentVal)
+                progressBar.html(percentVal);
+            },
             success: function (response) {
-                console.log(response.id);
                 $("#response-video-id").val(response.id);
 
                 $("#upload-response-form").ajaxSubmit({
@@ -681,6 +699,9 @@ $(document).ready(function () {
                             if(customResponse.rewardedPoints > 0) {
                                 rewardAllPoints(customResponse.messages, customResponse.points);
                             }
+
+                            progressBar.width("100%");
+                            progressBar.html("100%");
                         }
                         else {
                             var fields = jQuery.parseJSON(response);

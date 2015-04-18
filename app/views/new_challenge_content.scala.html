@@ -64,6 +64,10 @@
 }
     <div class="form-arrow-block step-two-arrow" style="display: none;"><img src="@routes.Assets.at("images/arrow_down.png")"/></div>
     <div class="challenge-form-block step-three-block" style="display: none;">
+        <div class="progress" style="display: none;">
+            <div id="upload-video-progress-bar" class="progress-bar progress-bar-success"
+                style="width: 0%;">0%</div>
+        </div>
         <form id="upload-video-form" method="POST" enctype="multipart/form-data"
             action="https://graph-video.facebook.com/@userId/videos?access_token=@accessToken">
                 <div id="video-upload-wrapper">

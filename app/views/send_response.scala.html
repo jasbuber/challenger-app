@@ -1,6 +1,10 @@
 @(responseForm: Form[CreateChallengeResponseForm], challengeId: Long, visibility: Boolean, participantsString: java.lang.String, accessToken: java.lang.String, userId: java.lang.String)
 
 <div id="send-response-wrapper" style="display: none">
+    <div class="progress" style="display:none">
+        <div id="upload-video-progress-bar" class="progress-bar progress-bar-success"
+        style="width: 0%;">0%</div>
+    </div>
     <div class="upper-div"><div class="title-div"><h4>Respond to the challenge</h4></div>
         <div class="close-window-upper-div"><a class="close-window" href="#"><img src="@routes.Assets.at("images/close.png")"/></a></div>
     </div>

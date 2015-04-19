@@ -387,7 +387,7 @@ $(document).ready(function () {
 
         var $this = $("#create-challenge-form");
 
-        $("#upload-video-action").attr('disabled','disabled');
+        $("#create-challenge-action").attr('disabled','disabled');
 
         $("#upload-video-form").find("input[name='description']").val(challengeName);
 
@@ -437,6 +437,12 @@ $(document).ready(function () {
                                     NProgress.done();
                                 }
                             });
+                        },
+                        error: function(response){
+                            progressBar.width("0%")
+                            progressBar.html("0%");
+                            $(".progress").hide();
+                            alertify.error(response.responseJSON.error.message);
                         }
                     });
                     displayInstantMessages();
@@ -450,6 +456,8 @@ $(document).ready(function () {
                             alertify.error(errors[j].message);
                         });
                     });
+                    $("#create-challenge-action").removeAttr("disabled");
+                    NProgress.done();
                 }
             }
         });
@@ -734,6 +742,12 @@ $(document).ready(function () {
                         NProgress.done();
                     }
                 });
+            },
+            error: function(response){
+                progressBar.width("0%")
+                progressBar.html("0%");
+                $(".progress").hide();
+                alertify.error(response.responseJSON.error.message);
             }
         });
     });
@@ -774,6 +788,12 @@ $(document).ready(function () {
                         NProgress.done();
                     }
                 });
+            },
+            error: function(response){
+                progressBar.width("0%");
+                progressBar.html("0%");
+                $(".progress").hide();
+                alertify.error(response.responseJSON.error.message);
             }
         });
     });

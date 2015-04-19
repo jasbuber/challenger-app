@@ -1092,6 +1092,11 @@ $(document).ready(function () {
         var $this= $(this), $challengeId = $(".current-challenge-id").val(), $offset = $(".current-offset").val(), $body = ""
             , $newOffset = parseInt($offset)+ 1, $participantsNr = $("#participants-number").val(), $currentParticipants = $("#current-participants-number");
 
+        if($("div.challenge-participants-wrapper").find("tbody tr").size() != $currentParticipants.val()){
+            $offset = 1;
+            $newOffset = 2;
+        }
+
         jsRoutes.controllers.Application.ajaxShowMoreParticipants($challengeId, $offset).ajax({
             success: function (response) {
                 var $currentCreator = $(".remove-participant").size() > 0,
@@ -1126,6 +1131,11 @@ $(document).ready(function () {
             $participationsNr = $("#participations-number").val(), $currentParticipations = $("#current-participations-number"),
             $wrapper = $(".padded-glyph-challenges-wrapper");
 
+        if($(".padded-glyph-challenge").size() != $currentParticipations.val()){
+            $offset = 1;
+            $newOffset = 2;
+        }
+
         jsRoutes.controllers.Application.ajaxShowMoreParticipations($offset).ajax({
             success: function (response) {
 
@@ -1158,6 +1168,11 @@ $(document).ready(function () {
             $challengesNr = $("#challenges-number").val(), $currentChallenges = $("#current-challenges-number"),
             $wrapper = $(".padded-glyph-challenges-wrapper");
 
+        if($(".padded-glyph-challenge").size() != $currentChallenges.val()){
+            $offset = 1;
+            $newOffset = 2;
+        }
+
         jsRoutes.controllers.Application.ajaxShowMoreChallenges($offset).ajax({
             success: function (response) {
 
@@ -1183,6 +1198,11 @@ $(document).ready(function () {
             $commentsNr = $("#comments-number").val(), $currentComments = $("#current-comments-number"),
             $wrapper = $(".comments-block"), $challengeId = $(".current-challenge-id").val();
 
+        if($("div.comment").size() != $currentComments.val()){
+            $offset = 1;
+            $newOffset = 2;
+        }
+
         jsRoutes.controllers.Application.ajaxShowMoreComments($challengeId, $offset).ajax({
             success: function (response) {
                 $(".current-offset").val($newOffset);
@@ -1204,6 +1224,11 @@ $(document).ready(function () {
         var $this= $(this), $offset = $(".current-offset").val(), $body = "", $newOffset = parseInt($offset)+ 1,
             $notificationsNr = $("#notifications-number").val(), $currentNotifications = $("#current-notifications-number"),
             $wrapper = $(".user-notification-wrapper").find("table tbody");
+
+        if($("div.user-notification-wrapper").find("tbody tr").size() != $currentNotifications.val()){
+            $offset = 1;
+            $newOffset = 2;
+        }
 
         jsRoutes.controllers.Application.ajaxShowMoreNotifications($offset).ajax({
             success: function (response) {

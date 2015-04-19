@@ -57,4 +57,8 @@ public class UserService extends TransactionalBase {
         return usersRepository.getTopRatedUsers();
     }
 
+    public User updateUser(User user){
+        return usersRepository.updateUser(user);
+    }
+
 }

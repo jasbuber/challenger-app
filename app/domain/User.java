@@ -187,4 +187,8 @@ public class User {
     public Integer getAllPoints(){
         return this.creationPoints + this.participationPoints + this.otherPoints;
     }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
 }

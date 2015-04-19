@@ -83,12 +83,22 @@ public class Application extends Controller {
 
         session("fb_user_token", accessToken);
         session("fb_user_token_expires", expires);
-        FacebookUser user = Application.getFacebookService().getFacebookUser();
-        Application.getUsersService().createNewOrGetExistingUser(user, Application.getFacebookService().getProfilePictureUrl());
 
+        UserService service = Application.getUsersService();
+        FacebookService fbService = Application.getFacebookService();
+
+        FacebookUser user = fbService.getFacebookUser();
+
+        User appUser = service.createNewOrGetExistingUser(user, fbService.getProfilePictureUrl());
+        String pictureUrl = fbService.getProfilePictureUrl();
+
+        if(!appUser.getProfilePictureUrl().equals(pictureUrl)){
+            appUser.setProfilePictureUrl(pictureUrl);
+            service.updateUser(appUser);
+        }
         session("username", user.getId());
         session("name", user.getFormattedName());
-        session("profilePictureUrl", Application.getFacebookService().getProfilePictureUrl());
+        session("profilePictureUrl", pictureUrl);
 
         return redirect(routes.Application.firstLogIn(accessToken, expires));
     }

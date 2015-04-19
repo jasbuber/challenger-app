@@ -95,4 +95,8 @@ public class UsersRepository {
         return topUsersQuery.getResultList();
     }
 
+    public User updateUser(User user) {
+        return JPA.em().merge(user);
+    }
+
 }

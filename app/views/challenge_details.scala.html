@@ -12,10 +12,7 @@
                     <div class="padded-glyphs-wrapper">
                         <div class="timer-parent top-block">
                             <a class="back-action real-back-action" href="@routes.Application.showMyChallenges()"><button class="btn btn-inverse">Back</button></a>
-                        @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0 && !p.isResponseSubmitted) && ((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000) > 0) {
-                            <div class="small-counter"></div>
-                            <input class="time-left" type="hidden" value="@((participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime - System.currentTimeMillis)/1000)"/>
-                        }</div>
+                        </div>
                         <div class="padded-glyph-challenge-data-wrapper">
                             <div>
                                 <div id="video-panel">
@@ -73,11 +70,7 @@
                                                     <img src="@routes.Assets.at("images/correct.png")"/>
                                                 } else {
                                                     @if(participants.exists(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0)) {
-                                                        @if(participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0).get.getEndingDate.getTime > System.currentTimeMillis) {
-                                                            <input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>
-                                                        }else{
-                                                            <img src="@routes.Assets.at("images/glyph_crab_medium.png")"/>
-                                                        }
+                                                        <input type="button" class="btn btn-hg btn-warning show-upload-response" value="Respond"/>
                                                     } else {
                                                         @if(challenge.getVisibility == true) {
                                                             <input type="button" class="btn btn-hg btn-success join-challenge-action" value="Join"/>

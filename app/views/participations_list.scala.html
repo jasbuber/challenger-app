@@ -7,9 +7,5 @@
       src="@routes.Assets.at("images/speedometer/speedometer_" + java.lang.String.valueOf(domain.Challenge.getPopularityLevel(participation.apply(2).asInstanceOf[Long])) + "_medium.png")"/>
     </span>
     <span class="padded-glyph-list-name"><a class="show-challenge-events" href="@routes.Application.showChallenge(participation.apply(3).asInstanceOf[Long])">@participation.apply(0)</a></span>
-    @if(participation.apply(6).asInstanceOf[Char] != 'Y' && ((participation.apply(4).asInstanceOf[Date].getTime - System.currentTimeMillis) / 1000) > 0) {
-      <div class="counter"></div>
-      <input class="time-left" type="hidden" value="@((participation.apply(4).asInstanceOf[Date].getTime - System.currentTimeMillis) / 1000)"/>
-    }
   </div>
 }

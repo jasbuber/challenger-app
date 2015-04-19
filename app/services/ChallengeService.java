@@ -160,8 +160,6 @@ public class ChallengeService extends TransactionalBase {
     private void assertThatResponseCanBeSubmittedForParticipation(ChallengeParticipation challengeParticipation) {
         if (isNotEvaluatedResponseExistsFor(challengeParticipation)) {
             throw new IllegalStateException("User " + challengeParticipation.getParticipator() + " has already submitted response that is not scored yet for challenge " + challengeParticipation.getChallenge());
-        } else if (challengeParticipation.isOverdue()) {
-            throw new IllegalStateException(challengeParticipation.getChallenge().getChallengeName() + "has ended on " + challengeParticipation.getChallenge().getEndingDate());
         }
     }
 

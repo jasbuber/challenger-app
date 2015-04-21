@@ -259,6 +259,16 @@ public class ChallengesRepository {
         return (Long) completedChallengesQuery.getSingleResult();
     }
 
+    public List<ChallengeResponse> getLatestResponsesForChallenge(long challengeId, int limit) {
+        Query latestResponsesQuery = JPA.em().createQuery("SELECT r " +
+                "FROM ChallengeResponse r " +
+                "WHERE r.challengeParticipation.challenge.id = :challengeId " +
+                "ORDER BY r.submitted DESC");
+        latestResponsesQuery.setParameter("challengeId", challengeId);
+        latestResponsesQuery.setMaxResults(limit);
+        return latestResponsesQuery.getResultList();
+    }
+
     public ChallengeResponse getChallengeResponse(long id){ return JPA.em().find(ChallengeResponse.class, id); }
 
     public List<ChallengeResponse> getChallengeParticipationsForUser(String creatorUsername) {

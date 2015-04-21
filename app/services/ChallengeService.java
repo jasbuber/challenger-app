@@ -246,6 +246,10 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getResponsesNrForChallenge(challengeId);
     }
 
+    public List<ChallengeResponse> getLatestResponsesForChallenge(final long challengeId, final int limit) {
+        return challengesRepository.getLatestResponsesForChallenge(challengeId, limit);
+    }
+
     public ChallengeResponse getChallengeResponse(final long id) {
         return challengesRepository.getChallengeResponse(id);
     }

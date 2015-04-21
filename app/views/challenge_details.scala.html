@@ -1,6 +1,6 @@
 @(firstName: java.lang.String, bigProfilePicUrl: java.lang.String, points: java.lang.Integer, challenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], latestParticipations: java.util.List[repositories.dtos.ChallengeWithParticipantsNr],
         responseForm: Form[CreateChallengeResponseForm], unreadNotificationsNr: Long,newestNotifications: java.util.List[domain.Notification], newestUnreadNotifications: java.util.List[domain.Notification],
-        challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponsesNr: Long, currentUserResponded: Boolean,
+        challenge: domain.Challenge, videoDescription: com.restfb.types.Video, participants: java.util.List[domain.ChallengeParticipation], challengeResponses: java.util.List[domain.ChallengeResponse], currentUserResponded: Boolean,
         currentUsername: java.lang.String, commentForm: Form[CreateCommentForm], comments: java.util.List[domain.Comment], participantsNr: Long, commentsNr: Long, participantsString: java.lang.String, accessToken: java.lang.String)
 
 @main("Welcome to Challenge Application") {
@@ -50,6 +50,22 @@
                                                 </form>
                                             }
                                         }
+                                        @if(challengeResponses.size() > 0) {
+                                            <div id="latest-challenge-responses">
+                                                <div class="show-responses-wrapper">
+                                                    <a href="@routes.Application.showChallengeResponses(challenge.getId)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/>
+                                                        Video responses (@challengeResponses.size())</a>
+                                                </div>
+                                            @challengeResponses.map { response =>
+                                                <div class="challenge-response-wrapper">
+                                                    <div class="challenge-response-author">
+                                                        <a href="@routes.Application.showProfile(response.getChallengeParticipation.getParticipator.getUsername).url">
+                                                            @response.getChallengeParticipation.getParticipator.getFormattedName</a></div>
+                                                    <div><a class="play-video-response" href="@routes.Application.showChallengeResponses(challenge.getId, response.getId)"><img src="@response.getThumbnailUrl"/></a></div>
+                                                </div>
+                                            }
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -93,12 +109,6 @@
                                     <div data-togle="tooltip" data-placement="bottom" title="You might want to rate the challenge">
                                         Rating: @rating(challenge.getRating, participants.find(p => p.getParticipator.getUsername.compareTo(currentUsername) == 0), currentUserResponded)
                                     </div>
-                                    @if(challengeResponsesNr > 0) {
-                                        <div class="show-responses-wrapper">
-                                            <a href="@routes.Application.showChallengeResponses(challenge.getId)"><img src="@routes.Assets.at("images/glyph_drink_small.png")"/>
-                                                Video responses </a>
-                                        </div>
-                                    }
                                     <input type="hidden" class="challenge-id" value="@challenge.getId"/>
                                 </div>
                                 @if(!participants.isEmpty) {

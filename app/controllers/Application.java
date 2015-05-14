@@ -129,7 +129,8 @@ public class Application extends Controller {
         List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
         return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
-                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken()));
+                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken(),
+                currentUser.getTutorialCompleted()));
     }
 
     @Transactional(readOnly = true)
@@ -149,7 +150,8 @@ public class Application extends Controller {
         List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
         return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
-                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken()));
+                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken(),
+                currentUser.getTutorialCompleted()));
     }
 
     @Transactional
@@ -247,7 +249,7 @@ public class Application extends Controller {
 
         Challenge newChallenge = getChallengeService()
             .createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(),
-                    challenge.getChallengeVisibility(),  challenge.getParticipants(), challenge.getDifficulty());
+                    challenge.getChallengeVisibility(), challenge.getParticipants(), challenge.getDifficulty());
 
         return ok(new Gson().toJson(getResponseForCreatedChallenge(challenge, newChallenge.getId())));
 
@@ -633,7 +635,8 @@ public class Application extends Controller {
                         routes.javascript.Application.ajaxShowMoreParticipations(),
                         routes.javascript.Application.ajaxShowMoreComments(),
                         routes.javascript.Application.ajaxShowMoreNotifications(),
-                        routes.javascript.Application.ajaxUpdateChallengeVideo()
+                        routes.javascript.Application.ajaxUpdateChallengeVideo(),
+                        routes.javascript.Application.ajaxCompleteTutorial()
                 )
         );
     }
@@ -1170,6 +1173,15 @@ public class Application extends Controller {
         }
 
         return ok(error_view.render("Access denied"));
+    }
+
+    @Transactional
+    public static Result ajaxCompleteTutorial() {
+        User currentUser = getLoggedInUser();
+        currentUser.completeTutorial();
+        getUsersService().updateUser(currentUser);
+
+        return ok("success");
     }
 
 }

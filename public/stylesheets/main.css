@@ -100,6 +100,82 @@ div#wrapper div.ui-block-body div.form-wrapper{
     width: 80%;
 }
 
+div#tutorial-wrapper{
+    background: #e7e9ec;
+    color: #34495e;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 20px;
+    border: 5px solid #bdc3c7;
+    text-align: center;
+    margin: 12% auto 0 auto;
+    width: 740px;
+    padding: 40px;
+}
+
+div#tutorial-wrapper a.close-tutorial{ float: right; }
+div#tutorial-wrapper span.tutorial-step-counter{ margin-left: 10px; }
+div#tutorial-wrapper div.tutorial-action{ text-align: right; }
+div#tutorial-wrapper div.tutorial-content{ margin: 20px 0;}
+div#tutorial-wrapper div.tutorial-content div.tutorial-screenshot{
+    width: 600px;
+    height: 409px;
+    background: url("../images/tutorial/screenshot1.png") no-repeat;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+div#tutorial-wrapper div.tutorial-content div.step-one{ background: url("../images/tutorial/screenshot1.png") no-repeat; height: 409px; }
+div#tutorial-wrapper div.tutorial-content div.step-two{ background: url("../images/tutorial/screenshot2.png") no-repeat; height: 502px; }
+div#tutorial-wrapper div.tutorial-content div.step-three{ background: url("../images/tutorial/screenshot3.png") no-repeat; height: 482px; }
+div#tutorial-wrapper div.tutorial-content div.step-four{ background: url("../images/tutorial/screenshot4.png") no-repeat; height: 538px; }
+div#tutorial-wrapper div.tutorial-content div.step-five{ background: url("../images/tutorial/screenshot5.png") no-repeat; height: 587px; }
+div.tutorial-content div.tutorial-screenshot div.tutorial-message-wrapper div.tutorial-selection{
+    position: absolute;
+    border-radius: 20px;
+    border: 7px solid #f9f89f;
+    z-index: 800;
+    width: 250px;
+    height: 185px;
+}
+div.tutorial-content div.tutorial-screenshot div.tutorial-message-wrapper{ display: none; }
+div.tutorial-content div.tutorial-screenshot div.tutorial-message{
+    position: absolute;
+    width: 250px;
+    /*background-color: #ffe992;*/
+    background-color: #f9f89f;
+    border-radius: 10px;
+    padding: 10px 15px;
+    z-index: 801;
+    text-align: left;
+}
+
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(1){ display: block; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(1) div.tutorial-message{ top: 15%; left: 15%; width: 400px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(1) div.tutorial-message p{ text-align: left; font-size: 16px; font-weight: 600; margin-top: 10px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(2) div.tutorial-message{ top: 40px; left: 270px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(2) div.tutorial-selection{ top: 30px; left: 53px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(3) div.tutorial-message{ top: 130px; left: 350px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(3) div.tutorial-selection{ top: 40px; left: 95px; width: 425px; height: 125px;}
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(4) div.tutorial-message{ top: 270px; left: 350px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(4) div.tutorial-selection{ top: 210px; left: 95px; width: 425px; height: 105px;}
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(5) div.tutorial-message{ top: 440px; left: 0; width: 270px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(5) div.tutorial-selection{ top: 360px; left: 95px; width: 425px; height: 135px;}
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(6) div.tutorial-message{ top: 350px; left: 360px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(7) div.tutorial-message{ top: 50px; left: 70px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(7) div.tutorial-selection{ top: 30px; left: 289px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(8) div.tutorial-message{ top: 160px; left: 70px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(8) div.tutorial-selection{ top: 85px; left: 30px; width: 550px; height: 70px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(9) div.tutorial-message{ top: 310px; left: 190px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(9) div.tutorial-selection{ top: 210px; left: 20px; width: 550px; height: 85px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(10) div.tutorial-message{ top: 310px; left: 220px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(10) div.tutorial-selection{ top: 275px; left: 18px; width: 250px; height: 75px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(11) div.tutorial-message{ top: 280px; left: 260px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(11) div.tutorial-selection{ top: 212px; left: 53px; width: 250px; height: 190px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(12) div.tutorial-message{ top: 310px; left: 30px; width: 300px; }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(12) div.tutorial-selection{ top: 212px; left: 290px; width: 250px; height: 190px;  }
+div.tutorial-screenshot div.tutorial-messages > div:nth-of-type(13) div.tutorial-message{ top: 15%; left: 15%; width: 400px; }
+
 div#wrapper div.ui-block-body div.form-wrapper form > div{ padding: 15px; }
 
 div#wrapper div#browse-block-body div.form-wrapper div.form-group{ display: inline-block; width: 45%;}

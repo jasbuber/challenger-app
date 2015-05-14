@@ -1,0 +1,87 @@
+<div class="modal fade" role="dialog">
+<div id="tutorial-wrapper">
+    <div class="tutorial-top-block">
+        <img src="@routes.Assets.at("images/glyph_glasses_small.png")"/>
+        TheChallenger Tutorial <span class="tutorial-step-counter">(<span class="step-number">1</span>/13)</span>
+        <a class="close-tutorial" href="#"><img src="@routes.Assets.at("images/close.png")"/></a>
+    </div>
+    <div class="tutorial-content">
+        <div class="tutorial-screenshot">
+            <div class="tutorial-messages">
+                <div class="tutorial-message-wrapper active-message">
+                    <div class="tutorial-message">Welcome To TheChallenger App!
+                        <p>Here's a simple tutorial that explains what is to do here. If You want to explore on Your own, just close the tutorial
+                            and it won't bother You again :]</p></div>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Here you can create a video competition that people can participate in.</div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-one" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Add a description and select a category that describes your challenge the best. You can set
+                        the difficulty level if You wish.</div>
+                    <input type="hidden" value="step-two" class="step"/>
+                    <div class="tutorial-selection"></div>
+                </div>
+                <div class="tutorial-message-wrapper">
+                    <div class="tutorial-message">Choose privacy ( public - for all, private - only for your friends )</div>
+                    <div class="tutorial-selection"></div>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Select a video that describes what's your challenge all about. Maybe
+                        You would like to do it yourself first ? ;)</div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-two" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Your challenge is ready to join! You will be notified if someone responded
+                        or joined.</div>
+                    <input type="hidden" value="step-three" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Discover Challenges lets you join challenges of other people.</div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-one" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Search panel lets you be more specific when looking for challenges. Maybe you want
+                        to join Your friend's challenge ? Just search by users! </div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-four" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Click one of the challenge names to see the details. </div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-four" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">Click the Join button. You are now participating in a challenge. Time to create a
+                        video response. Good luck!</div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-five" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper next-bg">
+                    <div class="tutorial-message">That's a hall of fame. Check out the most popular challenges and best users. </div>
+                    <div class="tutorial-selection"></div>
+                    <input type="hidden" value="step-one" class="step"/>
+                </div>
+                <div class="tutorial-message-wrapper">
+                    <div class="tutorial-message">A headquarters for Your challenges. They are all here.</div>
+                    <div class="tutorial-selection"></div>
+                </div>
+                <div class="tutorial-message-wrapper last-message">
+                    <div class="tutorial-message">Thanks for keeping up with this tutorial. Always push Your limits and
+                        get out of the safety zone. Have fun!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tutorial-action">
+        <input type="button" class="btn btn-hg btn-default tutorial-back-button" value="Back" style="display: none;"/>
+        <input type="button" class="btn btn-hg btn-primary tutorial-next-button" value="Next" />
+        <input type="button" class="btn btn-hg btn-primary tutorial-complete-button" value="Finish" style="display: none;"/>
+    </div>
+</div>
+</div>
+<script src="@routes.Assets.at("javascripts/tutorial.js")" type="text/javascript"></script>

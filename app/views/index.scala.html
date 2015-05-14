@@ -1,6 +1,6 @@
 @(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer, challengeForm: Form[controllers.CreateChallengeForm],
         unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], searchChallenges: java.util.List[domain.Challenge], topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
-        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], accessToken: java.lang.String)
+        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], accessToken: java.lang.String, tutorialCompleted: Integer)
 
     @main("Welcome to Challenge Application") {
         @menu(firstName, profilePicUrl, points, unreadNotificationsNr, newestNotifications)
@@ -26,5 +26,7 @@
                 </div>
             </div>
         </div>
-
+        @if(tutorialCompleted != 1) {
+            @tutorial()
+        }
     }

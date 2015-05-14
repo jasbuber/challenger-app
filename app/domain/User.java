@@ -55,6 +55,9 @@ public class User {
     @Column(name = "OTHER_POINTS")
     private Integer otherPoints = 0;
 
+    @Column(name = "TUTORIAL_COMPLETED")
+    private Integer tutorialCompleted = 0;
+
     protected User() {
         //for jpa purposes...
         this.joined = new Date();
@@ -190,5 +193,13 @@ public class User {
 
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public Integer getTutorialCompleted() {
+        return tutorialCompleted;
+    }
+
+    public void completeTutorial(){
+        this.tutorialCompleted = 1;
     }
 }

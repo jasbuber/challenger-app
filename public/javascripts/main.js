@@ -67,27 +67,6 @@ $(document).ready(function () {
         NProgress.done();
     });
 
-    $uiBlock.find("a").click(function(e){
-        e.preventDefault();
-    });
-
-    $uiBlock.click(function () {
-        if($(this).attr("id") != "share-block") {
-            $(this).parents("#wrapper").height($(this).parents("#wrapper").height());
-            $(this).toggleClass('active');
-            $(this).siblings().not(this).toggleClass('hide');
-            $(this).fadeOut(1500, function () {
-                var $blockBody = $("#" + $(this).attr("id") + "-body");
-                $(this).removeClass("active");
-                $blockBody.removeClass('hide');
-                $blockBody.fadeIn(1000);
-                $blockBody.find(".back-action").removeClass("real-back-action");
-
-                $(this).parents("#wrapper").removeAttr("style");
-            });
-        }
-    });
-
     $("select").selectpicker({style: 'btn-hg btn-info', menuStyle: 'dropdown-inverse'});
 
     // Focus state for append/prepend inputs
@@ -241,24 +220,6 @@ $(document).ready(function () {
         $listItems.removeClass("active");
         $pagination.find("li.page-index").first().addClass("active");
     };
-
-    $("#browse-block").click(function (e) {
-
-        var username = $(".current-username").val();
-        NProgress.start();
-
-        jsRoutes.controllers.Application.ajaxGetLatestChallenges().ajax({
-            success: function (response) {
-                var challenges = jQuery.parseJSON(response), body = formChallengesRows(challenges, username);
-
-                $(".challenge-search-results table tbody").html(body);
-                $(".switch").bootstrapSwitch();
-                NProgress.done();
-            }
-        });
-
-        e.preventDefault();
-    });
 
     $(document).on("click", ".browse-challenge-join-action", function(){
         NProgress.start();
@@ -430,7 +391,7 @@ $(document).ready(function () {
 
                                     alertify.alert("Challenge created and ready to join ! ", function (e) {
                                         if (e) {
-                                            $(".back-action").click();
+                                            window.history.back();
                                         }
                                     });
 

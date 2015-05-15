@@ -128,9 +128,8 @@ public class Application extends Controller {
         List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
         List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
-        return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
-                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken(),
-                currentUser.getTutorialCompleted()));
+        return ok(index.render(firstName, Application.getProfilePictureUrl(), points, unreadNotificationNr,
+                newestNotifications, currentUser.getTutorialCompleted()));
     }
 
     @Transactional(readOnly = true)
@@ -149,9 +148,8 @@ public class Application extends Controller {
         List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
         List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
 
-        return ok(index.render(firstName, getLoggedInUsername(), Application.getProfilePictureUrl(), points, challengeForm, unreadNotificationNr,
-                newestNotifications, new ArrayList<Challenge>(), topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges, getAccessToken(),
-                currentUser.getTutorialCompleted()));
+        return ok(index.render(firstName, Application.getProfilePictureUrl(), points, unreadNotificationNr,
+                newestNotifications, currentUser.getTutorialCompleted()));
     }
 
     @Transactional

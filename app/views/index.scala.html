@@ -1,29 +1,18 @@
-@(firstName: java.lang.String, username: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer, challengeForm: Form[controllers.CreateChallengeForm],
-        unreadNotificationsNr: Long, newestNotifications: java.util.List[domain.Notification], searchChallenges: java.util.List[domain.Challenge], topRatedUsers: java.util.List[domain.User], topRatedChallenges: java.util.List[domain.Challenge],
-        trendingChallenges: java.util.List[domain.Challenge], mostPopularChallenges: java.util.List[repositories.dtos.ChallengeWithParticipantsNr], accessToken: java.lang.String, tutorialCompleted: Integer)
+@(firstName: java.lang.String, profilePicUrl: java.lang.String, points: java.lang.Integer, unreadNotificationsNr: Long,
+        newestNotifications: java.util.List[domain.Notification],tutorialCompleted: Integer)
 
     @main("Welcome to Challenge Application") {
         @menu(firstName, profilePicUrl, points, unreadNotificationsNr, newestNotifications)
         <div id="wrapper" class="account-wrapper">
             <div class="main-blocks-wrapper">
-                <div id="challenge-block" class="ui-block palette-nephritis">
-                    <a href="@routes.Application.showCreateChallenge()"><span class="ui-block-title">Create a Challenge</span></a>
-                </div>
-                <div id="browse-block" class="ui-block palette-belize-hole">
-                    <a href="@routes.Application.showBrowseChallenges()"><span class="ui-block-title">Discover Challenges</span></a></div>
-                <div id="rank-block" class="ui-block palette-pumpkin">
-                    <a href="@routes.Application.showRankings()"><span class="ui-block-title">Rankings</span></a></div>
-                <a href="@routes.Application.showMyChallenges()"><div id="share-block" class="ui-block palette-midnight-blue"><span class="ui-block-title">
-                    My Challenges</span></div></a>
-                <div id="challenge-block-body" class="ui-block-body" style="display : none">
-                @new_challenge_content(challengeForm: Form[controllers.CreateChallengeForm], accessToken, username)
-                </div>
-                <div id="browse-block-body" class="ui-block-body" style="display : none ;">
-                @browse_content(searchChallenges, username)
-                </div>
-                <div id="rank-block-body" class="ui-block-body" style="display : none ;">
-                @rankings_content(username, topRatedUsers, topRatedChallenges, trendingChallenges, mostPopularChallenges)
-                </div>
+                <a href="@routes.Application.showCreateChallenge()"><div id="challenge-block" class="ui-block palette-nephritis">
+                   <span class="ui-block-title">Create a Challenge</span></div></a>
+                <a href="@routes.Application.showBrowseChallenges()"><div id="browse-block" class="ui-block palette-belize-hole">
+                    <span class="ui-block-title">Discover Challenges</span></div></a>
+                <a href="@routes.Application.showRankings()"><div id="rank-block" class="ui-block palette-pumpkin">
+                    <span class="ui-block-title">Rankings</span></div></a>
+                <a href="@routes.Application.showMyChallenges()"><div id="share-block" class="ui-block palette-midnight-blue">
+                    <span class="ui-block-title">My Challenges</span></div></a>
             </div>
         </div>
         @if(tutorialCompleted != 1) {

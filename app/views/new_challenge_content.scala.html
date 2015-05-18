@@ -75,10 +75,13 @@
                         Upload a video challenge...</button></div>
                     <input name="file" type="file" accept="video/*"/>
                 </div>
-                <div><input id="create-challenge-action" type="button" class="btn btn-hg btn-primary" value="Create!" /></div>
+                <div><input id="create-challenge-action" type="button" class="btn btn-hg btn-primary create-action" value="Create!" />
+                    <input id="request-upload-permission" type="button" class="btn btn-hg btn-primary" value="Create!" style="display: none;"/>
+                </div>
                 <input type="hidden" name="privacy" value='{"value":"EVERYONE"}'/>
                 <input type="hidden" name="description" value=""/>
         </form>
+        <input type="hidden" class="accessToken" value="@accessToken"/>
     </div>
 
 </div>

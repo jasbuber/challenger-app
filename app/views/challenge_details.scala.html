@@ -40,7 +40,8 @@
                                                             Upload a video...</button></div>
                                                         <input name="file" type="file" accept="video/*"/>
                                                     </div>
-                                                    <div><input id="reupload-video-action" type="submit" class="btn btn-hg btn-primary" value="Submit" /></div>
+                                                    <div><input type="submit" class="btn btn-hg btn-primary create-action" value="Submit" />
+                                                        <input type="button" id="request-upload-permission" class="btn btn-hg btn-primary" value="Submit" style="display: none;"/></div>
                                                     @if(challenge.getVisibility){
                                                         <input type="hidden" name="privacy" value='{"value":"EVERYONE"}'/>
                                                     }else{
@@ -48,6 +49,7 @@
                                                     }
                                                     <input type="hidden" name="description" value=""/>
                                                 </form>
+                                                <input type="hidden" class="accessToken" value="@accessToken"/>
                                             }
                                         }
                                         @if(challengeResponses.size() > 0) {

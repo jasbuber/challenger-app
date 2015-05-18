@@ -25,7 +25,8 @@
             <input name="video-description" type="file" accept="video/*"/>
         </div>
         <div>
-            <input type="button" id="create-response-action" class="btn btn-hg btn-primary" value="Respond!" />
+            <input type="button" id="create-response-action" class="btn btn-hg btn-primary create-action" value="Respond!" />
+            <input type="button" id="request-upload-permission" class="btn btn-hg btn-primary" value="Respond!" style="display: none;"/>
         </div>
         @if(visibility){
             <input type="hidden" name="privacy" value='{"value":"EVERYONE"}'/>
@@ -34,5 +35,6 @@
         }
         <input type="hidden" name="description" value=""/>
     </form>
+        <input type="hidden" class="accessToken" value="@accessToken"/>
     </div>
 </div>

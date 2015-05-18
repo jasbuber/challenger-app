@@ -308,6 +308,8 @@ $(document).ready(function () {
 
     reVideoInput.change(function () {
         var $this = $(this);
+
+        handleUploadPermission();
         $("#video-reupload-wrapper").find("p").hide();
         if ($this.val() != '') {
             $('#video-reupload-input-wrapper').html('<div id="video-screenshot">' + $this.val().replace(/.*(\/|\\)/, '') + '<img src="/assets/images/correct.png"/></div>');
@@ -425,6 +427,40 @@ $(document).ready(function () {
 
         e.preventDefault();
 
+    });
+
+    var handleUploadPermission = function() {
+        var token = $(".accessToken").val();
+
+        FB.api('/me/permissions?access_token=' + token, function (response) {
+            $.each(response.data, function(i){
+                var $this = $(this)[0];
+
+                if($this.permission == 'publish_actions' && $this.status == "declined"){
+                    $("input.create-action").hide();
+                    $("#request-upload-permission").show();
+                    return false;
+                }
+            });
+
+        });
+        },
+        requestUploadPermission = function(){
+            FB.login(function(response) {
+                if(response.authResponse != null && response.authResponse.grantedScopes.indexOf("publish_actions") >= 0){
+                    var action = $("input.create-action");
+                    action.show();
+                    $("#request-upload-permission").hide();
+                    action.click();
+                }
+            }, {
+                scope: 'publish_actions',
+                return_scopes: true
+            });
+    };
+
+    $("#request-upload-permission").click(function(){
+        requestUploadPermission();
     });
 
     $("#challenge-visibility").change(function () {
@@ -623,6 +659,7 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".show-upload-response", function () {
+        handleUploadPermission();
         $('#upload-response-wrapper').html('<button type="button" class="btn btn-warning btn-hg">Upload a video response...</button>');
         $("#send-response-wrapper").show();
     });
@@ -900,6 +937,7 @@ $(document).ready(function () {
 
     $(".go-to-step-two").click(function(){
         $( ".step-one-arrow" ).show("blind", 500, function(){
+            handleUploadPermission();
             $( ".step-two-block" ).show("blind", 500);
         });
     });

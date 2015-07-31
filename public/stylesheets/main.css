@@ -542,6 +542,7 @@ div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-header{
     font-weight: 800;
     border-bottom: 2px solid #bdc3c7;
 }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-table-wrapper{ height: 283px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table{ margin-left: auto; margin-right: auto; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr:first-of-type{ font-size: 20px; font-weight: 800; height: 40px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td{ padding: 2%; line-height: 36px; }

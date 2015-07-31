@@ -546,7 +546,7 @@ div#wrapper .rankings-wrapper .ranking-row .ranking-glyph .glyph-table-wrapper{ 
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table{ margin-left: auto; margin-right: auto; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr:first-of-type{ font-size: 20px; font-weight: 800; height: 40px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td{ padding: 2%; line-height: 36px; }
-div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type{ text-align: left; min-width: 220px; overflow-x: hidden; }
+div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type{ text-align: left; min-width: 220px; overflow: hidden; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:first-of-type a{ display: inline-block; vertical-align: middle; white-space: nowrap; overflow-x: hidden; max-width: 220px; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2){ color: #debe81; font-weight: 800; min-width: 66px; white-space: nowrap; }
 div#wrapper .rankings-wrapper .ranking-row .ranking-glyph table tr td:nth-of-type(2) img{ vertical-align: middle; margin-bottom: 7px; margin-right: 5px; }

@@ -986,9 +986,13 @@ public class Application extends Controller {
         Boolean isCurrentUserRespondedToChallenge = service.isUserRespondedToChallenge(currentChallenge, currentUser.getUsername());
 
         Video video = null;
+        boolean videoDeleted = false;
 
         if(currentChallenge.getVideoId() != null) {
             video = facebookService.getVideo(currentChallenge.getVideoId());
+            if(video == null){
+                videoDeleted = true;
+            }
         }
 
         List<ChallengeParticipation> participants = service.getLatestParticipantsForChallenge(id);
@@ -1012,7 +1016,7 @@ public class Application extends Controller {
         }
 
         return ok(challenge_details.render(currentUser.getFirstName(), Application.getProfilePictureUrl(), currentUser.getAllPoints(), challenges, participations,
-                responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, currentChallenge, video, participants, challengeResponses,
+                responseForm, currentUnreadNotificationsNr, latestNotifications, latestUnreadNotifications, currentChallenge, video, videoDeleted, participants, challengeResponses,
                 isCurrentUserRespondedToChallenge, currentUser.getUsername(), commentForm, comments, participantsNr, commentsNr, participantsString, getAccessToken()));
     }
 

@@ -66,7 +66,10 @@ public class FacebookService {
 
     public Video getVideo(String videoId){
 
-        Video video = this.client.fetchObject(videoId, Video.class, Parameter.with("fields", "source, picture"));
+        Video video = null;
+        try {
+            video = this.client.fetchObject(videoId, Video.class, Parameter.with("fields", "source, picture"));
+        }catch(Exception e){}
 
         return video;
     }

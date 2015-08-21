@@ -78,4 +78,10 @@ public class CustomResponse {
     public void setChallengeId(long challengeId) {
         this.challengeId = challengeId;
     }
+
+    public List<String> addMessage(String message, int points){
+        this.messages.add(message);
+        addPoints(points);
+        return this.messages;
+    }
 }

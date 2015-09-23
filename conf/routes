@@ -113,5 +113,21 @@ POST        /user/ajax/completetutorial                   controllers.Applicatio
 
 POST        /services/challenge/create                    controllers.AndroidServices.createChallenge()
 
+GET         /services/challenge/latest                    controllers.AndroidServices.getLatestChallenges(username: String)
+
+GET         /services/challenge/search                    controllers.AndroidServices.getChallengesByCriteria(username: String, phrase: String, category: String, page: Integer, scope: Integer)
+
+GET         /services/challenge/responses                 controllers.AndroidServices.getResponsesForChallenge(challengeId: Long, username: String, token: String)
+
+POST        /services/challenge/join                      controllers.AndroidServices.joinChallenge()
+
+GET         /services/user/mychallenges                   controllers.AndroidServices.getMyChallenges(username: String, page: Integer)
+
+GET         /services/challenge                           controllers.AndroidServices.getChallenge(id: Long, username: String)
+
+GET         /services/participation/state                 controllers.AndroidServices.getParticipationState(id: Long, username: String)
+
+GET         /services/user/participations                 controllers.AndroidServices.getMyParticipations(username: String, page: Integer)
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

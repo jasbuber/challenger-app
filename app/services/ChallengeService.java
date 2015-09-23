@@ -138,6 +138,10 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.isUserRespondedToChallenge(challenge, user);
     }
 
+    public int getChallengeParticipationStateForUser(final Challenge challenge, final String user) {
+        return challengesRepository.getChallengeParticipationStateForUser(challenge, user);
+    }
+
     public boolean isUserCreatedChallengeWithName(final String challengeName, final String creator) {
         return challengesRepository.isChallengeWithGivenNameExistsForUser(challengeName, creator);
     }

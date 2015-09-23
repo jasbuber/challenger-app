@@ -17,6 +17,11 @@ import java.util.List;
 @Table(name = "CHALLENGE_PARTICIPATIONS")
 public class ChallengeParticipation {
 
+    public static int CREATOR_STATE = 3;
+    public static int NOT_PARTICIPATING_STATE = 0;
+    public static int NOT_RESPONDED_STATE = 1;
+    public static int RESPONDED = 2;
+
     @Id
     @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHALLENGE_PART_SEQ_GEN")

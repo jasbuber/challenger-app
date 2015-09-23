@@ -82,6 +82,26 @@ public class ChallengesRepository {
         return usernameUsersParticipatingNr > 0;
     }
 
+    public int getChallengeParticipationStateForUser(Challenge challenge, String participatorUsername) {
+        Query getChallengeParticipationQuery = JPA.em().createQuery("SELECT p " +
+                "FROM ChallengeParticipation p " +
+                "WHERE p.challenge = :challenge " +
+                "AND LOWER(p.participator.username) = LOWER(:participatorUsername)");
+        getChallengeParticipationQuery.setParameter("challenge", challenge);
+        getChallengeParticipationQuery.setParameter("participatorUsername", participatorUsername);
+
+        List<ChallengeParticipation> challengeParticipations = getChallengeParticipationQuery.getResultList();
+
+        if(challengeParticipations.size() == 0) {
+            return ChallengeParticipation.NOT_PARTICIPATING_STATE;
+        }else if(!challengeParticipations.get(0).isResponseSubmitted()){
+            return ChallengeParticipation.NOT_RESPONDED_STATE;
+        }else{
+            return ChallengeParticipation.RESPONDED;
+        }
+
+    }
+
     public ChallengeResponse addChallengeResponse(ChallengeResponse challengeResponse) {
         JPA.em().persist(challengeResponse);
         return challengeResponse;

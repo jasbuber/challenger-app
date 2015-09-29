@@ -129,5 +129,11 @@ GET         /services/participation/state                 controllers.AndroidSer
 
 GET         /services/user/participations                 controllers.AndroidServices.getMyParticipations(username: String, page: Integer)
 
+GET         /services/rankings                            controllers.AndroidServices.getRankings()
+
+POST        /services/user/create                         controllers.AndroidServices.createUser()
+
+POST        /services/challenge/updatevideo               controllers.AndroidServices.updateChallengeVideo()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

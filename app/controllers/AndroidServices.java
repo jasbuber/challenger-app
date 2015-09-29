@@ -7,6 +7,7 @@ import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
 import domain.CustomResponse;
+import domain.FacebookUser;
 import domain.User;
 import play.Logger;
 import play.mvc.Controller;
@@ -251,5 +252,67 @@ public class AndroidServices extends Controller {
         List<ChallengeWithParticipantsNr> challenges = service.getChallengeParticipationsWithParticipantsNrForUser(username, page);
 
         return ok(new Gson().toJson(challenges));
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result getRankings() {
+
+        List<User> topRatedUsers = getUsersService().getTopRatedUsers();
+        List<Challenge> topRatedChallenges = getChallengeService().getTopRatedChallenges();
+        List<Challenge> trendingChallenges = getChallengeService().getTrendingChallenges();
+        List<ChallengeWithParticipantsNr> mostPopularChallenges = getChallengeService().getMostPopularChallenges();
+
+        HashMap<String, List> response = new HashMap<>();
+        response.put("topRatedUsers", topRatedUsers);
+        response.put("topRatedChallenges", topRatedChallenges);
+        response.put("trendingChallenges", trendingChallenges);
+        response.put("mostPopularChallenges", mostPopularChallenges);
+
+        return ok(new Gson().toJson(response));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result createUser(){
+
+        UserService service = getUsersService();
+        Http.Request request = request();
+
+        String username = getPostData(request, "username");
+        String firstName = getPostData(request, "firstName");
+        String lastName = getPostData(request, "lastName");
+        String profilePictureUrl = getPostData(request, "profilePictureUrl");
+
+        FacebookUser user = new FacebookUser( username, profilePictureUrl, firstName, lastName);
+
+        User appUser = service.createNewOrGetExistingUser(user, profilePictureUrl);
+
+        if(!appUser.getProfilePictureUrl().equals(profilePictureUrl)){
+            appUser.setProfilePictureUrl(profilePictureUrl);
+            service.updateUser(appUser);
+        }
+
+        return ok("success");
+    }
+
+    @play.db.jpa.Transactional
+    public static Result updateChallengeVideo(){
+
+        ChallengeService service = getChallengeService();
+        Http.Request request = request();
+
+        long challengeId = Long.parseLong(getPostData(request, "challengeId"));
+        String videoId = getPostData(request, "videoId");
+        String username = getPostData(request, "username");
+
+        Challenge challenge = service.getChallenge(challengeId);
+
+        if(challenge.getCreator().getUsername().equals(username) && challenge.getVideoId() == null) {
+            challenge.setVideoId(videoId);
+            service.updateChallenge(challenge);
+
+            return ok("success");
+        }
+
+        return ok("failure");
     }
 }

@@ -20,6 +20,7 @@ import repositories.UsersRepository;
 import repositories.dtos.ChallengeWithParticipantsNr;
 import services.ChallengeNotificationsService;
 import services.ChallengeService;
+import services.FacebookService;
 import services.InternalNotificationService;
 import services.UserService;
 
@@ -80,6 +81,10 @@ public class AndroidServices extends Controller {
         return new UserService(new UsersRepository());
     }
 
+    private static FacebookService getFacebookService(String token) {
+        return new FacebookService(token);
+    }
+
     private static ChallengeNotificationsService createNotificationService() {
         return new ChallengeNotificationsService(new InternalNotificationService(new InternalNotificationsRepository()));
     }
@@ -116,7 +121,7 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional(readOnly = true)
-    public static Result getLatestChallenges(String username){
+    public static Result getLatestChallenges(String username) {
 
         ChallengeService service = getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(11);
@@ -134,7 +139,7 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional(readOnly = true)
-    public static Result getChallengesByCriteria(String username, String phrase, String category, int page, int scope){
+    public static Result getChallengesByCriteria(String username, String phrase, String category, int page, int scope) {
 
         ChallengeService service = getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(11);
@@ -145,16 +150,16 @@ public class AndroidServices extends Controller {
 
         phrase = phrase.trim();
 
-        if(phrase.length() >=3) {
+        if (phrase.length() >= 3) {
             if (phrase.length() > 25) {
                 phrase = phrase.substring(0, 24);
             }
 
-            if(scope == 2) {
+            if (scope == 2) {
                 Expression<String> userNameField = filter.getRoot().join("creator").get("fullName");
                 filter.andCond(filter.getBuilder().like(filter.getBuilder().lower(userNameField), "%" + phrase.toLowerCase() + "%"));
                 Logger.error(filter.getQuery().toString());
-            }else{
+            } else {
                 filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase.toLowerCase() + "%"));
             }
         }
@@ -178,6 +183,10 @@ public class AndroidServices extends Controller {
         ChallengeService service = getChallengeService();
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(challengeId);
+
+        if(!responses.isEmpty()){
+            responses = getFacebookService(token).getThumbnailsForResponses(responses);
+        }
 
         return ok(new Gson().toJson(responses));
     }
@@ -217,7 +226,7 @@ public class AndroidServices extends Controller {
         Challenge currentChallenge = service.getChallenge(id);
         int participationState = 3;
 
-        if(!currentChallenge.getCreator().getUsername().equals(username)){
+        if (!currentChallenge.getCreator().getUsername().equals(username)) {
             participationState = service.getChallengeParticipationStateForUser(currentChallenge, username);
         }
 
@@ -237,7 +246,7 @@ public class AndroidServices extends Controller {
 
         int participationState = ChallengeParticipation.CREATOR_STATE;
 
-        if(!currentChallenge.getCreator().getUsername().equals(username)){
+        if (!currentChallenge.getCreator().getUsername().equals(username)) {
             participationState = service.getChallengeParticipationStateForUser(currentChallenge, username);
         }
 
@@ -272,7 +281,7 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional
-    public static Result createUser(){
+    public static Result createUser() {
 
         UserService service = getUsersService();
         Http.Request request = request();
@@ -282,11 +291,15 @@ public class AndroidServices extends Controller {
         String lastName = getPostData(request, "lastName");
         String profilePictureUrl = getPostData(request, "profilePictureUrl");
 
-        FacebookUser user = new FacebookUser( username, profilePictureUrl, firstName, lastName);
+        FacebookUser user = new FacebookUser();
+        user.setId(username);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPicture(profilePictureUrl);
 
         User appUser = service.createNewOrGetExistingUser(user, profilePictureUrl);
 
-        if(!appUser.getProfilePictureUrl().equals(profilePictureUrl)){
+        if (!appUser.getProfilePictureUrl().equals(profilePictureUrl)) {
             appUser.setProfilePictureUrl(profilePictureUrl);
             service.updateUser(appUser);
         }
@@ -295,7 +308,7 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional
-    public static Result updateChallengeVideo(){
+    public static Result updateChallengeVideo() {
 
         ChallengeService service = getChallengeService();
         Http.Request request = request();
@@ -306,7 +319,7 @@ public class AndroidServices extends Controller {
 
         Challenge challenge = service.getChallenge(challengeId);
 
-        if(challenge.getCreator().getUsername().equals(username) && challenge.getVideoId() == null) {
+        if (challenge.getCreator().getUsername().equals(username) && challenge.getVideoId() == null) {
             challenge.setVideoId(videoId);
             service.updateChallenge(challenge);
 
@@ -315,4 +328,104 @@ public class AndroidServices extends Controller {
 
         return ok("failure");
     }
+
+    @play.db.jpa.Transactional
+    public static Result submitChallengeResponse() {
+
+        ChallengeService service = getChallengeService();
+        Http.Request request = request();
+
+        long challengeId = Long.parseLong(getPostData(request, "challengeId"));
+        String videoId = getPostData(request, "videoId");
+        String username = getPostData(request, "username");
+
+        Challenge challenge = service.getChallenge(challengeId);
+
+        ChallengeParticipation participation = service.getChallengeParticipation(challenge, username);
+        ChallengeResponse newResponse = service.submitChallengeResponse(participation, null, videoId);
+        participation.submit();
+        service.updateChallengeParticipation(participation);
+
+        CustomResponse customResponse = new CustomResponse();
+
+        /*
+        if (service.getResponsesNrForUser(getLoggedInUsername()) == 1) {
+            customResponse.addPoints(User.MINOR_REWARD);
+            customResponse.addMessage("first challenge response!");
+            getUsersService().rewardParticipationPoints(getLoggedInUsername(), User.MINOR_REWARD);
+        }*/
+
+        customResponse.setChallengeId(challenge.getId());
+
+        return ok(new Gson().toJson(customResponse));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result rateResponse() {
+
+        ChallengeService service = getChallengeService();
+        Http.Request request = request();
+
+        long responseId = Long.parseLong(getPostData(request, "responseId"));
+        String username = getPostData(request, "username");
+        String  isAccepted = getPostData(request, "isAccepted");
+
+        ChallengeResponse challengeResponse = service.getChallengeResponse(responseId);
+
+        CustomResponse response;
+        if(isAccepted.equals("Y")){
+            response = getResponseForAcceptChallengeResponse(username, challengeResponse);
+        }else{
+            response = getResponseForRejectChallengeResponse(username, challengeResponse);
+        }
+
+        return ok(new Gson().toJson(response));
+
+    }
+
+    private static CustomResponse getResponseForAcceptChallengeResponse(String username, ChallengeResponse challengeResponse){
+
+        ChallengeService service = getChallengeService();
+        CustomResponse response = new CustomResponse();
+
+        if(service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
+
+            long acceptedResponsesNr = service.getAcceptedResponsesNrForUser(challengeResponse.getChallengeParticipation().getParticipator().getUsername());
+            service.acceptChallengeResponse(challengeResponse);
+            String participantUsername = challengeResponse.getChallengeParticipation().getParticipator().getUsername();
+
+            if(acceptedResponsesNr % 5 == 0){
+                int rewardedPoints = (int)(acceptedResponsesNr / 5) * User.MAJOR_REWARD;
+                getUsersService().rewardParticipationPoints(participantUsername, rewardedPoints);
+            } else {
+                getUsersService().rewardParticipationPoints(participantUsername, User.NORMAL_REWARD);
+
+            }
+            getUsersService().rewardCreationPoints(username, User.MINOR_REWARD);
+            response.addPoints(User.MINOR_REWARD);
+            response.addMessage("response accepted");
+        }else{
+            response.setStatus(CustomResponse.ResponseStatus.failure);
+        }
+
+        return response;
+    }
+
+    private static CustomResponse getResponseForRejectChallengeResponse(String username, ChallengeResponse challengeResponse){
+
+        ChallengeService service = getChallengeService();
+        CustomResponse response = new CustomResponse();
+
+        if(service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
+            service.refuseChallengeResponse(challengeResponse);
+            getUsersService().rewardCreationPoints(username, User.MINOR_REWARD);
+            response.addPoints(User.MINOR_REWARD);
+            response.addMessage("response declined");
+        } else {
+            response.setStatus(CustomResponse.ResponseStatus.failure);
+        }
+
+        return response;
+    }
+
 }

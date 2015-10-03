@@ -135,5 +135,9 @@ POST        /services/user/create                         controllers.AndroidSer
 
 POST        /services/challenge/updatevideo               controllers.AndroidServices.updateChallengeVideo()
 
+POST        /services/challenge/respond                   controllers.AndroidServices.submitChallengeResponse()
+
+POST        /services/response/decide                     controllers.AndroidServices.rateResponse()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

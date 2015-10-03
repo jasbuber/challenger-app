@@ -35,13 +35,6 @@ public class FacebookUser {
 
     private String gender;
 
-    public FacebookUser(String id, String picture, String firstName, String lastName){
-        this.id = id;
-        this.picture = picture;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     public String getId() {
         return id;
     }

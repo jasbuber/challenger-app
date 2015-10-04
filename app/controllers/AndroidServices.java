@@ -428,4 +428,25 @@ public class AndroidServices extends Controller {
         return response;
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result getProfile(String username) {
+
+        ChallengeService service = getChallengeService();
+
+        Long completedChallengesNr = service.getCompletedChallengesNrForUser(username);
+        Long joinedChallengesNr = service.getJoinedChallengesNrForUser(username);
+        Long createdChallengesNr = service.getCreatedChallengesNrForUser(username);
+
+        User user = getUsersService().getExistingUser(username);
+
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("completedChallengesNr", completedChallengesNr);
+        response.put("joinedChallengesNr", joinedChallengesNr);
+        response.put("createdChallengesNr", createdChallengesNr);
+        response.put("user", user);
+
+        return ok(new Gson().toJson(response));
+
+    }
+
 }

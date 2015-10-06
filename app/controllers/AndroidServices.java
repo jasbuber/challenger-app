@@ -47,6 +47,11 @@ public class AndroidServices extends Controller {
         String category = getPostData(request, "category");
         int difficulty = Integer.parseInt(getPostData(request, "difficulty"));
         boolean visibility = !Boolean.getBoolean(getPostData(request, "visibility"));
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
 
         if (!visibility && !isChallengeParticipantSelected()) {
 
@@ -201,6 +206,11 @@ public class AndroidServices extends Controller {
         String username = getPostData(request, "username");
         long challengeId = Long.parseLong(getPostData(request, "challengeId"));
         String fullName = getPostData(request, "fullName");
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
 
         ChallengeService service = getChallengeService();
         Challenge challenge = service.getChallenge(challengeId);
@@ -293,6 +303,11 @@ public class AndroidServices extends Controller {
         String firstName = getPostData(request, "firstName");
         String lastName = getPostData(request, "lastName");
         String profilePictureUrl = getPostData(request, "profilePictureUrl");
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
 
         FacebookUser user = new FacebookUser();
         user.setId(username);
@@ -341,6 +356,11 @@ public class AndroidServices extends Controller {
         long challengeId = Long.parseLong(getPostData(request, "challengeId"));
         String videoId = getPostData(request, "videoId");
         String username = getPostData(request, "username");
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
 
         Challenge challenge = service.getChallenge(challengeId);
 
@@ -372,6 +392,11 @@ public class AndroidServices extends Controller {
         long responseId = Long.parseLong(getPostData(request, "responseId"));
         String username = getPostData(request, "username");
         String  isAccepted = getPostData(request, "isAccepted");
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
 
         ChallengeResponse challengeResponse = service.getChallengeResponse(responseId);
 
@@ -454,6 +479,10 @@ public class AndroidServices extends Controller {
     private static Gson getGson(){
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
+    }
+
+    private static boolean isAccessTokenValid(String username, String token){
+        return new FacebookService(token).getFacebookUser().getId().equals(username);
     }
 
 }

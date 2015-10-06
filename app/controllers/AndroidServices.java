@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import domain.Challenge;
 import domain.ChallengeCategory;
@@ -24,6 +25,7 @@ import services.FacebookService;
 import services.InternalNotificationService;
 import services.UserService;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,14 +54,14 @@ public class AndroidServices extends Controller {
             response.setStatus(CustomResponse.ResponseStatus.failure);
             response.addMessage("no_participants");
 
-            return ok(new Gson().toJson(response));
+            return ok(getGson().toJson(response));
         }
 
         Challenge newChallenge = getChallengeService()
                 .createChallenge(username, name, ChallengeCategory.valueOf(category),
                         visibility, new ArrayList<>(), difficulty);
 
-        return ok(new Gson().toJson(getResponseForCreatedChallenge(newChallenge, newChallenge.getId())));
+        return ok(getGson().toJson(getResponseForCreatedChallenge(newChallenge, newChallenge.getId())));
     }
 
     //TO_DO
@@ -135,7 +137,7 @@ public class AndroidServices extends Controller {
 
         List<Challenge> challenges = service.findChallenges(filter, 0);
 
-        return ok(new Gson().toJson(challenges));
+        return ok(getGson().toJson(challenges));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -174,7 +176,7 @@ public class AndroidServices extends Controller {
 
         filter.prepareWhere();
 
-        return ok(new Gson().toJson(service.findChallenges(filter, page)));
+        return ok(getGson().toJson(service.findChallenges(filter, page)));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -188,7 +190,7 @@ public class AndroidServices extends Controller {
             responses = getFacebookService(token).getThumbnailsForResponses(responses);
         }
 
-        return ok(new Gson().toJson(responses));
+        return ok(getGson().toJson(responses));
     }
 
     @play.db.jpa.Transactional
@@ -205,7 +207,7 @@ public class AndroidServices extends Controller {
 
         service.participateInChallenge(challenge, username, fullName);
 
-        return ok(new Gson().toJson(new CustomResponse()));
+        return ok(getGson().toJson(new CustomResponse()));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -215,7 +217,7 @@ public class AndroidServices extends Controller {
 
         List<ChallengeWithParticipantsNr> challenges = service.getChallengesWithParticipantsNrForUser(username, page);
 
-        return ok(new Gson().toJson(challenges));
+        return ok(getGson().toJson(challenges));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -224,6 +226,7 @@ public class AndroidServices extends Controller {
         ChallengeService service = getChallengeService();
 
         Challenge currentChallenge = service.getChallenge(id);
+
         int participationState = 3;
 
         if (!currentChallenge.getCreator().getUsername().equals(username)) {
@@ -232,9 +235,9 @@ public class AndroidServices extends Controller {
 
         HashMap<String, Object> response = new HashMap<>();
         response.put("challenge", currentChallenge);
-        response.put("participationState", participationState);
+        response.put("participationState", participationState);;
 
-        return ok(new Gson().toJson(response));
+        return ok(getGson().toJson(response));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -250,7 +253,7 @@ public class AndroidServices extends Controller {
             participationState = service.getChallengeParticipationStateForUser(currentChallenge, username);
         }
 
-        return ok(new Gson().toJson(participationState));
+        return ok(getGson().toJson(participationState));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -260,7 +263,7 @@ public class AndroidServices extends Controller {
 
         List<ChallengeWithParticipantsNr> challenges = service.getChallengeParticipationsWithParticipantsNrForUser(username, page);
 
-        return ok(new Gson().toJson(challenges));
+        return ok(getGson().toJson(challenges));
     }
 
     @play.db.jpa.Transactional(readOnly = true)
@@ -277,7 +280,7 @@ public class AndroidServices extends Controller {
         response.put("trendingChallenges", trendingChallenges);
         response.put("mostPopularChallenges", mostPopularChallenges);
 
-        return ok(new Gson().toJson(response));
+        return ok(getGson().toJson(response));
     }
 
     @play.db.jpa.Transactional
@@ -357,7 +360,7 @@ public class AndroidServices extends Controller {
 
         customResponse.setChallengeId(challenge.getId());
 
-        return ok(new Gson().toJson(customResponse));
+        return ok(getGson().toJson(customResponse));
     }
 
     @play.db.jpa.Transactional
@@ -379,7 +382,7 @@ public class AndroidServices extends Controller {
             response = getResponseForRejectChallengeResponse(username, challengeResponse);
         }
 
-        return ok(new Gson().toJson(response));
+        return ok(getGson().toJson(response));
 
     }
 
@@ -445,8 +448,12 @@ public class AndroidServices extends Controller {
         response.put("createdChallengesNr", createdChallengesNr);
         response.put("user", user);
 
-        return ok(new Gson().toJson(response));
+        return ok(getGson().toJson(response));
+    }
 
+    private static Gson getGson(){
+        return new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
     }
 
 }

@@ -141,5 +141,7 @@ POST        /services/response/decide                     controllers.AndroidSer
 
 GET         /services/user/profile                        controllers.AndroidServices.getProfile(username: String)
 
+GET         /services/challenge/video                     controllers.AndroidServices.getVideoUrl(token: String, videoId: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

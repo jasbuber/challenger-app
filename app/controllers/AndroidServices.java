@@ -485,4 +485,9 @@ public class AndroidServices extends Controller {
         return new FacebookService(token).getFacebookUser().getId().equals(username);
     }
 
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result getVideoUrl(String token, String videoId) {
+        return ok(getGson().toJson(getFacebookService(token).getVideo(videoId).getSource()));
+    }
+
 }

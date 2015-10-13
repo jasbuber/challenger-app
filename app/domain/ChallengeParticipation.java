@@ -21,6 +21,7 @@ public class ChallengeParticipation {
     public static int NOT_PARTICIPATING_STATE = 0;
     public static int NOT_RESPONDED_STATE = 1;
     public static int RESPONDED = 2;
+    public static int RATED = 5;
 
     @Id
     @SequenceGenerator(name = "CHALLENGE_PART_SEQ_GEN", sequenceName = "CHALLENGE_PART_SEQ", allocationSize = 1)

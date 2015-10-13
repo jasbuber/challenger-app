@@ -96,8 +96,10 @@ public class ChallengesRepository {
             return ChallengeParticipation.NOT_PARTICIPATING_STATE;
         }else if(!challengeParticipations.get(0).isResponseSubmitted()){
             return ChallengeParticipation.NOT_RESPONDED_STATE;
-        }else{
+        }else if(!challengeParticipations.get(0).isChallengeRated()){
             return ChallengeParticipation.RESPONDED;
+        }else{
+            return ChallengeParticipation.RATED;
         }
 
     }

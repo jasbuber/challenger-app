@@ -476,6 +476,36 @@ public class AndroidServices extends Controller {
         return ok(getGson().toJson(response));
     }
 
+    @play.db.jpa.Transactional
+    public static Result rateChallenge() {
+
+        Http.Request request = request();
+
+        long challengeId = Long.parseLong(getPostData(request, "challengeId"));
+        String username = getPostData(request, "username");
+        int rating = Integer.parseInt(getPostData(request, "rating"));
+        String token = getPostData(request, "token");
+
+        if(!isAccessTokenValid(username, token)){
+            return ok("failure");
+        }
+
+        ChallengeService service = getChallengeService();
+
+        Challenge challenge = service.getChallenge(challengeId);
+
+        ChallengeParticipation participation = service.getChallengeParticipation(challenge, username);
+
+        if(!participation.isChallengeRated()){
+            participation.getChallenge().addRating(rating);
+            service.updateChallenge(participation.getChallenge());
+            participation.rateChallenge();
+            service.updateChallengeParticipation(participation);
+        }
+
+        return ok("success");
+    }
+
     private static Gson getGson(){
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();

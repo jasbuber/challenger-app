@@ -7,6 +7,7 @@ import domain.Challenge;
 import domain.ChallengeCategory;
 import domain.ChallengeParticipation;
 import domain.ChallengeResponse;
+import domain.Comment;
 import domain.CustomResponse;
 import domain.FacebookUser;
 import domain.User;
@@ -49,7 +50,7 @@ public class AndroidServices extends Controller {
         boolean visibility = !Boolean.getBoolean(getPostData(request, "visibility"));
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
@@ -191,7 +192,7 @@ public class AndroidServices extends Controller {
 
         List<ChallengeResponse> responses = service.getResponsesForChallenge(challengeId);
 
-        if(!responses.isEmpty()){
+        if (!responses.isEmpty()) {
             responses = getFacebookService(token).getThumbnailsForResponses(responses);
         }
 
@@ -208,7 +209,7 @@ public class AndroidServices extends Controller {
         String fullName = getPostData(request, "fullName");
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
@@ -245,7 +246,8 @@ public class AndroidServices extends Controller {
 
         HashMap<String, Object> response = new HashMap<>();
         response.put("challenge", currentChallenge);
-        response.put("participationState", participationState);;
+        response.put("participationState", participationState);
+        response.put("comments", service.getCommentsForChallenge(id, 0));
 
         return ok(getGson().toJson(response));
     }
@@ -305,7 +307,7 @@ public class AndroidServices extends Controller {
         String profilePictureUrl = getPostData(request, "profilePictureUrl");
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
@@ -358,7 +360,7 @@ public class AndroidServices extends Controller {
         String username = getPostData(request, "username");
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
@@ -391,19 +393,19 @@ public class AndroidServices extends Controller {
 
         long responseId = Long.parseLong(getPostData(request, "responseId"));
         String username = getPostData(request, "username");
-        String  isAccepted = getPostData(request, "isAccepted");
+        String isAccepted = getPostData(request, "isAccepted");
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
         ChallengeResponse challengeResponse = service.getChallengeResponse(responseId);
 
         CustomResponse response;
-        if(isAccepted.equals("Y")){
+        if (isAccepted.equals("Y")) {
             response = getResponseForAcceptChallengeResponse(username, challengeResponse);
-        }else{
+        } else {
             response = getResponseForRejectChallengeResponse(username, challengeResponse);
         }
 
@@ -411,19 +413,19 @@ public class AndroidServices extends Controller {
 
     }
 
-    private static CustomResponse getResponseForAcceptChallengeResponse(String username, ChallengeResponse challengeResponse){
+    private static CustomResponse getResponseForAcceptChallengeResponse(String username, ChallengeResponse challengeResponse) {
 
         ChallengeService service = getChallengeService();
         CustomResponse response = new CustomResponse();
 
-        if(service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
+        if (service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
 
             long acceptedResponsesNr = service.getAcceptedResponsesNrForUser(challengeResponse.getChallengeParticipation().getParticipator().getUsername());
             service.acceptChallengeResponse(challengeResponse);
             String participantUsername = challengeResponse.getChallengeParticipation().getParticipator().getUsername();
 
-            if(acceptedResponsesNr % 5 == 0){
-                int rewardedPoints = (int)(acceptedResponsesNr / 5) * User.MAJOR_REWARD;
+            if (acceptedResponsesNr % 5 == 0) {
+                int rewardedPoints = (int) (acceptedResponsesNr / 5) * User.MAJOR_REWARD;
                 getUsersService().rewardParticipationPoints(participantUsername, rewardedPoints);
             } else {
                 getUsersService().rewardParticipationPoints(participantUsername, User.NORMAL_REWARD);
@@ -432,19 +434,19 @@ public class AndroidServices extends Controller {
             getUsersService().rewardCreationPoints(username, User.MINOR_REWARD);
             response.addPoints(User.MINOR_REWARD);
             response.addMessage("response accepted");
-        }else{
+        } else {
             response.setStatus(CustomResponse.ResponseStatus.failure);
         }
 
         return response;
     }
 
-    private static CustomResponse getResponseForRejectChallengeResponse(String username, ChallengeResponse challengeResponse){
+    private static CustomResponse getResponseForRejectChallengeResponse(String username, ChallengeResponse challengeResponse) {
 
         ChallengeService service = getChallengeService();
         CustomResponse response = new CustomResponse();
 
-        if(service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
+        if (service.isUserCreatedAChallenge(challengeResponse.getChallengeParticipation().getChallenge().getId(), username)) {
             service.refuseChallengeResponse(challengeResponse);
             getUsersService().rewardCreationPoints(username, User.MINOR_REWARD);
             response.addPoints(User.MINOR_REWARD);
@@ -486,7 +488,7 @@ public class AndroidServices extends Controller {
         int rating = Integer.parseInt(getPostData(request, "rating"));
         String token = getPostData(request, "token");
 
-        if(!isAccessTokenValid(username, token)){
+        if (!isAccessTokenValid(username, token)) {
             return ok("failure");
         }
 
@@ -496,7 +498,7 @@ public class AndroidServices extends Controller {
 
         ChallengeParticipation participation = service.getChallengeParticipation(challenge, username);
 
-        if(!participation.isChallengeRated()){
+        if (!participation.isChallengeRated()) {
             participation.getChallenge().addRating(rating);
             service.updateChallenge(participation.getChallenge());
             participation.rateChallenge();
@@ -506,18 +508,50 @@ public class AndroidServices extends Controller {
         return ok("success");
     }
 
-    private static Gson getGson(){
+    private static Gson getGson() {
         return new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
     }
 
-    private static boolean isAccessTokenValid(String username, String token){
+    private static boolean isAccessTokenValid(String username, String token) {
         return new FacebookService(token).getFacebookUser().getId().equals(username);
     }
 
     @play.db.jpa.Transactional(readOnly = true)
     public static Result getVideoUrl(String token, String videoId) {
         return ok(getGson().toJson(getFacebookService(token).getVideo(videoId).getSource()));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result createComment() {
+
+        Http.Request request = request();
+
+        long challengeId = Long.parseLong(getPostData(request, "challengeId"));
+        String username = getPostData(request, "username");
+        String message = getPostData(request, "message");
+        String token = getPostData(request, "token");
+
+        ChallengeService service = getChallengeService();
+
+        if (!isAccessTokenValid(username, token) || message.isEmpty()) {
+            return ok("failure");
+        }
+
+        Comment c = service.createComment(username, message, challengeId);
+
+        return ok(getGson().toJson("success"));
+
+    }
+
+    @play.db.jpa.Transactional(readOnly = true)
+    public static Result getComments(long challengeId, int offset) {
+
+        ChallengeService service = getChallengeService();
+
+        List<Comment> comments = service.getCommentsForChallenge(challengeId, offset);
+
+        return ok(getGson().toJson(comments));
     }
 
 }

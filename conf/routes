@@ -145,5 +145,9 @@ GET         /services/challenge/video                     controllers.AndroidSer
 
 POST        /services/challenge/rate                      controllers.AndroidServices.rateChallenge()
 
+POST        /services/comment/create                      controllers.AndroidServices.createComment()
+
+GET         /services/comments/get                        controllers.AndroidServices.getComments(challengeId: Long, offset: Integer)
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

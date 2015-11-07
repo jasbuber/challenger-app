@@ -149,5 +149,7 @@ POST        /services/comment/create                      controllers.AndroidSer
 
 GET         /services/comments/get                        controllers.AndroidServices.getComments(challengeId: Long, offset: Integer)
 
+POST        /services/user/completetutorial               controllers.AndroidServices.completeTutorial()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

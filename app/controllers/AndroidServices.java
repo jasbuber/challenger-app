@@ -324,7 +324,7 @@ public class AndroidServices extends Controller {
             service.updateUser(appUser);
         }
 
-        return ok("success");
+        return ok(String.valueOf(appUser.getTutorialCompleted()));
     }
 
     @play.db.jpa.Transactional
@@ -552,6 +552,26 @@ public class AndroidServices extends Controller {
         List<Comment> comments = service.getCommentsForChallenge(challengeId, offset);
 
         return ok(getGson().toJson(comments));
+    }
+
+    @play.db.jpa.Transactional
+    public static Result completeTutorial() {
+
+        Http.Request request = request();
+
+        String username = getPostData(request, "username");
+        String token = getPostData(request, "token");
+
+        if (!isAccessTokenValid(username, token)) {
+            return ok("failure");
+        }
+
+        User currentUser = getUsersService().getExistingUser(username);
+
+        currentUser.completeTutorial();
+        getUsersService().updateUser(currentUser);
+
+        return ok("success");
     }
 
 }

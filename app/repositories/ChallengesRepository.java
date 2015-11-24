@@ -502,4 +502,22 @@ public class ChallengesRepository {
         commentsNrQuery.setParameter("challengeId", challengeId);
         return (Long) commentsNrQuery.getSingleResult();
     }
+
+    public List<Challenge> getPopularChallengesByPhrase(String phrase, int page) {
+        Query popularChallenges = JPA.em().createQuery(
+                "SELECT c " +
+                        "FROM ChallengeParticipation p " +
+                        "RIGHT OUTER JOIN p.challenge c " +
+                        "WHERE c.active = true AND c.visibility = true " +
+                        ((phrase.length() >= 3) ? "AND c.challengeName LIKE :phrase " : "") +
+                        "GROUP BY c.challengeName, c.id " +
+                        "ORDER BY count(p) DESC");
+        if (phrase.length() >= 3) {
+            popularChallenges.setParameter("phrase", "%" + phrase + "%");
+        }
+        popularChallenges.setMaxResults(pagingRowNumber + 1);
+        popularChallenges.setFirstResult(calculateOffsetNumber(page));
+        return (List<Challenge>)popularChallenges.getResultList();
+    }
+
 }

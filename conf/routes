@@ -113,9 +113,9 @@ POST        /user/ajax/completetutorial                   controllers.Applicatio
 
 POST        /services/challenge/create                    controllers.AndroidServices.createChallenge()
 
-GET         /services/challenge/latest                    controllers.AndroidServices.getLatestChallenges(username: String)
+GET         /services/challenge/latest                    controllers.AndroidServices.getLatestChallenges()
 
-GET         /services/challenge/search                    controllers.AndroidServices.getChallengesByCriteria(username: String, phrase: String, category: String, page: Integer, scope: Integer)
+GET         /services/challenge/search                    controllers.AndroidServices.getChallengesByCriteria(phrase: String, category: String, page: Integer, order: String)
 
 GET         /services/challenge/responses                 controllers.AndroidServices.getResponsesForChallenge(challengeId: Long, username: String, token: String)
 

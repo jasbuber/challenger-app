@@ -342,4 +342,8 @@ public class ChallengeService extends TransactionalBase {
         return challengesRepository.getCommentsNrForChallenge(challengeId);
     }
 
+    public List<Challenge> getPopularChallengesByPhrase(String phrase, int page) {
+        return challengesRepository.getPopularChallengesByPhrase(phrase, page);
+    }
+
 }

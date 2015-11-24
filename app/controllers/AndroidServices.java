@@ -38,6 +38,8 @@ import javax.persistence.criteria.Expression;
  */
 public class AndroidServices extends Controller {
 
+    public enum SORTING_ORDER { RECENT, TOP, POPULAR, CATEGORIES }
+
     @play.db.jpa.Transactional
     public static Result createChallenge() {
 
@@ -52,15 +54,6 @@ public class AndroidServices extends Controller {
 
         if (!isAccessTokenValid(username, token)) {
             return ok("failure");
-        }
-
-        if (!visibility && !isChallengeParticipantSelected()) {
-
-            CustomResponse response = new CustomResponse();
-            response.setStatus(CustomResponse.ResponseStatus.failure);
-            response.addMessage("no_participants");
-
-            return ok(getGson().toJson(response));
         }
 
         Challenge newChallenge = getChallengeService()
@@ -129,15 +122,12 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional(readOnly = true)
-    public static Result getLatestChallenges(String username) {
+    public static Result getLatestChallenges() {
 
         ChallengeService service = getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(11);
-        User currentUser = getUsersService().getExistingUser(username);
 
         filter.orderDescBy("creationDate");
-
-        filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
         filter.prepareWhere();
 
@@ -147,38 +137,43 @@ public class AndroidServices extends Controller {
     }
 
     @play.db.jpa.Transactional(readOnly = true)
-    public static Result getChallengesByCriteria(String username, String phrase, String category, int page, int scope) {
+    public static Result getChallengesByCriteria(String phrase, String category, int page, String order) {
 
         ChallengeService service = getChallengeService();
         ChallengeFilter filter = new ChallengeFilter(11);
-        User currentUser = getUsersService().getExistingUser(username);
-
-        filter.orderDescBy("creationDate");
-        Expression<String> challengeNameField = filter.getBuilder().lower(filter.getField("challengeName"));
 
         phrase = phrase.trim();
+        if (phrase.length() > 25) {
+            phrase = phrase.substring(0, 24);
+        }
+
+        switch (SORTING_ORDER.valueOf(order)){
+            case POPULAR : {
+                return ok(getGson().toJson(service.getPopularChallengesByPhrase(phrase, page)));
+            }
+            case CATEGORIES:
+                filter.orderDescBy("creationDate");
+                ChallengeCategory challengeCategory = ChallengeCategory.valueOf(category);
+                if(!challengeCategory.equals(ChallengeCategory.ALL)) {
+                    Expression<String> categoryField = filter.getField("category");
+                    filter.andCond(filter.getBuilder().equal(categoryField, challengeCategory));
+                }
+                break;
+            case TOP:
+                filter.orderDescBy("rating");
+                break;
+            case RECENT:
+                filter.orderDescBy("creationDate");
+                break;
+        }
+
+        Expression<String> challengeNameField = filter.getBuilder().lower(filter.getField("challengeName"));
 
         if (phrase.length() >= 3) {
-            if (phrase.length() > 25) {
-                phrase = phrase.substring(0, 24);
-            }
-
-            if (scope == 2) {
-                Expression<String> userNameField = filter.getRoot().join("creator").get("fullName");
-                filter.andCond(filter.getBuilder().like(filter.getBuilder().lower(userNameField), "%" + phrase.toLowerCase() + "%"));
-                Logger.error(filter.getQuery().toString());
-            } else {
-                filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase.toLowerCase() + "%"));
-            }
+            filter.andCond(filter.getBuilder().like(challengeNameField, "%" + phrase.toLowerCase() + "%"));
         }
 
-        filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
-
-        if (!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))) {
-            Expression<String> categoryField = filter.getField("category");
-            filter.andCond(filter.getBuilder().equal(categoryField, ChallengeCategory.valueOf(category)));
-        }
 
         filter.prepareWhere();
 

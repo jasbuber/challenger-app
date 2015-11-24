@@ -509,7 +509,7 @@ public class ChallengesRepository {
                         "FROM ChallengeParticipation p " +
                         "RIGHT OUTER JOIN p.challenge c " +
                         "WHERE c.active = true AND c.visibility = true " +
-                        ((phrase.length() >= 3) ? "AND c.challengeName LIKE :phrase " : "") +
+                        ((phrase.length() >= 3) ? "AND LOWER(c.challengeName) LIKE LOWER(:phrase) " : "") +
                         "GROUP BY c.challengeName, c.id " +
                         "ORDER BY count(p) DESC");
         if (phrase.length() >= 3) {

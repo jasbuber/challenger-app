@@ -58,7 +58,7 @@ public class AndroidServices extends Controller {
 
         Challenge newChallenge = getChallengeService()
                 .createChallenge(username, name, ChallengeCategory.valueOf(category),
-                        visibility, new ArrayList<>(), difficulty);
+                        visibility, new ArrayList<String>(), difficulty);
 
         return ok(getGson().toJson(getResponseForCreatedChallenge(newChallenge, newChallenge.getId())));
     }
@@ -368,12 +368,11 @@ public class AndroidServices extends Controller {
 
         CustomResponse customResponse = new CustomResponse();
 
-        /*
-        if (service.getResponsesNrForUser(getLoggedInUsername()) == 1) {
+        if (service.getResponsesNrForUser(username) == 1) {
             customResponse.addPoints(User.MINOR_REWARD);
             customResponse.addMessage("first challenge response!");
-            getUsersService().rewardParticipationPoints(getLoggedInUsername(), User.MINOR_REWARD);
-        }*/
+            getUsersService().rewardParticipationPoints(username, User.MINOR_REWARD);
+        }
 
         customResponse.setChallengeId(challenge.getId());
 

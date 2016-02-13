@@ -381,6 +381,7 @@ public class Application extends Controller {
 
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
+        filter.andCond(filter.excludeChallengesWithoutVideo());
 
         if (!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))) {
             Expression<String> categoryField = filter.getField("category");
@@ -403,6 +404,7 @@ public class Application extends Controller {
 
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
+        filter.andCond(filter.excludeChallengesWithoutVideo());
 
         if (!(ChallengeCategory.valueOf(category).equals(ChallengeCategory.ALL))) {
             Expression<String> categoryField = filter.getField("category");
@@ -426,6 +428,7 @@ public class Application extends Controller {
 
         filter.andCond(filter.excludeChallengesThatUserParticipatesIn(currentUser));
         filter.andCond(filter.excludePrivateChallenges());
+        filter.andCond(filter.excludeChallengesWithoutVideo());
         filter.prepareWhere();
 
         List<Challenge> challenges = service.findChallenges(filter, 0);

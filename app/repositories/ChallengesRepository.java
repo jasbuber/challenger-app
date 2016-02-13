@@ -425,7 +425,7 @@ public class ChallengesRepository {
         Query topChallengesQuery = JPA.em().createQuery(
                 "SELECT c " +
                 "FROM Challenge c " +
-                "WHERE c.visibility = true " +
+                "WHERE c.visibility = true AND c.videoId IS NOT NULL " +
                 "ORDER BY c.rating DESC");
         topChallengesQuery.setMaxResults(6);
         return topChallengesQuery.getResultList();
@@ -439,7 +439,7 @@ public class ChallengesRepository {
 
         Query trendingChallengesQuery = JPA.em().createQuery("SELECT c " +
                 "FROM Challenge c " +
-                "WHERE c.creationDate > :trendingDate AND c.visibility = true " +
+                "WHERE c.creationDate > :trendingDate AND c.visibility = true AND c.videoId IS NOT NULL " +
                 "ORDER BY c.rating DESC");
         trendingChallengesQuery.setParameter("trendingDate", trendingDate.toDate(), TemporalType.DATE);
         trendingChallengesQuery.setMaxResults(6);
@@ -452,7 +452,7 @@ public class ChallengesRepository {
                 "SELECT NEW repositories.dtos.ChallengeWithParticipantsNr(c.challengeName, count(p), c.id)" +
                 "FROM ChallengeParticipation p " +
                 "RIGHT OUTER JOIN p.challenge c " +
-                "WHERE c.active = true AND c.visibility = true " +
+                "WHERE c.active = true AND c.visibility = true AND c.videoId IS NOT NULL " +
                 "GROUP BY c.challengeName, c.id " +
                 "ORDER BY count(p) DESC");
         mostPopularChallenges.setMaxResults(6);
@@ -508,7 +508,7 @@ public class ChallengesRepository {
                 "SELECT c " +
                         "FROM ChallengeParticipation p " +
                         "RIGHT OUTER JOIN p.challenge c " +
-                        "WHERE c.active = true AND c.visibility = true " +
+                        "WHERE c.active = true AND c.visibility = true AND c.videoId IS NOT NULL " +
                         ((phrase.length() >= 3) ? "AND LOWER(c.challengeName) LIKE LOWER(:phrase) " : "") +
                         "GROUP BY c.challengeName, c.id " +
                         "ORDER BY count(p) DESC");

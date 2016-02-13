@@ -129,6 +129,7 @@ public class AndroidServices extends Controller {
 
         filter.orderDescBy("creationDate");
         filter.andCond(filter.excludePrivateChallenges());
+        filter.andCond(filter.excludeChallengesWithoutVideo());
         filter.prepareWhere();
 
         List<Challenge> challenges = service.findChallenges(filter, 0);
@@ -174,6 +175,7 @@ public class AndroidServices extends Controller {
         }
 
         filter.andCond(filter.excludePrivateChallenges());
+        filter.andCond(filter.excludeChallengesWithoutVideo());
 
         filter.prepareWhere();
 

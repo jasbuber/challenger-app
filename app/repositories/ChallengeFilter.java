@@ -99,4 +99,9 @@ public class ChallengeFilter {
         return builder.equal(creator, u);
     }
 
+    public Predicate excludeChallengesWithoutVideo(){
+        Expression<String> videoId = root.get("videoId");
+        return builder.isNotNull(videoId);
+    }
+
 }

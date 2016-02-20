@@ -30,7 +30,7 @@ public class ChallengeService extends TransactionalBase {
 
     public Challenge createChallenge(final String creatorUsername, final String challengeName,
                                      final ChallengeCategory category, final Boolean visibility,
-                                     final List<String> challengeParticipants, final Integer difficulty){
+                                     final List<String> challengeParticipants, final Integer difficulty, final String videoId){
 
 
         if (isUserCreatedChallengeWithName(challengeName, creatorUsername)) {
@@ -38,7 +38,7 @@ public class ChallengeService extends TransactionalBase {
                     " has already been created by user " + creatorUsername);
         }
 
-        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, null, visibility, difficulty);
+        Challenge challenge = createAndPersistChallenge(creatorUsername, challengeName, category, videoId, visibility, difficulty);
 
         if (isChallengePrivate(challenge)) {
 

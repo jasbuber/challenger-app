@@ -48,6 +48,7 @@ public class AndroidServices extends Controller {
         String username = getPostData(request, "username");
         String name = getPostData(request, "challengeName");
         String category = getPostData(request, "category");
+        String videoId = getPostData(request, "videoId");
         int difficulty = Integer.parseInt(getPostData(request, "difficulty"));
         boolean visibility = !Boolean.getBoolean(getPostData(request, "visibility"));
         String token = getPostData(request, "token");
@@ -58,7 +59,7 @@ public class AndroidServices extends Controller {
 
         Challenge newChallenge = getChallengeService()
                 .createChallenge(username, name, ChallengeCategory.valueOf(category),
-                        visibility, new ArrayList<String>(), difficulty);
+                        visibility, new ArrayList<String>(), difficulty, videoId);
 
         return ok(getGson().toJson(getResponseForCreatedChallenge(newChallenge, newChallenge.getId())));
     }

@@ -247,7 +247,7 @@ public class Application extends Controller {
 
         Challenge newChallenge = getChallengeService()
             .createChallenge(getLoggedInUsername(), challenge.getChallengeName(), challenge.getChallengeCategory(),
-                    challenge.getChallengeVisibility(), challenge.getParticipants(), challenge.getDifficulty());
+                    challenge.getChallengeVisibility(), challenge.getParticipants(), challenge.getDifficulty(), challenge.getVideoDescriptionUrl());
 
         return ok(new Gson().toJson(getResponseForCreatedChallenge(challenge, newChallenge.getId())));
 

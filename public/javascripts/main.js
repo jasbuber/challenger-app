@@ -354,79 +354,76 @@ $(document).ready(function () {
 
         $("#upload-video-form").find("input[name='description']").val(challengeName);
 
-        NProgress.start();
+        var progressBar = $("#upload-video-progress-bar");
+        $(".progress").show();
 
-        $this.ajaxSubmit({
+        if($("#challenge-visibility").val() == 0) {
+            var participantsString = "", privacy = $("#upload-video-form").find("input[name='privacy']"),
+                friendsData = $(".selected-user-data");
+
+            $.each(friendsData, function (i) {
+                participantsString += friendsData[i].value.split(",")[0] + ",";
+            });
+
+            privacy.val("{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString.slice(0, -1) + "'}");
+        }
+
+        $("#upload-video-form").ajaxSubmit({
+            uploadProgress: function(event, position, total, percentComplete) {
+                var percentVal = Math.floor(percentComplete * 0.99) + '%';
+                progressBar.width(percentVal)
+                progressBar.html(percentVal);
+            },
             success: function (response) {
-                var customResponse = jQuery.parseJSON(response);
+                NProgress.start();
 
-                if (customResponse.hasOwnProperty("status")) {
+                $("input[name='videoDescriptionUrl']").val(response.id);
 
-                    if($("#challenge-visibility").val() == 0) {
-                        var participantsString = "", privacy = $("#upload-video-form").find("input[name='privacy']")
-                            , friendsData = $(".selected-user-data");
+                $this.ajaxSubmit({
+                    success: function (response) {
+                        var customResponse = jQuery.parseJSON(response);
 
-                        $.each(friendsData, function (i) {
-                            participantsString += friendsData[i].value.split(",")[0] + ",";
-                        });
+                        if (customResponse.hasOwnProperty("status")) {
+                            if(customResponse.rewardedPoints > 0) {
+                                rewardAllPoints(customResponse.messages, customResponse.points);
+                            }
 
-                        privacy.val("{'value': 'CUSTOM', 'friends': 'SOME_FRIENDS', 'allow': '" + participantsString.slice(0, -1) + "'}");
-                    }
+                            progressBar.width("100%");
+                            progressBar.html("100%");
 
-                    var progressBar = $("#upload-video-progress-bar");
-                    $(".progress").show();
-                    $("#upload-video-form").ajaxSubmit({
-                        uploadProgress: function(event, position, total, percentComplete) {
-                            var percentVal = Math.floor(percentComplete * 0.99) + '%';
-                            progressBar.width(percentVal)
-                            progressBar.html(percentVal);
-                        },
-                        success: function (response) {
-                            jsRoutes.controllers.Application.ajaxUpdateChallengeVideo(customResponse.challengeId, response.id).ajax({
-                                success: function (response) {
-                                    if(customResponse.rewardedPoints > 0) {
-                                        rewardAllPoints(customResponse.messages, customResponse.points);
-                                    }
-
-                                    progressBar.width("100%");
-                                    progressBar.html("100%");
-
-                                    alertify.alert("Challenge created and ready to join ! ", function (e) {
-                                        if (e) {
-                                            window.history.back();
-                                        }
-                                    });
-
-                                    NProgress.done();
+                            alertify.alert("Challenge created and ready to join ! ", function (e) {
+                                if (e) {
+                                    window.history.back();
                                 }
                             });
-                        },
-                        error: function(response){
-                            progressBar.width("0%")
-                            progressBar.html("0%");
-                            $(".progress").hide();
-                            alertify.error(response.responseJSON.error.message);
-                        }
-                    });
-                    displayInstantMessages();
-                }
-                else {
-                    var fields = jQuery.parseJSON(response);
 
-                    $.each(fields, function (i) {
-                        var errors = fields[i];
-                        $.each(errors, function (j) {
-                            alertify.error(errors[j].message);
-                        });
-                    });
-                    $("#create-challenge-action").removeAttr("disabled");
-                    NProgress.done();
+                            NProgress.done();
+                        }else {
+                             var fields = jQuery.parseJSON(response);
+
+                             $.each(fields, function (i) {
+                                 var errors = fields[i];
+                                 $.each(errors, function (j) {
+                                     alertify.error(errors[j].message);
+                                 });
+                             });
+                             $("#create-challenge-action").removeAttr("disabled");
+                             NProgress.done();
+                        }
+                    }
+                });
+
+            },
+                error: function(response){
+                    progressBar.width("0%")
+                    progressBar.html("0%");
+                    $(".progress").hide();
+                    alertify.error(response.responseJSON.error.message);
                 }
-            }
         });
+        displayInstantMessages();
 
         e.preventDefault();
-
     });
 
     var handleUploadPermission = function() {

@@ -43,7 +43,7 @@ public class Application extends Controller {
         } else {
             Logger.error("Other");
 
-            FacebookClient.AccessToken token = FacebookService.generateAccessToken(code, "https://apps.facebook.com/vchallenger/");
+            FacebookClient.AccessToken token = FacebookService.generateAccessToken(code, "facebook_app_url");
 
             if(token == null){
                 return ok(facebook_redirect.render());
@@ -66,7 +66,7 @@ public class Application extends Controller {
             Logger.error("Other - mobile");
 
             FacebookClient.AccessToken token =
-                    FacebookService.generateAccessToken(code, "https://nameless-badlands-7043.herokuapp.com/mobile");
+                    FacebookService.generateAccessToken(code, "localhost:9000/mobile");
 
             if(token == null){
                 return ok(facebook_mobile_redirect.render());
@@ -1167,17 +1167,6 @@ public class Application extends Controller {
 
         return ok(privacy_policy.render());
 
-    }
-
-    @play.db.jpa.Transactional(readOnly = true)
-    public static Result switchToAdmin(String passwordPhrase) {
-        if(session("username").equals("100000443050451")
-                && passwordPhrase.equals("fjeR97845NBjfmnxlLAJdjjeeNBEr4038dfkskdf")){
-            session("username", "VChallenger");
-            return redirect(routes.Application.index());
-        }
-
-        return ok(error_view.render("Access denied"));
     }
 
     @Transactional
